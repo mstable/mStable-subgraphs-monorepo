@@ -1,0 +1,26 @@
+interface Transaction {
+    """
+    Transaction hash + log index
+    """
+    id: ID!
+
+    """
+    Transaction hash
+    """
+    hash: Bytes!
+
+    """
+    Block number the transaction is in
+    """
+    block: Int!
+
+    """
+    Timestamp of the block the transaction is in
+    """
+    timestamp: BigInt!
+
+    """
+    Address of the sender of the transaction
+    """
+    sender: Bytes!
+}

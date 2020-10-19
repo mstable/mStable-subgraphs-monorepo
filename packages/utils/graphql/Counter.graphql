@@ -1,0 +1,8 @@
+type Counter @entity {
+    id: ID!
+
+    """
+    Value of the counter; should be positive
+    """
+    value: BigInt!
+}

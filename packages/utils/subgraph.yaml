@@ -1,0 +1,33 @@
+specVersion: 0.0.2
+description: Subgraph for codegen purposes
+schema:
+  file: ./subgraph/schema.generated.graphql
+
+dataSources:
+  - kind: ethereum/contract
+    name: Empty
+    network: 'kovan'
+    source:
+      abi: Empty
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+
+      # Include all entities for codegen
+      entities:
+        - Counter
+        - Metric
+        - Transaction
+        - Token
+
+      # File, ABI and events are irrelevant
+      file: ./subgraph/empty.ts
+      abis:
+        - name: Empty
+          file: ./subgraph/Empty.json
+        - name: ERC20Detailed
+          file: ../../node_modules/@mstable/protocol/build/contracts/ERC20Detailed.json
+      eventHandlers:
+        - event: Empty()
+          handler: empty

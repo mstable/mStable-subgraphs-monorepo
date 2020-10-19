@@ -1,0 +1,15 @@
+{
+  "network": "mainnet",
+  "address_mUSD": "0xe2f2a5C287993345a840Db3B0845fbC70f5935a5",
+  "startBlock_mUSD": 10000000,
+  "address_SavingsManager": "0xcEfCBb45BE41331337d49a131faF424D1e50234f",
+  "startBlock_SavingsManager": 10000000,
+  "address_BasketManager": "0x66126B4aA2a1C07536Ef8E5e8bD4EfDA1FdEA96D",
+  "startBlock_BasketManager": 10000000,
+  "address_RewardsDistributor": "0x04dfDfa471b79cc9E6E8C355e6C71F8eC4916C50",
+  "startBlock_RewardsDistributor": 10500000,
+  "address_MerkleDrop_BAL": "0xF6E53b3aAe671319a0F9D9CA7Fac5f41599bC7a5",
+  "startBlock_MerkleDrop_BAL": 10585670,
+  "address_IncentivisedVotingLockup": "0xae8bc96da4f9a9613c323478be181fdb2aa0e1bf",
+  "startBlock_IncentivisedVotingLockup": 10932373
+}

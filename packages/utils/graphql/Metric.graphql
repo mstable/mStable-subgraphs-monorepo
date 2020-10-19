@@ -1,0 +1,18 @@
+type Metric @entity {
+    id: ID!
+
+    """
+    Exact value of the metric, i.e. in base units as an integer
+    """
+    exact: BigInt!
+
+    """
+    Decimals used for the exact value (default: 18)
+    """
+    decimals: Int!
+
+    """
+    Simple value of the metric, i.e. the exact value represented as a decimal
+    """
+    simple: BigDecimal!
+}

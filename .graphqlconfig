@@ -1,0 +1,18 @@
+{
+  "includes": ["./*.graphql"],
+  "excludes": ["./packages/*/build/*.graphql", "**/schema.generated.graphql"],
+  "projects": {
+     "@mstable/governance-subgraph": {
+       "schemaPath": "./packages/governance/schema.graphql"
+     },
+     "@mstable/protocol-subgraph": {
+       "schemaPath": "./packages/protocol/schema.graphql"
+     },
+     "@mstable/ecosystem-subgraph": {
+       "schemaPath": "./packages/ecosystem/schema.graphql"
+     },
+     "@mstable/subgraph-utils": {
+       "schemaPath": "./packages/utils/schema.graphql"
+     }
+  }
+}

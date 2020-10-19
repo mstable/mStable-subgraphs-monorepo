@@ -1,0 +1,10 @@
+{
+  "contractName": "Empty",
+  "abi": [
+    {
+      "name": "Empty",
+      "type": "event",
+      "inputs": []
+    }
+  ]
+}

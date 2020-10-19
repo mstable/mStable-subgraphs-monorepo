@@ -1,0 +1,30 @@
+{
+  "private": true,
+  "name": "mstable-subgraphs-monorepo",
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "https://github.com/graphprotocol/graph-cli.git#c5a0131f61beaf0962e3ebc920e84b00b579d4cc",
+    "@graphprotocol/graph-ts": "https://github.com/graphprotocol/graph-ts.git#fdd8f835316c68c66eb9fd9917c2c5c8f07bf904",
+    "@mstable/protocol": "^1.2.1",
+    "chalk": "^4.1.0",
+    "lerna": "^3.22.1",
+    "mustache": "^4.0.1",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.5",
+    "yargs": "^16.1.0"
+  },
+  "scripts": {
+    "codegen": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run codegen",
+    "build": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run build",
+    "prepare:mainnet": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run prepare:mainnet",
+    "prepare:staging": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run prepare:staging",
+    "prepare:ropsten": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run prepare:ropsten",
+    "prepare:kovan": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run prepare:kovan",
+    "deploy:mainnet": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run deploy:mainnet",
+    "deploy:staging": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run deploy:staging",
+    "deploy:ropsten": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run deploy:ropsten",
+    "deploy:kovan": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run deploy:kovan"
+  }
+}

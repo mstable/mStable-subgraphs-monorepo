@@ -1,0 +1,42 @@
+Arguments: 
+  /home/james/.nvm/versions/node/v12.18.1/bin/node /home/james/.yarn/bin/yarn.js install
+
+PATH: 
+  /home/james/.yarn/bin:/home/james/.yarn/bin:/home/james/.nvm/versions/node/v12.18.1/bin:/home/james/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/lib/go/bin:/home/james/go/bin:/home/james/webstorm/WebStorm-193.6494.34/bin/:/home/.yarn/bin:/home/.config/yarn/global/node_modules/.bin:/home/james/misc/scripts/:/home/james/.local/bin:/home/james/webstorm/WebStorm-193.6494.34/bin/:/home/.yarn/bin:/home/.config/yarn/global/node_modules/.bin:/home/james/misc/scripts/:/home/james/.local/bin
+
+Yarn version: 
+  1.22.5
+
+Node version: 
+  12.18.1
+
+Platform: 
+  linux x64
+
+Trace: 
+  TypeError: Invalid Version: 0.10
+      at new SemVer (/home/james/.yarn/lib/cli.js:3508:11)
+      at Range.module.exports.Range.test (/home/james/.yarn/lib/cli.js:4315:15)
+      at Function.satisfies (/home/james/.yarn/lib/cli.js:4364:16)
+      at WorkspaceLayout.getManifestByPattern (/home/james/.yarn/lib/cli.js:32262:31)
+      at Function.isWorkspace (/home/james/.yarn/lib/cli.js:98235:51)
+      at PackageRequest.<anonymous> (/home/james/.yarn/lib/cli.js:36629:76)
+      at Generator.next (<anonymous>)
+      at step (/home/james/.yarn/lib/cli.js:310:30)
+      at /home/james/.yarn/lib/cli.js:328:14
+      at new Promise (<anonymous>)
+
+npm manifest: 
+  {
+    "private": true,
+    "name": "mstable-subgraphs-monorepo",
+    "workspaces": [
+      "packages/*"
+    ]
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
