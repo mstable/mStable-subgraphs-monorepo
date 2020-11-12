@@ -13,7 +13,6 @@ enum StakingRewardType {
     PLATFORM_REWARD
 }
 
-
 type RewardsDistributor @entity {
     """
     ID of the rewards distributor contract

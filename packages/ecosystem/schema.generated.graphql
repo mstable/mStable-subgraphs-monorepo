@@ -34,9 +34,29 @@ type Token @entity {
     totalSupply: Metric!
 
     """
-    Number of transfer transactions
+    Total quantity of tokens burned
+    """
+    totalBurned: Metric!
+
+    """
+    Total quantity of tokens minted
+    """
+    totalMinted: Metric!
+
+    """
+    Count of transfer transactions
     """
     transfers: Counter!
+
+    """
+    Count of transfer transactions that minted the token
+    """
+    totalMints: Counter!
+
+    """
+    Count of transfer transactions that burned the token
+    """
+    totalBurns: Counter!
 }
 
 interface Transaction {
@@ -69,15 +89,28 @@ interface Transaction {
 type Metric @entity {
     id: ID!
 
+    """
+    Exact value of the metric, i.e. in base units as an integer
+    """
     exact: BigInt!
 
+    """
+    Decimals used for the exact value (default: 18)
+    """
     decimals: Int!
 
+    """
+    Simple value of the metric, i.e. the exact value represented as a decimal
+    """
     simple: BigDecimal!
 }
 
 type Counter @entity {
     id: ID!
+
+    """
+    Value of the counter; should be positive
+    """
     value: BigInt!
 }
 
@@ -94,7 +127,6 @@ enum StakingRewardType {
     REWARD
     PLATFORM_REWARD
 }
-
 
 type RewardsDistributor @entity {
     """

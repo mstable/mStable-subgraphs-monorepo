@@ -5,9 +5,6 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@graphprotocol/graph-cli": "https://github.com/graphprotocol/graph-cli.git#c5a0131f61beaf0962e3ebc920e84b00b579d4cc",
-    "@graphprotocol/graph-ts": "https://github.com/graphprotocol/graph-ts.git#fdd8f835316c68c66eb9fd9917c2c5c8f07bf904",
-    "@mstable/protocol": "^1.2.1",
     "chalk": "^4.1.0",
     "lerna": "^3.22.1",
     "mustache": "^4.0.1",
