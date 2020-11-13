@@ -36,6 +36,7 @@ export function getOrCreateMasset(address: Address): MassetEntity {
   massetEntity.totalRedeemMassets = counters.getOrCreate(address, 'totalRedeemMassets').id
   massetEntity.totalSwaps = counters.getOrCreate(address, 'totalSwaps').id
 
+  token.getOrCreate(address)
   massetEntity.token = id
   massetEntity.basket = id
 
