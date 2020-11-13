@@ -56,51 +56,64 @@ export function handleExchangeRateUpdated(event: ExchangeRateUpdated): void {
     event.address.toHexString(),
   ) as SavingsContractEntity
 
-  // Get the latest exchange rate
-  let latestExchangeRateEntity: ExchangeRateEntity | null = savingsContractEntity.latestExchangeRate
+  // Get the current latest exchange rate before adding this one (i.e. previous)
+  let exchangeRatePrevious: ExchangeRateEntity | null = savingsContractEntity.latestExchangeRate
     ? ExchangeRateEntity.load(savingsContractEntity.latestExchangeRate)
     : null
 
   // Get the previous day exchange rate
-  let previousExchangeRateEntity: ExchangeRateEntity | null = savingsContractEntity.previousExchangeRate
-    ? ExchangeRateEntity.load(savingsContractEntity.previousExchangeRate)
+  let exchangeRate24hAgo: ExchangeRateEntity | null = savingsContractEntity.exchangeRate24hAgo
+    ? ExchangeRateEntity.load(savingsContractEntity.exchangeRate24hAgo)
     : null
 
   // Create a new exchange rate
-  let exchangeRateEntity = new ExchangeRateEntity(id)
-  exchangeRateEntity.rate = decimal.convert(event.params.newExchangeRate)
-  exchangeRateEntity.savingsContract = event.address.toHexString()
-  exchangeRateEntity.timestamp = event.block.timestamp.toI32()
-  exchangeRateEntity.save()
+  let exchangeRateLatest = new ExchangeRateEntity(id)
+  exchangeRateLatest.rate = decimal.convert(event.params.newExchangeRate)
+  exchangeRateLatest.savingsContract = event.address.toHexString()
+  exchangeRateLatest.timestamp = event.block.timestamp.toI32()
+  exchangeRateLatest.save()
 
-  if (previousExchangeRateEntity == null) {
-    // Set the first value (should only happen once)
-    savingsContractEntity.previousExchangeRate = exchangeRateEntity.id
+  // The latest exchange rate is now the one we just created
+  savingsContractEntity.latestExchangeRate = exchangeRateLatest.id
+
+  // The next exchange rate of the previous exchange rate is this latest one
+  if (exchangeRatePrevious) {
+    exchangeRatePrevious.next = exchangeRateLatest.id
+  }
+
+  if (exchangeRate24hAgo == null && exchangeRatePrevious == null) {
+    // Set the first 24h ago value (should only happen once)
+    savingsContractEntity.exchangeRate24hAgo = exchangeRateLatest.id
   }
 
   if (
-    latestExchangeRateEntity != null &&
-    previousExchangeRateEntity != null &&
-    latestExchangeRateEntity.id != previousExchangeRateEntity.id
+    exchangeRate24hAgo != null &&
+    exchangeRatePrevious != null &&
+    exchangeRate24hAgo.id != exchangeRateLatest.id &&
+    exchangeRatePrevious.id != exchangeRate24hAgo.id
   ) {
-    // Update the previousExchangeRate if it's more than 24h ago
-    let latestTs = integer.fromNumber(exchangeRateEntity.timestamp)
-    let previousTs = integer.fromNumber(latestExchangeRateEntity.timestamp)
-
-    // FIXME should use day boundary
+    // Update the exchangeRate24hAgo if it's more than 24h ago
+    let tsLatest = integer.fromNumber(exchangeRateLatest.timestamp)
     let secondsInDay = integer.fromNumber(86400)
-    if (latestTs.minus(previousTs).gt(secondsInDay)) {
-      savingsContractEntity.previousExchangeRate = exchangeRateEntity.id
+
+    // Iterate through the next rates from the old 24h ago rate;
+    // find the last rate *before* 24h ago.
+    while (
+      exchangeRate24hAgo != null &&
+      exchangeRate24hAgo.next != null &&
+      tsLatest.minus(integer.fromNumber(exchangeRate24hAgo.timestamp)).lt(secondsInDay)
+    ) {
+      exchangeRate24hAgo = ExchangeRateEntity.load(exchangeRate24hAgo.next) as ExchangeRateEntity
     }
+
+    savingsContractEntity.exchangeRate24hAgo = exchangeRateLatest.id
   }
 
-  // The latest exchange rate is now the one we just created
-  savingsContractEntity.latestExchangeRate = exchangeRateEntity.id
   savingsContractEntity.save()
 
-  if (latestExchangeRateEntity) {
-    let dailyAPY = calculateAPY(latestExchangeRateEntity as ExchangeRateEntity, exchangeRateEntity)
-    metrics.updateMetric(savingsContractEntity.dailyAPY, dailyAPY)
+  if (exchangeRate24hAgo) {
+    let dailyAPY = calculateAPY(exchangeRate24hAgo as ExchangeRateEntity, exchangeRateLatest)
+    metrics.updateById(savingsContractEntity.dailyAPY, dailyAPY)
   }
 
   metrics.incrementById(savingsContractEntity.totalSavings, event.params.interestCollected)

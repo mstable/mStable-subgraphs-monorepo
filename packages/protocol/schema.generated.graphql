@@ -459,7 +459,7 @@ type SavingsContract @entity {
     The exchange rate that is closest to 24h ago from the latest exchange rate;
     used to derive daily APYs.
     """
-    previousExchangeRate: ExchangeRate
+    exchangeRate24hAgo: ExchangeRate
 
     """
     All credit balances relating to this Savings Contract.
@@ -500,6 +500,11 @@ type ExchangeRate @entity {
     The SavingsContract this ExchangeRate relates to.
     """
     savingsContract: SavingsContract!
+
+    """
+    The next exchange rate for the savings contract (by timestamp); used for calculating APY.
+    """
+    next: ExchangeRate
 }
 
 type SwapTransaction implements Transaction @entity {
