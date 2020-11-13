@@ -3,10 +3,7 @@ import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { StakingRewardsContract } from '../../generated/schema'
 import { StakingRewards } from '../../generated/templates/StakingRewards/StakingRewards'
 import { StakingRewardsWithPlatformToken } from '../../generated/templates/StakingRewardsWithPlatformToken/StakingRewardsWithPlatformToken'
-import {
-  mapStakingRewardsContractType,
-  StakingRewardsContractType,
-} from '../enums'
+import { mapStakingRewardsContractType, StakingRewardsContractType } from '../enums'
 
 export function getOrCreateStakingRewardsContract(
   address: Address,
@@ -33,9 +30,7 @@ export function getOrCreateStakingRewardsContract(
     stakingRewards.periodFinish = contract.periodFinish().toI32()
     stakingRewards.stakingToken = contract.stakingToken().toHexString()
     stakingRewards.rewardRate = rewardRate
-    stakingRewards.rewardsDistributor = contract
-      .rewardsDistributor()
-      .toHexString()
+    stakingRewards.rewardsDistributor = contract.rewardsDistributor().toHexString()
     stakingRewards.rewardsToken = contract.rewardsToken().toHexString()
     stakingRewards.rewardPerTokenStored = contract.rewardPerTokenStored()
     stakingRewards.totalStakingRewards = getTotalRewards(rewardRate, duration)
@@ -49,10 +44,7 @@ export function getOrCreateStakingRewardsContract(
       stakingRewards.platformToken = contract.platformToken().toHexString()
       stakingRewards.platformRewardRate = platformRewardRate
       stakingRewards.platformRewardPerTokenStored = contract.platformRewardPerTokenStored()
-      stakingRewards.totalPlatformRewards = getTotalRewards(
-        platformRewardRate,
-        duration,
-      )
+      stakingRewards.totalPlatformRewards = getTotalRewards(platformRewardRate, duration)
     }
 
     stakingRewards.save()
@@ -66,5 +58,5 @@ export function getTotalRewards(rewardRate: BigInt, duration: i32): BigInt {
 }
 
 export function isWithPlatformToken(type: StakingRewardsContractType): boolean {
-  return type === StakingRewardsContractType.STAKING_REWARDS_WITH_PLATFORM_TOKEN
+  return type == StakingRewardsContractType.STAKING_REWARDS_WITH_PLATFORM_TOKEN
 }

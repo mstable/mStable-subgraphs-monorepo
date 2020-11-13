@@ -8,11 +8,7 @@ import {
   RemovedFunder,
   Whitelisted,
 } from '../../generated/MerkleDrop/MerkleDrop'
-import {
-  MerkleDrop,
-  MerkleDropClaim,
-  MerkleDropTranche,
-} from '../../generated/schema'
+import { MerkleDrop, MerkleDropClaim, MerkleDropTranche } from '../../generated/schema'
 
 function getOrCreateMerkleDrop(address: Address): MerkleDrop {
   let id = address.toHexString()
@@ -41,8 +37,7 @@ function getOrCreateMerkleDropClaim(
   tranche: BigInt,
   balance: BigInt,
 ): MerkleDropClaim {
-  let id =
-    address.toHexString() + '-' + account.toHexString() + tranche.toString()
+  let id = address.toHexString() + '-' + account.toHexString() + tranche.toString()
   let claim = MerkleDropClaim.load(id)
 
   if (claim != null) {
@@ -65,10 +60,7 @@ function getTrancheId(address: Address, trancheNumber: BigInt): string {
   return address.toHexString() + '-' + trancheNumber.toString()
 }
 
-function getMerkleDropTranche(
-  address: Address,
-  trancheNumber: BigInt,
-): MerkleDropTranche {
+function getMerkleDropTranche(address: Address, trancheNumber: BigInt): MerkleDropTranche {
   let id = getTrancheId(address, trancheNumber)
 
   let tranche = MerkleDropTranche.load(id)
@@ -126,9 +118,7 @@ export function handleTrancheExpired(event: TrancheExpired): void {
 export function handleRemovedFunder(event: RemovedFunder): void {
   let merkleDrop = getOrCreateMerkleDrop(event.address)
 
-  merkleDrop.funders = merkleDrop.funders.filter(
-    (funder) => funder !== event.params._address,
-  )
+  merkleDrop.funders = merkleDrop.funders.filter(funder => funder.notEqual(event.params._address))
 
   merkleDrop.save()
 }

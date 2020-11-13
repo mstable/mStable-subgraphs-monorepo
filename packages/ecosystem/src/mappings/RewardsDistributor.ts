@@ -12,10 +12,7 @@ import {
 } from '../../generated/templates'
 import { StakingRewards } from '../../generated/RewardsDistributor/StakingRewards'
 import { StakingRewardsWithPlatformToken } from '../../generated/RewardsDistributor/StakingRewardsWithPlatformToken'
-import {
-  RewardsDistributor,
-  StakingRewardsContract,
-} from '../../generated/schema'
+import { RewardsDistributor, StakingRewardsContract } from '../../generated/schema'
 import { getOrCreateStakingRewardsContract } from '../models/StakingRewardsContract'
 import { StakingRewardsContractType } from '../enums'
 
@@ -38,8 +35,8 @@ function getOrCreateRewardsDistributor(address: Address): RewardsDistributor {
 export function handleRemovedFundManager(event: RemovedFundManager): void {
   let rewardsDistributor = getOrCreateRewardsDistributor(event.address)
 
-  rewardsDistributor.fundManagers = rewardsDistributor.fundManagers.filter(
-    (_managerId) => _managerId !== event.params._address,
+  rewardsDistributor.fundManagers = rewardsDistributor.fundManagers.filter(_managerId =>
+    _managerId.notEqual(event.params._address),
   )
 
   rewardsDistributor.save()
@@ -48,9 +45,7 @@ export function handleRemovedFundManager(event: RemovedFundManager): void {
 export function handleWhitelisted(event: Whitelisted): void {
   let rewardsDistributor = getOrCreateRewardsDistributor(event.address)
 
-  rewardsDistributor.fundManagers = rewardsDistributor.fundManagers.concat([
-    event.params._address,
-  ])
+  rewardsDistributor.fundManagers = rewardsDistributor.fundManagers.concat([event.params._address])
 
   rewardsDistributor.save()
 }
@@ -58,14 +53,10 @@ export function handleWhitelisted(event: Whitelisted): void {
 export function handleDistributedReward(event: DistributedReward): void {
   // The receipient may be a StakingRewards or StakingRewardsWithPlatformToken
   // contract, which should be tracked here.
-  if (
-    StakingRewardsContract.load(event.params.recipient.toHexString()) == null
-  ) {
+  if (StakingRewardsContract.load(event.params.recipient.toHexString()) == null) {
     // Try a function that only exists on the `StakingRewardsWithPlatformToken` contract
     {
-      let contract = StakingRewardsWithPlatformToken.bind(
-        event.params.recipient,
-      )
+      let contract = StakingRewardsWithPlatformToken.bind(event.params.recipient)
       if (!contract.try_platformToken().reverted) {
         // Track the contract and create the entity
         {
