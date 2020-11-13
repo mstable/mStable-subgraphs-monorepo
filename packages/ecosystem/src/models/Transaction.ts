@@ -33,7 +33,7 @@ export function getOrCreateStakingRewardsContractRewardPaidTransaction(
   event: RewardPaid,
 ): StakingRewardsContractClaimRewardTransactionEntity {
   let baseTx = transaction.fromEvent(event)
-  let txEntity = new StakingRewardsContractWithdrawTransactionEntity(baseTx.id)
+  let txEntity = new StakingRewardsContractClaimRewardTransactionEntity(baseTx.id)
   txEntity.hash = baseTx.hash
   txEntity.block = baseTx.block
   txEntity.timestamp = baseTx.timestamp
@@ -51,12 +51,13 @@ export function getOrCreateStakingRewardsContractStakeTransaction(
   event: Staked,
 ): StakingRewardsContractStakeTransactionEntity {
   let baseTx = transaction.fromEvent(event)
-  let txEntity = new StakingRewardsContractWithdrawTransactionEntity(baseTx.id)
+  let txEntity = new StakingRewardsContractStakeTransactionEntity(baseTx.id)
   txEntity.hash = baseTx.hash
   txEntity.block = baseTx.block
   txEntity.timestamp = baseTx.timestamp
 
   txEntity.amount = event.params.amount
+  txEntity.sender = event.params.user
   txEntity.stakingRewardsContract = event.address.toHexString()
 
   txEntity.save()
