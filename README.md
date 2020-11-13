@@ -1,7 +1,8 @@
 # mStable Subgraphs
 
-Organic, farm fresh subgraphs, all in one handy repo.
+All [mStable](https://mstable.org) subgraphs in one handy repo.
 
+<img src="https://raw.githubusercontent.com/mstable/mStable-subgraphs-monorepo/master/graphtasia.png" width="430" />
 
 ## Installation
 
@@ -31,4 +32,6 @@ yarn lerna bootstrap
 
 ## Development
 
-
+- GraphQL types in `packages/utils` are stitched together with `yarn codegen` (in that directory).
+- These types can be consumed in other packages with import comments (e.g. `# import Token`); the schema for each subgraph is created via codegen. 
+- Each subgraph shares the same config (for different networks) and can be prepared and deployed for the chosen network.
