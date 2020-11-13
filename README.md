@@ -2,7 +2,7 @@
 
 All [mStable](https://mstable.org) subgraphs in one handy repo.
 
-<img src="https://raw.githubusercontent.com/mstable/mStable-subgraphs-monorepo/master/graphtasia.png" width="430" />
+<a href="https://www.youtube.com/watch?v=l0vrsO3_HpU"><img src="https://raw.githubusercontent.com/mstable/mStable-subgraphs-monorepo/master/graphtasia.png" width="430" /></a>
 
 ## Installation
 
