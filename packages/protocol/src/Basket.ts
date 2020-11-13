@@ -1,5 +1,5 @@
 import { Address } from '@graphprotocol/graph-ts'
-import { metrics, token } from '@mstable/subgraph-utils'
+import { counters, metrics, token } from '@mstable/subgraph-utils'
 
 import {
   BasketManager,
@@ -28,48 +28,26 @@ export function updateBassetEntities(basketManager: BasketManager): Array<Basset
     arr[i].token = tokenEntity.id
     arr[i].ratio = basset.ratio
     arr[i].maxWeight = basset.maxWeight
-    arr[i].vaultBalance = metrics.updateMetric(
-      arr[i].vaultBalance,
-      basset.vaultBalance,
-      decimals,
-    ).id
+
+    arr[i].vaultBalance = metrics.getOrCreate(bassetAddress, 'vaultBalance', decimals).id
+    metrics.updateById(arr[i].vaultBalance, basset.vaultBalance)
+
     arr[i].isTransferFeeCharged = basset.isTransferFeeCharged
     arr[i].status = mapBassetStatus(basset.status)
 
-    arr[i].totalMinted = metrics.getOrCreateMetricForAddress(
-      bassetAddress,
-      'totalMinted',
-      decimals,
-    ).id
-    arr[i].totalRedeemed = metrics.getOrCreateMetricForAddress(
-      bassetAddress,
-      'totalRedeemed',
-      decimals,
-    ).id
-    arr[i].totalFeesPaid = metrics.getOrCreateMetricForAddress(
-      bassetAddress,
-      'totalFeesPaid',
-      decimals,
-    ).id
-    arr[i].totalSwappedAsOutput = metrics.getOrCreateMetricForAddress(
+    arr[i].totalMinted = metrics.getOrCreate(bassetAddress, 'totalMinted', decimals).id
+    arr[i].totalRedeemed = metrics.getOrCreate(bassetAddress, 'totalRedeemed', decimals).id
+    arr[i].totalFeesPaid = metrics.getOrCreate(bassetAddress, 'totalFeesPaid', decimals).id
+    arr[i].totalSwappedAsOutput = metrics.getOrCreate(
       bassetAddress,
       'totalSwappedAsOutput',
       decimals,
     ).id
 
-    arr[i].totalMints = metrics.getOrCreateCounterForAddress(bassetAddress, 'totalMints').id
-    arr[i].totalRedemptions = metrics.getOrCreateCounterForAddress(
-      bassetAddress,
-      'totalRedemptions',
-    ).id
-    arr[i].totalSwapsAsInput = metrics.getOrCreateCounterForAddress(
-      bassetAddress,
-      'totalSwapsAsInput',
-    ).id
-    arr[i].totalSwapsAsOutput = metrics.getOrCreateCounterForAddress(
-      bassetAddress,
-      'totalSwapsAsOutput',
-    ).id
+    arr[i].totalMints = counters.getOrCreate(bassetAddress, 'totalMints').id
+    arr[i].totalRedemptions = counters.getOrCreate(bassetAddress, 'totalRedemptions').id
+    arr[i].totalSwapsAsInput = counters.getOrCreate(bassetAddress, 'totalSwapsAsInput').id
+    arr[i].totalSwapsAsOutput = counters.getOrCreate(bassetAddress, 'totalSwapsAsOutput').id
     arr[i].save()
   }
 

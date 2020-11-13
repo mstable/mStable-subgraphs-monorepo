@@ -4,6 +4,7 @@ import { Token as TokenEntity } from '../generated/schema'
 import { ERC20Detailed, Transfer } from '../generated/Empty/ERC20Detailed'
 import { address } from './dataTypes'
 import { metrics } from './metrics'
+import { counters } from './counters'
 
 export namespace token {
   export function getOrCreate(tokenAddress: Address): TokenEntity {
@@ -22,28 +23,16 @@ export namespace token {
       tokenEntity.symbol = contract.symbol()
       tokenEntity.name = contract.name()
 
-      tokenEntity.totalSupply = metrics.getOrCreateMetricForAddress(
-        tokenAddress,
-        'totalSupply',
-        decimals,
-      ).id
-      tokenEntity.totalBurned = metrics.getOrCreateMetricForAddress(
-        tokenAddress,
-        'totalBurned',
-        decimals,
-      ).id
-      tokenEntity.totalMinted = metrics.getOrCreateMetricForAddress(
-        tokenAddress,
-        'totalBurned',
-        decimals,
-      ).id
+      tokenEntity.totalSupply = metrics.getOrCreate(tokenAddress, 'totalSupply', decimals).id
+      tokenEntity.totalBurned = metrics.getOrCreate(tokenAddress, 'totalBurned', decimals).id
+      tokenEntity.totalMinted = metrics.getOrCreate(tokenAddress, 'totalBurned', decimals).id
 
       let totalSupply = contract.totalSupply()
-      metrics.updateMetric(tokenEntity.totalSupply, totalSupply)
+      metrics.updateById(tokenEntity.totalSupply, totalSupply)
 
-      tokenEntity.transfers = metrics.getOrCreateCounterForAddress(tokenAddress, 'transfers').id
-      tokenEntity.totalMints = metrics.getOrCreateCounterForAddress(tokenAddress, 'totalMints').id
-      tokenEntity.totalBurns = metrics.getOrCreateCounterForAddress(tokenAddress, 'totalBurns').id
+      tokenEntity.transfers = counters.getOrCreate(tokenAddress, 'transfers').id
+      tokenEntity.totalMints = counters.getOrCreate(tokenAddress, 'totalMints').id
+      tokenEntity.totalBurns = counters.getOrCreate(tokenAddress, 'totalBurns').id
 
       tokenEntity.save()
     }
@@ -55,16 +44,16 @@ export namespace token {
     let tokenAddress = event.address
     let value = event.params.value
 
-    metrics.incrementCounterForAddress(tokenAddress, 'totalTransfers')
+    counters.increment(tokenAddress, 'totalTransfers')
 
     if (event.params.from.equals(address.ZERO_ADDRESS)) {
-      metrics.incrementCounterForAddress(tokenAddress, 'totalMints')
-      metrics.incrementMetricForAddress(tokenAddress, 'totalMinted', value)
-      metrics.incrementMetricForAddress(tokenAddress, 'totalSupply', value)
+      counters.increment(tokenAddress, 'totalMints')
+      metrics.increment(tokenAddress, 'totalMinted', value)
+      metrics.increment(tokenAddress, 'totalSupply', value)
     } else if (event.params.to.equals(address.ZERO_ADDRESS)) {
-      metrics.incrementCounterForAddress(tokenAddress, 'totalBurns')
-      metrics.incrementMetricForAddress(tokenAddress, 'totalBurned', value)
-      metrics.decrementMetricForAddress(tokenAddress, 'totalSupply', value)
+      counters.increment(tokenAddress, 'totalBurns')
+      metrics.increment(tokenAddress, 'totalBurned', value)
+      metrics.decrement(tokenAddress, 'totalSupply', value)
     }
   }
 }

@@ -1,5 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { events, integer, metrics, transaction, decimal } from '@mstable/subgraph-utils'
+import { counters, events, integer, metrics, transaction, decimal } from '@mstable/subgraph-utils'
 
 import {
   AutomaticInterestCollectionSwitched,
@@ -103,7 +103,7 @@ export function handleExchangeRateUpdated(event: ExchangeRateUpdated): void {
     metrics.updateMetric(savingsContractEntity.dailyAPY, dailyAPY)
   }
 
-  metrics.incrementMetric(savingsContractEntity.totalSavings, event.params.interestCollected)
+  metrics.incrementById(savingsContractEntity.totalSavings, event.params.interestCollected)
 }
 
 export function handleSavingsDeposited(event: SavingsDeposited): void {
@@ -119,7 +119,7 @@ export function handleSavingsDeposited(event: SavingsDeposited): void {
     event.address.toHexString(),
   ) as SavingsContractEntity
 
-  let massetTotalSupply = metrics.getOrCreateMetricForAddress(
+  let massetTotalSupply = metrics.getOrCreate(
     Address.fromString(savingsContractEntity.masset),
     'totalSupply',
   )
@@ -127,13 +127,13 @@ export function handleSavingsDeposited(event: SavingsDeposited): void {
   let contract = SavingsContract.bind(event.address)
   let totalSavings = contract.totalSavings()
 
-  metrics.incrementCounter(savingsContractEntity.totalDeposits)
+  counters.incrementById(savingsContractEntity.totalDeposits)
 
-  metrics.incrementMetric(savingsContractEntity.totalCredits, event.params.creditsIssued)
-  metrics.incrementMetric(savingsContractEntity.totalDeposited, event.params.savingsDeposited)
+  metrics.incrementById(savingsContractEntity.totalCredits, event.params.creditsIssued)
+  metrics.incrementById(savingsContractEntity.totalDeposited, event.params.savingsDeposited)
 
-  metrics.updateMetric(savingsContractEntity.totalSavings, totalSavings)
-  metrics.updateMetric(
+  metrics.updateById(savingsContractEntity.totalSavings, totalSavings)
+  metrics.updateById(
     savingsContractEntity.utilisationRate,
     totalSavings
       .times(integer.SCALE)
@@ -167,7 +167,7 @@ export function handleCreditsRedeemed(event: CreditsRedeemed): void {
     event.address.toHexString(),
   ) as SavingsContractEntity
 
-  let massetTotalSupply = metrics.getOrCreateMetricForAddress(
+  let massetTotalSupply = metrics.getOrCreate(
     Address.fromString(savingsContractEntity.masset),
     'totalSupply',
   )
@@ -175,10 +175,10 @@ export function handleCreditsRedeemed(event: CreditsRedeemed): void {
   let contract = SavingsContract.bind(event.address)
   let totalSavings = contract.totalSavings()
 
-  metrics.incrementCounter(savingsContractEntity.totalWithdrawals)
+  counters.incrementById(savingsContractEntity.totalWithdrawals)
 
-  metrics.updateMetric(savingsContractEntity.totalSavings, totalSavings)
-  metrics.updateMetric(
+  metrics.updateById(savingsContractEntity.totalSavings, totalSavings)
+  metrics.updateById(
     savingsContractEntity.utilisationRate,
     totalSavings
       .times(integer.SCALE)
@@ -186,8 +186,8 @@ export function handleCreditsRedeemed(event: CreditsRedeemed): void {
       .times(integer.fromNumber(100)),
   )
 
-  metrics.decrementMetric(savingsContractEntity.totalCredits, event.params.creditsRedeemed)
-  metrics.decrementMetric(savingsContractEntity.totalDeposited, event.params.savingsCredited)
+  metrics.decrementById(savingsContractEntity.totalCredits, event.params.creditsRedeemed)
+  metrics.decrementById(savingsContractEntity.totalDeposited, event.params.savingsCredited)
 
   let baseTx = transaction.fromEvent(event)
   let txEntity = new SavingsContractWithdrawTransactionEntity(baseTx.id)

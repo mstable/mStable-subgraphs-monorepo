@@ -1,5 +1,5 @@
 import { Address } from '@graphprotocol/graph-ts'
-import { metrics } from '@mstable/subgraph-utils'
+import { counters, metrics } from '@mstable/subgraph-utils'
 
 import { SavingsContract as SavingsContractEntity } from '../generated/schema'
 
@@ -19,32 +19,15 @@ export function createSavingsContract(
   savingsContractEntity.masset = massetAddress.toHexString()
   savingsContractEntity.automationEnabled = false
 
-  savingsContractEntity.totalCredits = metrics.getOrCreateMetricForAddress(
-    address,
-    'totalCredits',
-  ).id
-  savingsContractEntity.totalDeposited = metrics.getOrCreateMetricForAddress(
-    address,
-    'totalDeposited',
-  ).id
-  savingsContractEntity.totalSavings = metrics.getOrCreateMetricForAddress(
-    address,
-    'totalSavings',
-  ).id
-  savingsContractEntity.savingsRate = metrics.getOrCreateMetricForAddress(address, 'savingsRate').id
-  savingsContractEntity.utilisationRate = metrics.getOrCreateMetricForAddress(
-    address,
-    'utilisationRate',
-  ).id
-  savingsContractEntity.dailyAPY = metrics.getOrCreateMetricForAddress(address, 'dailyAPY').id
-  savingsContractEntity.totalDeposits = metrics.getOrCreateCounterForAddress(
-    address,
-    'totalDeposits',
-  ).id
-  savingsContractEntity.totalWithdrawals = metrics.getOrCreateCounterForAddress(
-    address,
-    'totalWithdrawals',
-  ).id
+  savingsContractEntity.totalCredits = metrics.getOrCreate(address, 'totalCredits').id
+  savingsContractEntity.totalDeposited = metrics.getOrCreate(address, 'totalDeposited').id
+  savingsContractEntity.totalSavings = metrics.getOrCreate(address, 'totalSavings').id
+  savingsContractEntity.savingsRate = metrics.getOrCreate(address, 'savingsRate').id
+  savingsContractEntity.utilisationRate = metrics.getOrCreate(address, 'utilisationRate').id
+  savingsContractEntity.dailyAPY = metrics.getOrCreate(address, 'dailyAPY').id
+
+  savingsContractEntity.totalDeposits = counters.getOrCreate(address, 'totalDeposits').id
+  savingsContractEntity.totalWithdrawals = counters.getOrCreate(address, 'totalWithdrawals').id
 
   savingsContractEntity.save()
 

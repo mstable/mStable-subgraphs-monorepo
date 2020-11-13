@@ -1,5 +1,6 @@
 export * from './dataTypes'
 export * from './events'
+export * from './counters'
 export * from './metrics'
 export * from './token'
 export * from './transaction'

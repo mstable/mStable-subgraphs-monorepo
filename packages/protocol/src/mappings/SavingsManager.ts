@@ -29,5 +29,5 @@ export function handleSavingsRateChanged(event: SavingsRateChanged): void {
 
   let totalSavings = contract.totalSavings()
 
-  metrics.updateMetricForAddress(event.address, 'totalSavings', totalSavings)
+  metrics.update(event.address, 'totalSavings', totalSavings)
 }

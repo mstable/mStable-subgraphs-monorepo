@@ -1,5 +1,5 @@
 import { Address } from '@graphprotocol/graph-ts'
-import { transaction, metrics, integer, token } from '@mstable/subgraph-utils'
+import { transaction, counters, metrics, integer, token } from '@mstable/subgraph-utils'
 import { Transfer as ERC20Transfer } from '@mstable/subgraph-utils/generated/Empty/ERC20Detailed'
 
 import {
@@ -49,10 +49,10 @@ export function handleMinted(event: Minted): void {
   let bassetUnits = event.params.bAssetQuantity
   let basset = event.params.bAsset
 
-  metrics.incrementCounterForAddress(masset, 'totalMints')
-  metrics.incrementCounterForAddress(basset, 'totalMints')
-  metrics.incrementMetricForAddress(masset, 'totalMinted', massetUnits)
-  metrics.incrementMetricForAddress(basset, 'totalMinted', bassetUnits)
+  counters.increment(masset, 'totalMints')
+  counters.increment(basset, 'totalMints')
+  metrics.increment(masset, 'totalMinted', massetUnits)
+  metrics.increment(basset, 'totalMinted', bassetUnits)
 
   let baseTx = transaction.fromEvent(event)
   let txEntity = new MintSingleTransactionEntity(baseTx.id)
@@ -82,12 +82,12 @@ export function handleMintedMulti(event: MintedMulti): void {
   for (let i = 0; i < bassets.length; i++) {
     let basset = bassets[i]
     let bassetUnits = bassetsUnits[i]
-    metrics.incrementCounterForAddress(basset, 'totalMints')
-    metrics.incrementMetricForAddress(basset, 'totalMinted', bassetUnits)
+    counters.increment(basset, 'totalMints')
+    metrics.increment(basset, 'totalMinted', bassetUnits)
   }
 
-  metrics.incrementCounterForAddress(masset, 'totalMints')
-  metrics.incrementMetricForAddress(masset, 'totalMinted', massetUnits)
+  counters.increment(masset, 'totalMints')
+  metrics.increment(masset, 'totalMinted', massetUnits)
 
   let baseTx = transaction.fromEvent(event)
   let txEntity = new MintMultiTransactionEntity(baseTx.id)
@@ -116,12 +116,12 @@ export function handleSwapped(event: Swapped): void {
   let outputAmountInBassetUnits = event.params.outputAmount
   let massetUnits = integer.toRatio(outputAmountInBassetUnits, outputBasset.ratio)
 
-  metrics.incrementCounterForAddress(masset, 'totalSwaps')
-  metrics.incrementMetricForAddress(masset, 'totalSwapped', massetUnits)
+  counters.increment(masset, 'totalSwaps')
+  metrics.increment(masset, 'totalSwapped', massetUnits)
 
-  metrics.incrementCounter(inputBasset.totalSwapsAsInput)
-  metrics.incrementCounter(outputBasset.totalSwapsAsOutput)
-  metrics.incrementMetric(outputBasset.totalSwappedAsOutput, outputAmountInBassetUnits)
+  counters.incrementById(inputBasset.totalSwapsAsInput)
+  counters.incrementById(outputBasset.totalSwapsAsOutput)
+  metrics.incrementById(outputBasset.totalSwappedAsOutput, outputAmountInBassetUnits)
 
   let baseTx = transaction.fromEvent(event)
   let txEntity = new SwapTransactionEntity(baseTx.id)
@@ -150,12 +150,12 @@ export function handleRedeemed(event: Redeemed): void {
   for (let i = 0; i < bassets.length; i++) {
     let basset = bassets[i]
     let bassetUnits = bassetsUnits[i]
-    metrics.incrementCounterForAddress(basset, 'totalRedemptions')
-    metrics.incrementMetricForAddress(basset, 'totalRedeemed', bassetUnits)
+    counters.increment(basset, 'totalRedemptions')
+    metrics.increment(basset, 'totalRedeemed', bassetUnits)
   }
 
-  metrics.incrementCounterForAddress(masset, 'totalRedemptions')
-  metrics.incrementMetricForAddress(masset, 'totalRedeemed', massetUnits)
+  counters.increment(masset, 'totalRedemptions')
+  metrics.increment(masset, 'totalRedeemed', massetUnits)
 
   let baseTx = transaction.fromEvent(event)
   let txEntity = new RedeemTransactionEntity(baseTx.id)
@@ -179,8 +179,8 @@ export function handleRedeemedMasset(event: RedeemedMasset): void {
   let masset = event.address
   let massetUnits = event.params.mAssetQuantity
 
-  metrics.incrementCounterForAddress(masset, 'totalRedeemMassets')
-  metrics.incrementMetricForAddress(masset, 'totalRedeemedMasset', massetUnits)
+  counters.increment(masset, 'totalRedeemMassets')
+  metrics.increment(masset, 'totalRedeemedMasset', massetUnits)
 
   let baseTx = transaction.fromEvent(event)
   let txEntity = new RedeemMassetTransactionEntity(baseTx.id)
@@ -205,8 +205,8 @@ export function handlePaidFee(event: PaidFee): void {
 
   let massetUnits = integer.toRatio(bassetUnits, bassetEntity.ratio)
 
-  metrics.incrementMetricForAddress(masset, 'totalFeesPaid', massetUnits)
-  metrics.incrementMetric(bassetEntity.totalFeesPaid, bassetUnits)
+  metrics.increment(masset, 'totalFeesPaid', massetUnits)
+  metrics.incrementById(bassetEntity.totalFeesPaid, bassetUnits)
 
   let baseTx = transaction.fromEvent(event)
   let txEntity = new PaidFeeTransactionEntity(baseTx.id)
