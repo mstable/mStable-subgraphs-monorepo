@@ -19,6 +19,9 @@ import {
 
 import { getOrCreateCreditBalance } from '../CreditBalance'
 
+const SECONDS_IN_DAY = 86400
+const SECONDS_IN_YEAR = 86400 * 365
+
 export function handleAutomaticInterestCollectionSwitched(
   event: AutomaticInterestCollectionSwitched,
 ): void {
@@ -29,11 +32,10 @@ export function handleAutomaticInterestCollectionSwitched(
 
 // Calculation: (1 + 0.001) ^ 365 - 1
 function calculateAPY(start: ExchangeRateEntity, end: ExchangeRateEntity): BigInt {
-  let secondsInYear = integer.fromNumber(365 * 24 * 60 * 60)
-  let timeDiff = BigInt.fromI32(end.timestamp - start.timestamp)
+  let timeDiff = integer.fromNumber(end.timestamp - start.timestamp)
   let rateDiff = end.rate.div(start.rate)
 
-  let portionOfYear = timeDiff.times(integer.SCALE).div(secondsInYear)
+  let portionOfYear = timeDiff.times(integer.SCALE).div(integer.fromNumber(SECONDS_IN_YEAR))
   if (portionOfYear.equals(integer.ZERO)) {
     return integer.ZERO
   }
@@ -46,7 +48,7 @@ function calculateAPY(start: ExchangeRateEntity, end: ExchangeRateEntity): BigIn
   let apyF64: f64 = rateF64 ** portionsInYearI32
   let apyPercentage: f64 = apyF64 - 1
 
-  return decimal.fromNumber(apyPercentage).digits.times(integer.fromNumber(100))
+  return decimal.fromNumber(apyPercentage).digits.times(integer.fromNumber(1000))
 }
 
 export function handleExchangeRateUpdated(event: ExchangeRateUpdated): void {
@@ -55,6 +57,8 @@ export function handleExchangeRateUpdated(event: ExchangeRateUpdated): void {
   let savingsContractEntity = SavingsContractEntity.load(
     event.address.toHexString(),
   ) as SavingsContractEntity
+
+  metrics.incrementById(savingsContractEntity.totalSavings, event.params.interestCollected)
 
   // Get the current latest exchange rate before adding this one (i.e. previous)
   let exchangeRatePrevious: ExchangeRateEntity | null = savingsContractEntity.latestExchangeRate
@@ -75,48 +79,36 @@ export function handleExchangeRateUpdated(event: ExchangeRateUpdated): void {
 
   // The latest exchange rate is now the one we just created
   savingsContractEntity.latestExchangeRate = exchangeRateLatest.id
-
-  // The next exchange rate of the previous exchange rate is this latest one
-  if (exchangeRatePrevious) {
-    exchangeRatePrevious.next = exchangeRateLatest.id
-  }
-
-  if (exchangeRate24hAgo == null && exchangeRatePrevious == null) {
-    // Set the first 24h ago value (should only happen once)
-    savingsContractEntity.exchangeRate24hAgo = exchangeRateLatest.id
-  }
-
-  if (
-    exchangeRate24hAgo != null &&
-    exchangeRatePrevious != null &&
-    exchangeRate24hAgo.id != exchangeRateLatest.id &&
-    exchangeRatePrevious.id != exchangeRate24hAgo.id
-  ) {
-    // Update the exchangeRate24hAgo if it's more than 24h ago
-    let tsLatest = integer.fromNumber(exchangeRateLatest.timestamp)
-    let secondsInDay = integer.fromNumber(86400)
-
-    // Iterate through the next rates from the old 24h ago rate;
-    // find the last rate *before* 24h ago.
-    while (
-      exchangeRate24hAgo != null &&
-      exchangeRate24hAgo.next != null &&
-      tsLatest.minus(integer.fromNumber(exchangeRate24hAgo.timestamp)).lt(secondsInDay)
-    ) {
-      exchangeRate24hAgo = ExchangeRateEntity.load(exchangeRate24hAgo.next) as ExchangeRateEntity
-    }
-
-    savingsContractEntity.exchangeRate24hAgo = exchangeRateLatest.id
-  }
-
   savingsContractEntity.save()
 
-  if (exchangeRate24hAgo) {
+  // The next exchange rate of the previous exchange rate is this latest one
+  if (exchangeRatePrevious != null) {
+    exchangeRatePrevious.next = exchangeRateLatest.id
+    exchangeRatePrevious.save()
+  }
+
+  if (exchangeRate24hAgo == null) {
+    // Set the first 24h ago value (should only happen once)
+    savingsContractEntity.exchangeRate24hAgo = exchangeRateLatest.id
+    savingsContractEntity.save()
+  } else if (exchangeRateLatest.timestamp - exchangeRate24hAgo.timestamp > SECONDS_IN_DAY) {
+    // The '24hAgo' rate should be _at least_ 24h ago; iterate through the 'next' rates
+    // in order to push this rate forward.
+    while (exchangeRate24hAgo.next != null) {
+      let exchangeRateNext = ExchangeRateEntity.load(exchangeRate24hAgo.next) as ExchangeRateEntity
+      if (exchangeRateLatest.timestamp - exchangeRateNext.timestamp > SECONDS_IN_DAY) {
+        exchangeRate24hAgo = exchangeRateNext
+      } else {
+        break
+      }
+    }
+
+    savingsContractEntity.exchangeRate24hAgo = exchangeRate24hAgo.id
+    savingsContractEntity.save()
+
     let dailyAPY = calculateAPY(exchangeRate24hAgo as ExchangeRateEntity, exchangeRateLatest)
     metrics.updateById(savingsContractEntity.dailyAPY, dailyAPY)
   }
-
-  metrics.incrementById(savingsContractEntity.totalSavings, event.params.interestCollected)
 }
 
 export function handleSavingsDeposited(event: SavingsDeposited): void {

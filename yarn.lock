@@ -97,7 +97,7 @@
     unique-filename "^1.1.1"
     which "^1.3.1"
 
-"@graphprotocol/graph-cli@^0.19.0", "@graphprotocol/graph-cli@https://github.com/graphprotocol/graph-cli.git#c5a0131f61beaf0962e3ebc920e84b00b579d4cc":
+"@graphprotocol/graph-cli@^0.19.0":
   version "0.19.0"
   resolved "https://github.com/graphprotocol/graph-cli.git#c5a0131f61beaf0962e3ebc920e84b00b579d4cc"
   dependencies:
@@ -124,7 +124,7 @@
   optionalDependencies:
     keytar "^5.0.0"
 
-"@graphprotocol/graph-ts@^0.19.0", "@graphprotocol/graph-ts@https://github.com/graphprotocol/graph-ts.git#fdd8f835316c68c66eb9fd9917c2c5c8f07bf904":
+"@graphprotocol/graph-ts@^0.19.0":
   version "0.19.0"
   resolved "https://github.com/graphprotocol/graph-ts.git#fdd8f835316c68c66eb9fd9917c2c5c8f07bf904"
   dependencies:
@@ -823,16 +823,6 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@mstable/protocol@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@mstable/protocol/-/protocol-1.2.1.tgz#88f2c00afa8c0a302215cb9a004ab714ea385b8b"
-  integrity sha512-LwIjy2mUJKPOhtmUNeK8m2i6xe9GnEPppEIgNl3+cA14PX+E47ptwD2CCc2jcrdAoqcpVVC4eo4aF1JWEAHg9Q==
-  dependencies:
-    "@nomiclabs/buidler" "^1.3.8"
-    sol-merger "^3.0.1"
-    ts-node "^8.4.1"
-    tsconfig-paths "^3.9.0"
-
 "@mstable/protocol@^1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@mstable/protocol/-/protocol-1.3.0.tgz#44daf10250d44d9f891416872c17a3481e0a8033"
@@ -845,6 +835,8 @@
 
 "@mstable/subgraph-utils@file:packages/utils":
   version "0.1.0"
+  dependencies:
+    "@mstable/protocol" "^1.3.0"
 
 "@nodelib/fs.stat@^1.1.2":
   version "1.1.3"
