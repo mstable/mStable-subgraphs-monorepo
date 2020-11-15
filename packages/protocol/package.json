@@ -2,6 +2,7 @@
   "name": "@mstable/protocol-subgraph",
   "version": "0.1.0",
   "license": "MIT",
+  "files": ["./queries.graphql", "./schema.generated.graphql"],
   "scripts": {
     "codegen:schema": "yarn run graphql-merge --template='schema.graphql' --schema='schema.generated.graphql'",
     "codegen:graph": "yarn run graph codegen",
