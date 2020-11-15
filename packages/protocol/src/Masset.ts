@@ -1,5 +1,5 @@
 import { Address } from '@graphprotocol/graph-ts'
-import { integer, counters, metrics } from '@mstable/subgraph-utils'
+import { integer, counters, metrics, token } from '@mstable/subgraph-utils'
 
 import { Masset } from '../generated/BasketManager/Masset'
 import { Masset as MassetEntity } from '../generated/schema'
@@ -20,6 +20,7 @@ export function getOrCreateMasset(address: Address): MassetEntity {
   massetEntity.feeRate = contract.swapFee()
   massetEntity.basketManager = contract.getBasketManager()
   massetEntity.basket = id
+  massetEntity.token = token.getOrCreate(address).id
 
   let redemptionFee = contract.try_redemptionFee()
   massetEntity.redemptionFeeRate = redemptionFee.reverted ? integer.ZERO : redemptionFee.value
