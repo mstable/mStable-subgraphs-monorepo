@@ -13,15 +13,15 @@
     "yargs": "^16.1.0"
   },
   "scripts": {
-    "codegen": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run codegen",
-    "build": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run build",
-    "prepare:mainnet": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run prepare:mainnet",
-    "prepare:staging": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run prepare:staging",
+    "codegen": "lerna exec --parallel --scope @mstable/*-subgraph -- yarn run codegen",
+    "build": "lerna exec --parallel --scope @mstable/*-subgraph -- yarn run build",
+    "prepare:mainnet": "lerna exec --parallel --scope @mstable/*-subgraph -- yarn run prepare:mainnet",
+    "prepare:staging": "lerna exec --parallel --scope @mstable/*-subgraph -- yarn run prepare:staging",
     "prepare:ropsten": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run prepare:ropsten",
-    "prepare:kovan": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run prepare:kovan",
-    "deploy:mainnet": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run deploy:mainnet",
-    "deploy:staging": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run deploy:staging",
+    "prepare:kovan": "lerna exec --parallel --scope @mstable/*-subgraph -- yarn run prepare:kovan",
+    "deploy:mainnet": "lerna exec --parallel --scope @mstable/*-subgraph -- yarn run deploy:mainnet",
+    "deploy:staging": "lerna exec --parallel --scope @mstable/*-subgraph -- yarn run deploy:staging",
     "deploy:ropsten": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run deploy:ropsten",
-    "deploy:kovan": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run deploy:kovan"
+    "deploy:kovan": "lerna exec --parallel --scope @mstable/*-subgraph -- yarn run deploy:kovan"
   }
 }
