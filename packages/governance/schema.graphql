@@ -68,6 +68,8 @@ type IncentivisedVotingLockup @entity {
   totalStakingRewards: BigInt!
 
   totalValue: BigInt!
+
+  totalStakers: Counter!
 }
 
 type RewardsDistributor @entity {

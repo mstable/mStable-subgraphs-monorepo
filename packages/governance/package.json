@@ -16,7 +16,6 @@
     "deploy:local": "yarn graph deploy mStable/mStable-governance --ipfs http://localhost:5001 --node http://127.0.0.1:8020",
     "deploy:ropsten": "yarn graph deploy mStable/mStable-governance-ropsten --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
     "deploy:kovan": "yarn graph deploy mStable/mStable-governance-kovan --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
-    "deploy:kovan-staging": "yarn graph deploy mStable/mStable-governance-kovan-staging --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
     "deploy:staging": "yarn graph deploy mStable/mStable-governance-staging --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
     "deploy:mainnet": "yarn graph deploy mStable/mStable-governance --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
     "lint": "yarn run prettier './src/**/*.{ts,tsx}' --write"

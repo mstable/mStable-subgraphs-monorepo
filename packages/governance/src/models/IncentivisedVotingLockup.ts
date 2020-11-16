@@ -1,12 +1,10 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { token } from '@mstable/subgraph-utils'
+import { counters, token } from '@mstable/subgraph-utils'
 
 import { IncentivisedVotingLockup } from '../../generated/schema'
 import { IncentivisedVotingLockup as IncentivisedVotingLockupContract } from '../../generated/IncentivisedVotingLockup/IncentivisedVotingLockup'
 
-export function getOrCreateIncentivisedVotingLockup(
-  address: Address,
-): IncentivisedVotingLockup {
+export function getOrCreateIncentivisedVotingLockup(address: Address): IncentivisedVotingLockup {
   let entity = IncentivisedVotingLockup.load(address.toHexString())
 
   if (entity != null) {
@@ -17,7 +15,6 @@ export function getOrCreateIncentivisedVotingLockup(
     let entity = new IncentivisedVotingLockup(address.toHexString())
 
     let contract = IncentivisedVotingLockupContract.bind(address)
-
 
     token.getOrCreate(address)
 
@@ -43,6 +40,7 @@ export function getOrCreateIncentivisedVotingLockup(
     entity.totalStaticWeight = contract.totalStaticWeight()
     entity.totalStakingRewards = entity.rewardRate.times(entity.duration)
     entity.totalValue = BigInt.fromI32(0)
+    entity.totalStakers = counters.getOrCreate(address, 'totalStakers').id
 
     entity.save()
 
@@ -50,9 +48,7 @@ export function getOrCreateIncentivisedVotingLockup(
   }
 }
 
-export function updateLockupGlobals(
-  address: Address,
-): IncentivisedVotingLockup {
+export function updateLockupGlobals(address: Address): IncentivisedVotingLockup {
   let entity = getOrCreateIncentivisedVotingLockup(address)
 
   let contract = IncentivisedVotingLockupContract.bind(address)
@@ -71,9 +67,7 @@ export function updateLockupGlobals(
   return entity
 }
 
-export function expireIncentivisedVotingLockup(
-  address: Address,
-): IncentivisedVotingLockup {
+export function expireIncentivisedVotingLockup(address: Address): IncentivisedVotingLockup {
   let incentivisedVotingLockup = getOrCreateIncentivisedVotingLockup(address)
 
   incentivisedVotingLockup.expired = true
@@ -83,10 +77,7 @@ export function expireIncentivisedVotingLockup(
   return incentivisedVotingLockup
 }
 
-export function increaseTotalValue(
-  address: Address,
-  value: BigInt,
-): IncentivisedVotingLockup {
+export function increaseTotalValue(address: Address, value: BigInt): IncentivisedVotingLockup {
   let entity = getOrCreateIncentivisedVotingLockup(address)
 
   entity.totalValue = entity.totalValue.plus(value)
@@ -96,10 +87,7 @@ export function increaseTotalValue(
   return entity
 }
 
-export function decreaseTotalValue(
-  address: Address,
-  value: BigInt,
-): IncentivisedVotingLockup {
+export function decreaseTotalValue(address: Address, value: BigInt): IncentivisedVotingLockup {
   let entity = getOrCreateIncentivisedVotingLockup(address)
 
   entity.totalValue = entity.totalValue.minus(value)

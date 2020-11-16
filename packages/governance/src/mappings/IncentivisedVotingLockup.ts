@@ -1,3 +1,5 @@
+import { counters } from '@mstable/subgraph-utils'
+
 import {
   Deposit,
   Withdraw,
@@ -12,11 +14,7 @@ import {
   increaseTotalValue,
   decreaseTotalValue,
 } from '../models/IncentivisedVotingLockup'
-import {
-  withdrawUserLockup,
-  depositUserLockup,
-  resetUserLockup,
-} from '../models/UserLockup'
+import { withdrawUserLockup, depositUserLockup, resetUserLockup } from '../models/UserLockup'
 import { updateStakingReward } from '../models/StakingReward'
 import { updateStakingBalance } from '../models/StakingBalance'
 import {
@@ -28,6 +26,7 @@ import {
 
 export function handleDeposit(event: Deposit): void {
   updateLockupGlobals(event.address)
+  counters.increment(event.address, 'totalStakers')
 
   depositUserLockup(event)
   increaseTotalValue(event.address, event.params.value)
@@ -52,6 +51,7 @@ export function handleWithdraw(event: Withdraw): void {
 
 export function handleEjected(event: Ejected): void {
   updateLockupGlobals(event.address)
+  counters.decrement(event.address, 'totalStakers')
 
   resetUserLockup(event)
 
