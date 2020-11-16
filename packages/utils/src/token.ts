@@ -23,16 +23,16 @@ export namespace token {
       tokenEntity.symbol = contract.symbol()
       tokenEntity.name = contract.name()
 
-      tokenEntity.totalSupply = metrics.getOrCreate(tokenAddress, 'totalSupply', decimals).id
-      tokenEntity.totalBurned = metrics.getOrCreate(tokenAddress, 'totalBurned', decimals).id
-      tokenEntity.totalMinted = metrics.getOrCreate(tokenAddress, 'totalBurned', decimals).id
+      tokenEntity.totalSupply = metrics.getOrCreate(tokenAddress, 'token.totalSupply', decimals).id
+      tokenEntity.totalBurned = metrics.getOrCreate(tokenAddress, 'token.totalBurned', decimals).id
+      tokenEntity.totalMinted = metrics.getOrCreate(tokenAddress, 'token.totalMinted', decimals).id
 
       let totalSupply = contract.totalSupply()
       metrics.updateById(tokenEntity.totalSupply, totalSupply)
 
-      tokenEntity.totalTransfers = counters.getOrCreate(tokenAddress, 'totalTransfers').id
-      tokenEntity.totalMints = counters.getOrCreate(tokenAddress, 'totalMints').id
-      tokenEntity.totalBurns = counters.getOrCreate(tokenAddress, 'totalBurns').id
+      tokenEntity.totalTransfers = counters.getOrCreate(tokenAddress, 'token.totalTransfers').id
+      tokenEntity.totalMints = counters.getOrCreate(tokenAddress, 'token.totalMints').id
+      tokenEntity.totalBurns = counters.getOrCreate(tokenAddress, 'token.totalBurns').id
 
       tokenEntity.save()
     }
@@ -44,16 +44,16 @@ export namespace token {
     let tokenAddress = event.address
     let value = event.params.value
 
-    counters.increment(tokenAddress, 'totalTransfers')
+    counters.increment(tokenAddress, 'token.totalTransfers')
 
     if (event.params.from.equals(address.ZERO_ADDRESS)) {
-      counters.increment(tokenAddress, 'totalMints')
-      metrics.increment(tokenAddress, 'totalMinted', value)
-      metrics.increment(tokenAddress, 'totalSupply', value)
+      counters.increment(tokenAddress, 'token.totalMints')
+      metrics.increment(tokenAddress, 'token.totalMinted', value)
+      metrics.increment(tokenAddress, 'token.totalSupply', value)
     } else if (event.params.to.equals(address.ZERO_ADDRESS)) {
-      counters.increment(tokenAddress, 'totalBurns')
-      metrics.increment(tokenAddress, 'totalBurned', value)
-      metrics.decrement(tokenAddress, 'totalSupply', value)
+      counters.increment(tokenAddress, 'token.totalBurns')
+      metrics.increment(tokenAddress, 'token.totalBurned', value)
+      metrics.decrement(tokenAddress, 'token.totalSupply', value)
     }
   }
 }
