@@ -30,7 +30,7 @@ export namespace token {
       let totalSupply = contract.totalSupply()
       metrics.updateById(tokenEntity.totalSupply, totalSupply)
 
-      tokenEntity.transfers = counters.getOrCreate(tokenAddress, 'transfers').id
+      tokenEntity.totalTransfers = counters.getOrCreate(tokenAddress, 'totalTransfers').id
       tokenEntity.totalMints = counters.getOrCreate(tokenAddress, 'totalMints').id
       tokenEntity.totalBurns = counters.getOrCreate(tokenAddress, 'totalBurns').id
 

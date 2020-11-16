@@ -42,7 +42,7 @@ type Token @entity {
     """
     Count of transfer transactions
     """
-    transfers: Counter!
+    totalTransfers: Counter!
 
     """
     Count of transfer transactions that minted the token
