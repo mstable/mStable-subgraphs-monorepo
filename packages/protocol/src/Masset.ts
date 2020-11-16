@@ -30,6 +30,7 @@ export function getOrCreateMasset(address: Address): MassetEntity {
   massetEntity.totalRedeemedMasset = metrics.getOrCreate(address, 'totalRedeemedMasset').id
   massetEntity.totalSwapped = metrics.getOrCreate(address, 'totalSwapped').id
   massetEntity.totalFeesPaid = metrics.getOrCreate(address, 'totalFeesPaid').id
+  massetEntity.totalSupply = metrics.getOrCreate(address, 'token.totalSupply').id
 
   massetEntity.totalMints = counters.getOrCreate(address, 'totalMints').id
   massetEntity.totalRedemptions = counters.getOrCreate(address, 'totalRedemptions').id

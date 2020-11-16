@@ -188,6 +188,11 @@ type Basset @entity {
     totalMinted: Metric!
 
     """
+    Total supply of the Basset token
+    """
+    totalSupply: Metric!
+
+    """
     Total amount of the Basset that was used in swap transactions as output
     """
     totalSwappedAsOutput: Metric!
@@ -293,6 +298,11 @@ type Masset @entity {
     Total amount of this Masset that has been minted
     """
     totalMinted: Metric!
+
+    """
+    Total supply of the Masset token
+    """
+    totalSupply: Metric!
 
     """
     Total amount of this Masset that has been swapped

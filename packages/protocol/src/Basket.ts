@@ -36,6 +36,7 @@ export function updateBassetEntities(basketManager: BasketManager): Array<Basset
     arr[i].status = mapBassetStatus(basset.status)
 
     arr[i].totalMinted = metrics.getOrCreate(bassetAddress, 'totalMinted', decimals).id
+    arr[i].totalSupply = metrics.getOrCreate(bassetAddress, 'token.totalSupply').id
     arr[i].totalRedeemed = metrics.getOrCreate(bassetAddress, 'totalRedeemed', decimals).id
     arr[i].totalFeesPaid = metrics.getOrCreate(bassetAddress, 'totalFeesPaid', decimals).id
     arr[i].totalSwappedAsOutput = metrics.getOrCreate(
@@ -78,6 +79,7 @@ export function updateBasket(basketManagerAddress: Address): void {
   basketEntity.save()
 }
 
+// @ts-ignore
 function mapBassetStatus(status: i32): string {
   switch (status) {
     case 0:

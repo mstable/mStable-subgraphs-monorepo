@@ -126,7 +126,7 @@ export function handleSavingsDeposited(event: SavingsDeposited): void {
 
   let massetTotalSupply = metrics.getOrCreate(
     Address.fromString(savingsContractEntity.masset),
-    'totalSupply',
+    'token.totalSupply',
   )
 
   let contract = SavingsContract.bind(event.address)
@@ -174,7 +174,7 @@ export function handleCreditsRedeemed(event: CreditsRedeemed): void {
 
   let massetTotalSupply = metrics.getOrCreate(
     Address.fromString(savingsContractEntity.masset),
-    'totalSupply',
+    'token.totalSupply',
   )
 
   let contract = SavingsContract.bind(event.address)

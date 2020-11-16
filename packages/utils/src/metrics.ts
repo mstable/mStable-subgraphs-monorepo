@@ -14,6 +14,7 @@ export namespace metrics {
   export function getOrCreate(
     address: Address,
     type: string,
+    // @ts-ignore
     decimals: i32 = decimal.DEFAULT_DECIMALS,
   ): MetricEntity {
     let id = getId(address, type)
@@ -37,6 +38,7 @@ export namespace metrics {
 
   export function getOrCreateById(
     id: string,
+    // @ts-ignore
     decimals: i32 = decimal.DEFAULT_DECIMALS,
   ): MetricEntity {
     let metricEntity = MetricEntity.load(id)
@@ -75,6 +77,7 @@ export namespace metrics {
   export function updateById(
     id: string,
     exact: BigInt,
+    // @ts-ignore
     decimals: i32 = decimal.DEFAULT_DECIMALS,
   ): MetricEntity {
     let metricEntity = new MetricEntity(id)
