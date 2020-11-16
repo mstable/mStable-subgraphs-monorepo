@@ -158,3 +158,55 @@ fragment MassetAll on Masset {
     id
   }
 }
+
+fragment TransactionAll on Transaction {
+  ...on RedeemTransaction {
+    masset {
+      id
+    }
+    massetUnits
+    bassets
+    bassetsUnits
+    recipient
+  }
+  ...on RedeemMassetTransaction {
+    masset {
+      id
+    }
+    massetUnits
+    recipient
+  }
+  ...on MintMultiTransaction {
+    masset {
+      id
+    }
+    massetUnits
+  }
+  ...on MintSingleTransaction {
+    bassetUnits
+    masset {
+      id
+    }
+    massetUnits
+  }
+  ...on PaidFeeTransaction {
+    basset
+    bassetUnits
+    masset {
+      id
+    }
+    massetUnits
+  }
+  ...on SavingsContractDepositTransaction {
+    amount
+    savingsContract {
+      id
+    }
+  }
+  ...on SavingsContractWithdrawTransaction {
+    amount
+    savingsContract {
+      id
+    }
+  }
+}
