@@ -43,12 +43,12 @@ function calculateAPY(start: ExchangeRateEntity, end: ExchangeRateEntity): BigIn
   let portionsInYear = integer.SCALE.div(portionOfYear)
 
   // Use primitives because BigInt will overflow
-  let portionsInYearI32: i32 = portionsInYear.toI32()
-  let rateF64: f64 = parseFloat(rateDiff.toString())
-  let apyF64: f64 = rateF64 ** portionsInYearI32
-  let apyPercentage: f64 = apyF64 - 1
+  let portionsInYearI32 = portionsInYear.toI32()
+  let rateF64 = parseFloat(rateDiff.toString())
+  let apyF64 = rateF64 ** portionsInYearI32
+  let apyPercentage = apyF64 - 1
 
-  return decimal.fromNumber(apyPercentage).digits.times(integer.fromNumber(1000))
+  return decimal.fromNumber(apyPercentage).digits.times(integer.fromNumber(100))
 }
 
 export function handleExchangeRateUpdated(event: ExchangeRateUpdated): void {
