@@ -335,11 +335,6 @@ type SavingsContract @entity {
     dailyAPY: Metric!
 
     """
-    The amount of collected interest that will be sent to the Savings Contract
-    """
-    savingsRate: Metric!
-
-    """
     The share of the Masset that is deposited in the Savings Contract; a rate of 100% would mean all of the
     Masset being deposited in the Savings Contract.
     """

@@ -1,7 +1,6 @@
 import { metrics } from '@mstable/subgraph-utils'
 
 import { SavingsContract as SavingsContractTemplate } from '../../generated/templates'
-import { SavingsContract } from '../../generated/templates/SavingsContract/SavingsContract'
 import {
   SavingsContractAdded,
   SavingsRateChanged,
@@ -22,12 +21,11 @@ export function handleSavingsContractAdded(event: SavingsContractAdded): void {
 
   // Create the masset if it doesn't exist already
   getOrCreateMasset(massetAddress)
+
+  // Create the shared savingsRate
+  metrics.getOrCreate(event.address, 'savingsRate')
 }
 
 export function handleSavingsRateChanged(event: SavingsRateChanged): void {
-  let contract = SavingsContract.bind(event.address)
-
-  let totalSavings = contract.totalSavings()
-
-  metrics.update(event.address, 'totalSavings', totalSavings)
+  metrics.update(event.address, 'savingsRate', event.params.newSavingsRate)
 }

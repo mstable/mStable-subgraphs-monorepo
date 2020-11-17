@@ -23,7 +23,6 @@ export function createSavingsContract(
   savingsContractEntity.cumulativeWithdrawn = metrics.getOrCreate(address, 'cumulativeWithdrawn').id
   savingsContractEntity.totalCredits = metrics.getOrCreate(address, 'totalCredits').id
   savingsContractEntity.totalSavings = metrics.getOrCreate(address, 'totalSavings').id
-  savingsContractEntity.savingsRate = metrics.getOrCreate(address, 'savingsRate').id
   savingsContractEntity.utilisationRate = metrics.getOrCreate(address, 'utilisationRate').id
   savingsContractEntity.dailyAPY = metrics.getOrCreate(address, 'dailyAPY').id
 
