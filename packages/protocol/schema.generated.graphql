@@ -183,29 +183,29 @@ type Basset @entity {
     totalRedemptions: Counter!
 
     """
-    Total amount of the Basset that was used in mint transactions as input
-    """
-    totalMinted: Metric!
-
-    """
     Total supply of the Basset token
     """
     totalSupply: Metric!
 
     """
-    Total amount of the Basset that was used in swap transactions as output
+    Cumulative amount of the Basset that was used in mint transactions as input
     """
-    totalSwappedAsOutput: Metric!
+    cumulativeMinted: Metric!
 
     """
-    Total amount of the Basset that was used in redemption transactions as output (excluding proportional redemption)
+    Cumulative amount of the Basset that was used in swap transactions as output
     """
-    totalRedeemed: Metric!
+    cumulativeSwappedAsOutput: Metric!
 
     """
-    Total amount of fees paid (e.g. for swaps and redemptions) using this Basset
+    Cumulative amount of the Basset that was used in redemption transactions as output (excluding proportional redemption)
     """
-    totalFeesPaid: Metric!
+    cumulativeRedeemed: Metric!
+
+    """
+    Cumulative amount of fees paid (e.g. for swaps and redemptions) using this Basset
+    """
+    cumulativeFeesPaid: Metric!
 }
 
 """
@@ -295,34 +295,34 @@ type Masset @entity {
     totalRedeemMassets: Counter!
 
     """
-    Total amount of this Masset that has been minted
-    """
-    totalMinted: Metric!
-
-    """
     Total supply of the Masset token
     """
     totalSupply: Metric!
 
     """
-    Total amount of this Masset that has been swapped
+    Cumulative amount of this Masset that has been minted
     """
-    totalSwapped: Metric!
+    cumulativeMinted: Metric!
 
     """
-    Total amount of this Masset that has been redeemed
+    Cumulative amount of this Masset that has been swapped
     """
-    totalRedeemed: Metric!
+    cumulativeSwapped: Metric!
 
     """
-    Total amount of this Masset that has been proportionally redeemed (i.e. `RedeemMasset`)
+    Cumulative amount of this Masset that has been redeemed
     """
-    totalRedeemedMasset: Metric!
+    cumulativeRedeemed: Metric!
 
     """
-    Total amount of fees paid (e.g. for swaps and redemptions) for this Masset
+    Cumulative amount of this Masset that has been proportionally redeemed (i.e. `RedeemMasset`)
     """
-    totalFeesPaid: Metric!
+    cumulativeRedeemedMasset: Metric!
+
+    """
+    Cumulative amount of fees paid (e.g. for swaps and redemptions) for this Masset
+    """
+    cumulativeFeesPaid: Metric!
 
     """
     The underlying Token for this Masset
@@ -424,11 +424,6 @@ type SavingsContract @entity {
     totalCredits: Metric!
 
     """
-    The total amount of deposits
-    """
-    totalDeposited: Metric!
-
-    """
     The total number of deposits made
     """
     totalDeposits: Counter!
@@ -437,6 +432,16 @@ type SavingsContract @entity {
     The total number of withdrawals made
     """
     totalWithdrawals: Counter!
+
+    """
+    The cumulative amount of savings deposited
+    """
+    cumulativeDeposited: Metric!
+
+    """
+    The cumulative amount of savings withdrawn
+    """
+    cumulativeWithdrawn: Metric!
 
     """
     The daily APY value; this is derived from the `ExchangeRate` closest to 24h ago from the last-received

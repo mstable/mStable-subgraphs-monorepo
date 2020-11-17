@@ -25,12 +25,15 @@ export function getOrCreateMasset(address: Address): MassetEntity {
   let redemptionFee = contract.try_redemptionFee()
   massetEntity.redemptionFeeRate = redemptionFee.reverted ? integer.ZERO : redemptionFee.value
 
-  massetEntity.totalMinted = metrics.getOrCreate(address, 'totalMinted').id
-  massetEntity.totalRedeemed = metrics.getOrCreate(address, 'totalRedeemed').id
-  massetEntity.totalRedeemedMasset = metrics.getOrCreate(address, 'totalRedeemedMasset').id
-  massetEntity.totalSwapped = metrics.getOrCreate(address, 'totalSwapped').id
-  massetEntity.totalFeesPaid = metrics.getOrCreate(address, 'totalFeesPaid').id
   massetEntity.totalSupply = metrics.getOrCreate(address, 'token.totalSupply').id
+  massetEntity.cumulativeMinted = metrics.getOrCreate(address, 'cumulativeMinted').id
+  massetEntity.cumulativeRedeemed = metrics.getOrCreate(address, 'cumulativeRedeemed').id
+  massetEntity.cumulativeRedeemedMasset = metrics.getOrCreate(
+    address,
+    'cumulativeRedeemedMasset',
+  ).id
+  massetEntity.cumulativeSwapped = metrics.getOrCreate(address, 'cumulativeSwapped').id
+  massetEntity.cumulativeFeesPaid = metrics.getOrCreate(address, 'cumulativeFeesPaid').id
 
   massetEntity.totalMints = counters.getOrCreate(address, 'totalMints').id
   massetEntity.totalRedemptions = counters.getOrCreate(address, 'totalRedemptions').id

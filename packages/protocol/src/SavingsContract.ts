@@ -19,8 +19,9 @@ export function createSavingsContract(
   savingsContractEntity.masset = massetAddress.toHexString()
   savingsContractEntity.automationEnabled = false
 
+  savingsContractEntity.cumulativeDeposited = metrics.getOrCreate(address, 'cumulativeDeposited').id
+  savingsContractEntity.cumulativeWithdrawn = metrics.getOrCreate(address, 'cumulativeWithdrawn').id
   savingsContractEntity.totalCredits = metrics.getOrCreate(address, 'totalCredits').id
-  savingsContractEntity.totalDeposited = metrics.getOrCreate(address, 'totalDeposited').id
   savingsContractEntity.totalSavings = metrics.getOrCreate(address, 'totalSavings').id
   savingsContractEntity.savingsRate = metrics.getOrCreate(address, 'savingsRate').id
   savingsContractEntity.utilisationRate = metrics.getOrCreate(address, 'utilisationRate').id

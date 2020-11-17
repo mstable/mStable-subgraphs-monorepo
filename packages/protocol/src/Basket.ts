@@ -35,13 +35,21 @@ export function updateBassetEntities(basketManager: BasketManager): Array<Basset
     arr[i].isTransferFeeCharged = basset.isTransferFeeCharged
     arr[i].status = mapBassetStatus(basset.status)
 
-    arr[i].totalMinted = metrics.getOrCreate(bassetAddress, 'totalMinted', decimals).id
     arr[i].totalSupply = metrics.getOrCreate(bassetAddress, 'token.totalSupply').id
-    arr[i].totalRedeemed = metrics.getOrCreate(bassetAddress, 'totalRedeemed', decimals).id
-    arr[i].totalFeesPaid = metrics.getOrCreate(bassetAddress, 'totalFeesPaid', decimals).id
-    arr[i].totalSwappedAsOutput = metrics.getOrCreate(
+    arr[i].cumulativeMinted = metrics.getOrCreate(bassetAddress, 'cumulativeMinted', decimals).id
+    arr[i].cumulativeRedeemed = metrics.getOrCreate(
       bassetAddress,
-      'totalSwappedAsOutput',
+      'cumulativeRedeemed',
+      decimals,
+    ).id
+    arr[i].cumulativeFeesPaid = metrics.getOrCreate(
+      bassetAddress,
+      'cumulativeFeesPaid',
+      decimals,
+    ).id
+    arr[i].cumulativeSwappedAsOutput = metrics.getOrCreate(
+      bassetAddress,
+      'cumulativeSwappedAsOutput',
       decimals,
     ).id
 

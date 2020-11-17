@@ -51,8 +51,8 @@ export function handleMinted(event: Minted): void {
 
   counters.increment(masset, 'totalMints')
   counters.increment(basset, 'totalMints')
-  metrics.increment(masset, 'totalMinted', massetUnits)
-  metrics.increment(basset, 'totalMinted', bassetUnits)
+  metrics.increment(masset, 'cumulativeMinted', massetUnits)
+  metrics.increment(basset, 'cumulativeMinted', bassetUnits)
 
   let baseTx = transaction.fromEvent(event)
   let txEntity = new MintSingleTransactionEntity(baseTx.id)
@@ -83,11 +83,11 @@ export function handleMintedMulti(event: MintedMulti): void {
     let basset = bassets[i]
     let bassetUnits = bassetsUnits[i]
     counters.increment(basset, 'totalMints')
-    metrics.increment(basset, 'totalMinted', bassetUnits)
+    metrics.increment(basset, 'cumulativeMinted', bassetUnits)
   }
 
   counters.increment(masset, 'totalMints')
-  metrics.increment(masset, 'totalMinted', massetUnits)
+  metrics.increment(masset, 'cumulativeMinted', massetUnits)
 
   let baseTx = transaction.fromEvent(event)
   let txEntity = new MintMultiTransactionEntity(baseTx.id)
@@ -117,11 +117,11 @@ export function handleSwapped(event: Swapped): void {
   let massetUnits = integer.toRatio(outputAmountInBassetUnits, outputBasset.ratio)
 
   counters.increment(masset, 'totalSwaps')
-  metrics.increment(masset, 'totalSwapped', massetUnits)
+  metrics.increment(masset, 'cumulativeSwapped', massetUnits)
 
   counters.incrementById(inputBasset.totalSwapsAsInput)
   counters.incrementById(outputBasset.totalSwapsAsOutput)
-  metrics.incrementById(outputBasset.totalSwappedAsOutput, outputAmountInBassetUnits)
+  metrics.incrementById(outputBasset.cumulativeSwappedAsOutput, outputAmountInBassetUnits)
 
   let baseTx = transaction.fromEvent(event)
   let txEntity = new SwapTransactionEntity(baseTx.id)
@@ -151,11 +151,11 @@ export function handleRedeemed(event: Redeemed): void {
     let basset = bassets[i]
     let bassetUnits = bassetsUnits[i]
     counters.increment(basset, 'totalRedemptions')
-    metrics.increment(basset, 'totalRedeemed', bassetUnits)
+    metrics.increment(basset, 'cumulativeRedeemed', bassetUnits)
   }
 
   counters.increment(masset, 'totalRedemptions')
-  metrics.increment(masset, 'totalRedeemed', massetUnits)
+  metrics.increment(masset, 'cumulativeRedeemed', massetUnits)
 
   let baseTx = transaction.fromEvent(event)
   let txEntity = new RedeemTransactionEntity(baseTx.id)
@@ -180,7 +180,7 @@ export function handleRedeemedMasset(event: RedeemedMasset): void {
   let massetUnits = event.params.mAssetQuantity
 
   counters.increment(masset, 'totalRedeemMassets')
-  metrics.increment(masset, 'totalRedeemedMasset', massetUnits)
+  metrics.increment(masset, 'cumulativeRedeemedMasset', massetUnits)
 
   let baseTx = transaction.fromEvent(event)
   let txEntity = new RedeemMassetTransactionEntity(baseTx.id)
@@ -205,8 +205,8 @@ export function handlePaidFee(event: PaidFee): void {
 
   let massetUnits = integer.toRatio(bassetUnits, bassetEntity.ratio)
 
-  metrics.increment(masset, 'totalFeesPaid', massetUnits)
-  metrics.incrementById(bassetEntity.totalFeesPaid, bassetUnits)
+  metrics.increment(masset, 'cumulativeFeesPaid', massetUnits)
+  metrics.incrementById(bassetEntity.cumulativeFeesPaid, bassetUnits)
 
   let baseTx = transaction.fromEvent(event)
   let txEntity = new PaidFeeTransactionEntity(baseTx.id)

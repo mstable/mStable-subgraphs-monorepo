@@ -135,7 +135,7 @@ export function handleSavingsDeposited(event: SavingsDeposited): void {
   counters.incrementById(savingsContractEntity.totalDeposits)
 
   metrics.incrementById(savingsContractEntity.totalCredits, event.params.creditsIssued)
-  metrics.incrementById(savingsContractEntity.totalDeposited, event.params.savingsDeposited)
+  metrics.incrementById(savingsContractEntity.cumulativeDeposited, event.params.savingsDeposited)
 
   metrics.updateById(savingsContractEntity.totalSavings, totalSavings)
   metrics.updateById(
@@ -191,8 +191,8 @@ export function handleCreditsRedeemed(event: CreditsRedeemed): void {
       .times(integer.fromNumber(100)),
   )
 
+  metrics.incrementById(savingsContractEntity.cumulativeWithdrawn, event.params.creditsRedeemed)
   metrics.decrementById(savingsContractEntity.totalCredits, event.params.creditsRedeemed)
-  metrics.decrementById(savingsContractEntity.totalDeposited, event.params.savingsCredited)
 
   let baseTx = transaction.fromEvent(event)
   let txEntity = new SavingsContractWithdrawTransactionEntity(baseTx.id)
