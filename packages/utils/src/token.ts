@@ -23,12 +23,24 @@ export namespace token {
       tokenEntity.symbol = contract.symbol()
       tokenEntity.name = contract.name()
 
-      tokenEntity.totalSupply = metrics.getOrCreate(tokenAddress, 'token.totalSupply', decimals).id
-      tokenEntity.totalBurned = metrics.getOrCreate(tokenAddress, 'token.totalBurned', decimals).id
-      tokenEntity.totalMinted = metrics.getOrCreate(tokenAddress, 'token.totalMinted', decimals).id
+      tokenEntity.totalSupply = metrics.getOrCreateWithDecimals(
+        tokenAddress,
+        'token.totalSupply',
+        decimals,
+      ).id
+      tokenEntity.totalBurned = metrics.getOrCreateWithDecimals(
+        tokenAddress,
+        'token.totalBurned',
+        decimals,
+      ).id
+      tokenEntity.totalMinted = metrics.getOrCreateWithDecimals(
+        tokenAddress,
+        'token.totalMinted',
+        decimals,
+      ).id
 
       let totalSupply = contract.totalSupply()
-      metrics.updateById(tokenEntity.totalSupply, totalSupply)
+      metrics.updateByIdWithDecimals(tokenEntity.totalSupply, totalSupply, decimals)
 
       tokenEntity.totalTransfers = counters.getOrCreate(tokenAddress, 'token.totalTransfers').id
       tokenEntity.totalMints = counters.getOrCreate(tokenAddress, 'token.totalMints').id
