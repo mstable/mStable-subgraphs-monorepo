@@ -26,7 +26,10 @@ import {
 
 export function handleDeposit(event: Deposit): void {
   updateLockupGlobals(event.address)
-  counters.increment(event.address, 'totalStakers')
+
+  if (event.params.action == 0) {
+    counters.increment(event.address, 'totalStakers')
+  }
 
   depositUserLockup(event)
   increaseTotalValue(event.address, event.params.value)
