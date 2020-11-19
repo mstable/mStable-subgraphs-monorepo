@@ -1,4 +1,4 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal } from '@graphprotocol/graph-ts'
 import { counters, events, integer, metrics, transaction, decimal } from '@mstable/subgraph-utils'
 
 import {
@@ -31,13 +31,13 @@ export function handleAutomaticInterestCollectionSwitched(
 }
 
 // Calculation: (1 + 0.001) ^ 365 - 1
-function calculateAPY(start: ExchangeRateEntity, end: ExchangeRateEntity): BigInt {
+function calculateAPY(start: ExchangeRateEntity, end: ExchangeRateEntity): BigDecimal {
   let timeDiff = integer.fromNumber(end.timestamp - start.timestamp)
   let rateDiff = end.rate.div(start.rate)
 
   let portionOfYear = timeDiff.times(integer.SCALE).div(integer.fromNumber(SECONDS_IN_YEAR))
   if (portionOfYear.equals(integer.ZERO)) {
-    return integer.ZERO
+    return decimal.ZERO
   }
 
   let portionsInYear = integer.SCALE.div(portionOfYear)
@@ -46,9 +46,9 @@ function calculateAPY(start: ExchangeRateEntity, end: ExchangeRateEntity): BigIn
   let portionsInYearI32 = portionsInYear.toI32()
   let rateF64 = parseFloat(rateDiff.toString())
   let apyF64 = rateF64 ** portionsInYearI32
-  let apyDecimal = decimal.fromNumber(apyF64 - 1)
+  let apyPercentage = apyF64 - 1
 
-  return integer.fromString(apyDecimal.digits.toString())
+  return decimal.fromNumber(apyPercentage).times(decimal.fromNumber(100))
 }
 
 export function handleExchangeRateUpdated(event: ExchangeRateUpdated): void {
@@ -104,10 +104,13 @@ export function handleExchangeRateUpdated(event: ExchangeRateUpdated): void {
     }
 
     savingsContractEntity.exchangeRate24hAgo = exchangeRate24hAgo.id
-    savingsContractEntity.save()
 
-    let dailyAPY = calculateAPY(exchangeRate24hAgo as ExchangeRateEntity, exchangeRateLatest)
-    metrics.updateById(savingsContractEntity.dailyAPY, dailyAPY)
+    savingsContractEntity.dailyAPY = calculateAPY(
+      exchangeRate24hAgo as ExchangeRateEntity,
+      exchangeRateLatest,
+    )
+
+    savingsContractEntity.save()
   }
 }
 

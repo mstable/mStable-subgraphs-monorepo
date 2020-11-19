@@ -1,5 +1,5 @@
 import { Address } from '@graphprotocol/graph-ts'
-import { counters, metrics } from '@mstable/subgraph-utils'
+import { counters, decimal, metrics } from '@mstable/subgraph-utils'
 
 import { SavingsContract as SavingsContractEntity } from '../generated/schema'
 
@@ -24,7 +24,7 @@ export function createSavingsContract(
   savingsContractEntity.totalCredits = metrics.getOrCreate(address, 'totalCredits').id
   savingsContractEntity.totalSavings = metrics.getOrCreate(address, 'totalSavings').id
   savingsContractEntity.utilisationRate = metrics.getOrCreate(address, 'utilisationRate').id
-  savingsContractEntity.dailyAPY = metrics.getOrCreate(address, 'dailyAPY').id
+  savingsContractEntity.dailyAPY = decimal.ZERO
 
   savingsContractEntity.totalDeposits = counters.getOrCreate(address, 'totalDeposits').id
   savingsContractEntity.totalWithdrawals = counters.getOrCreate(address, 'totalWithdrawals').id
