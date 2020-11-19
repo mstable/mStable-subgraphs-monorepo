@@ -46,9 +46,9 @@ function calculateAPY(start: ExchangeRateEntity, end: ExchangeRateEntity): BigIn
   let portionsInYearI32 = portionsInYear.toI32()
   let rateF64 = parseFloat(rateDiff.toString())
   let apyF64 = rateF64 ** portionsInYearI32
-  let apyPercentage = apyF64 - 1
+  let apyDecimal = decimal.fromNumber(apyF64 - 1)
 
-  return decimal.fromNumber(apyPercentage).digits.times(integer.fromNumber(100))
+  return integer.fromString(apyDecimal.digits.toString())
 }
 
 export function handleExchangeRateUpdated(event: ExchangeRateUpdated): void {
