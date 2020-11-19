@@ -1,5 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { counters, token } from '@mstable/subgraph-utils'
+import { counters, metrics, token } from '@mstable/subgraph-utils'
 
 import { IncentivisedVotingLockup } from '../../generated/schema'
 import { IncentivisedVotingLockup as IncentivisedVotingLockupContract } from '../../generated/IncentivisedVotingLockup/IncentivisedVotingLockup'
@@ -60,9 +60,10 @@ export function updateLockupGlobals(address: Address): IncentivisedVotingLockup 
   entity.totalStakingRewards = entity.rewardRate.times(entity.duration)
   entity.totalStaticWeight = contract.totalStaticWeight()
 
-  token.getOrCreate(address)
-
   entity.save()
+
+  let tokenEntity = token.getOrCreate(address)
+  metrics.updateById(tokenEntity.totalSupply, contract.totalSupply())
 
   return entity
 }
