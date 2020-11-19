@@ -12,12 +12,12 @@
     "prepare:kovan": "yarn run --silent mustache ../../config/kovan.json subgraph.template.yaml > subgraph.yaml",
     "prepare:staging": "yarn run --silent mustache ../../config/staging.json subgraph.template.yaml > subgraph.yaml",
     "prepare:mainnet": "yarn run --silent mustache ../../config/mainnet.json subgraph.template.yaml > subgraph.yaml",
-    "create:local": "yarn graph create mStable/mStable-governance --node http://127.0.0.1:8020",
-    "deploy:local": "yarn graph deploy mStable/mStable-governance --ipfs http://localhost:5001 --node http://127.0.0.1:8020",
-    "deploy:ropsten": "yarn graph deploy mStable/mStable-governance-ropsten --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
-    "deploy:kovan": "yarn graph deploy mStable/mStable-governance-kovan --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
-    "deploy:staging": "yarn graph deploy mStable/mStable-governance-staging --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
-    "deploy:mainnet": "yarn graph deploy mStable/mStable-governance --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
+    "create:local": "yarn graph create mstable/mstable-governance --node http://127.0.0.1:8020",
+    "deploy:local": "yarn graph deploy mstable/mstable-governance --ipfs http://localhost:5001 --node http://127.0.0.1:8020",
+    "deploy:ropsten": "yarn graph deploy mstable/mStable-governance-ropsten --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
+    "deploy:kovan": "yarn graph deploy mstable/mstable-governance-kovan --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
+    "deploy:staging": "yarn graph deploy mstable/mstable-governance-staging --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
+    "deploy:mainnet": "yarn graph deploy mstable/mstable-governance --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
     "lint": "yarn run prettier './src/**/*.{ts,tsx}' --write"
   },
   "devDependencies": {
