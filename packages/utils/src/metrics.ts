@@ -11,14 +11,18 @@ export namespace metrics {
       .concat(type)
   }
 
-  export function getOrCreate(
+  export function getOrCreate(address: Address, type: string): MetricEntity {
+    return getOrCreateWithDecimals(address, type, decimal.DEFAULT_DECIMALS)
+  }
+
+  export function getOrCreateWithDecimals(
     address: Address,
     type: string,
     // @ts-ignore
-    decimals: i32 = decimal.DEFAULT_DECIMALS,
+    decimals: i32,
   ): MetricEntity {
     let id = getId(address, type)
-    return getOrCreateById(id, decimals)
+    return getOrCreateByIdWithDecimals(id, decimals)
   }
 
   export function increment(address: Address, type: string, delta: BigInt): MetricEntity {
@@ -36,10 +40,14 @@ export namespace metrics {
     return updateById(id, value)
   }
 
-  export function getOrCreateById(
+  export function getOrCreateById(id: string): MetricEntity {
+    return getOrCreateByIdWithDecimals(id, decimal.DEFAULT_DECIMALS)
+  }
+
+  export function getOrCreateByIdWithDecimals(
     id: string,
     // @ts-ignore
-    decimals: i32 = decimal.DEFAULT_DECIMALS,
+    decimals: i32,
   ): MetricEntity {
     let metricEntity = MetricEntity.load(id)
 
@@ -74,11 +82,15 @@ export namespace metrics {
     return metricEntity as MetricEntity
   }
 
-  export function updateById(
+  export function updateById(id: string, exact: BigInt): MetricEntity {
+    return updateByIdWithDecimals(id, exact, decimal.DEFAULT_DECIMALS)
+  }
+
+  export function updateByIdWithDecimals(
     id: string,
     exact: BigInt,
     // @ts-ignore
-    decimals: i32 = decimal.DEFAULT_DECIMALS,
+    decimals: i32,
   ): MetricEntity {
     let metricEntity = new MetricEntity(id)
 

@@ -29,25 +29,37 @@ export function updateBassetEntities(basketManager: BasketManager): Array<Basset
     arr[i].ratio = basset.ratio
     arr[i].maxWeight = basset.maxWeight
 
-    arr[i].vaultBalance = metrics.getOrCreate(bassetAddress, 'vaultBalance', decimals).id
-    metrics.updateById(arr[i].vaultBalance, basset.vaultBalance)
+    arr[i].vaultBalance = metrics.getOrCreateWithDecimals(
+      bassetAddress,
+      'vaultBalance',
+      decimals,
+    ).id
+    metrics.updateByIdWithDecimals(arr[i].vaultBalance, basset.vaultBalance, decimals)
 
     arr[i].isTransferFeeCharged = basset.isTransferFeeCharged
     arr[i].status = mapBassetStatus(basset.status)
 
-    arr[i].totalSupply = metrics.getOrCreate(bassetAddress, 'token.totalSupply').id
-    arr[i].cumulativeMinted = metrics.getOrCreate(bassetAddress, 'cumulativeMinted', decimals).id
-    arr[i].cumulativeRedeemed = metrics.getOrCreate(
+    arr[i].totalSupply = metrics.getOrCreateWithDecimals(
+      bassetAddress,
+      'token.totalSupply',
+      decimals,
+    ).id
+    arr[i].cumulativeMinted = metrics.getOrCreateWithDecimals(
+      bassetAddress,
+      'cumulativeMinted',
+      decimals,
+    ).id
+    arr[i].cumulativeRedeemed = metrics.getOrCreateWithDecimals(
       bassetAddress,
       'cumulativeRedeemed',
       decimals,
     ).id
-    arr[i].cumulativeFeesPaid = metrics.getOrCreate(
+    arr[i].cumulativeFeesPaid = metrics.getOrCreateWithDecimals(
       bassetAddress,
       'cumulativeFeesPaid',
       decimals,
     ).id
-    arr[i].cumulativeSwappedAsOutput = metrics.getOrCreate(
+    arr[i].cumulativeSwappedAsOutput = metrics.getOrCreateWithDecimals(
       bassetAddress,
       'cumulativeSwappedAsOutput',
       decimals,

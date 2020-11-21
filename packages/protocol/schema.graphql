@@ -332,7 +332,7 @@ type SavingsContract @entity {
     The daily APY value; this is derived from the `ExchangeRate` closest to 24h ago from the last-received
     `ExchangeRate`, and will change whenever a new `ExchangeRate` is created.
     """
-    dailyAPY: Metric!
+    dailyAPY: BigDecimal!
 
     """
     The share of the Masset that is deposited in the Savings Contract; a rate of 100% would mean all of the
