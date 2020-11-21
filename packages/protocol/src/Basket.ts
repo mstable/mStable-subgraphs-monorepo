@@ -34,7 +34,7 @@ export function updateBassetEntities(basketManager: BasketManager): Array<Basset
       'vaultBalance',
       decimals,
     ).id
-    metrics.updateById(arr[i].vaultBalance, basset.vaultBalance)
+    metrics.updateByIdWithDecimals(arr[i].vaultBalance, basset.vaultBalance, decimals)
 
     arr[i].isTransferFeeCharged = basset.isTransferFeeCharged
     arr[i].status = mapBassetStatus(basset.status)
