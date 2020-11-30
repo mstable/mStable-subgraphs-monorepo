@@ -13,7 +13,7 @@ export function handleBassetAdded(event: BassetAdded): void {
 
 export function handleBassetRemoved(event: BassetRemoved): void {
   let bAsset = event.params.bAsset
-  store.remove('Basset', bAsset)
+  store.remove('Basset', bAsset.toHexString())
   updateBasket(event.address)
 }
 
