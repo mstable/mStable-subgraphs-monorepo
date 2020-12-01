@@ -143,6 +143,11 @@ type Basset @entity {
     ratio: BigInt!
 
     """
+    Flag that is set when the bAsset is removed from the basket (and unset when added)
+    """
+    removed: Boolean!
+
+    """
     Status of the Basset, e.g. 'Normal'
     """
     status: String!

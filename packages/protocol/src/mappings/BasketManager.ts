@@ -4,17 +4,23 @@ import {
   BassetStatusChanged,
   BassetRemoved,
 } from '../../generated/mUSD/BasketManager'
+import { Basset as BassetEntity } from '../../generated/schema'
 import { updateBasket } from '../Basket'
-import { store } from '@graphprotocol/graph-ts'
 
 export function handleBassetAdded(event: BassetAdded): void {
   updateBasket(event.address)
+
+  let bassetEntity = new BassetEntity(event.params.bAsset.toHexString())
+  bassetEntity.removed = false
+  bassetEntity.save()
 }
 
 export function handleBassetRemoved(event: BassetRemoved): void {
-  let bAsset = event.params.bAsset
-  store.remove('Basset', bAsset.toHexString())
   updateBasket(event.address)
+
+  let bassetEntity = new BassetEntity(event.params.bAsset.toHexString())
+  bassetEntity.removed = true
+  bassetEntity.save()
 }
 
 export function handleBasketWeightsUpdated(event: BasketWeightsUpdated): void {
