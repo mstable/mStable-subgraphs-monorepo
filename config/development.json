@@ -1,16 +1,32 @@
 {
   "network": "development",
-  "address_mUSD": "",
-  "startBlock_mUSD": 0,
-  "address_SavingsManager": "",
-  "startBlock_SavingsManager": 0,
-  "address_BasketManager": "",
-  "startBlock_BasketManager": 0,
-  "address_MTA": "",
-  "address_MerkleDrop_BAL": "",
-  "startBlock_MerkleDrop_BAL": 0,
-  "address_IncentivisedVotingLockup": "",
-  "startBlock_IncentivisedVotingLockup": 0,
-  "address_RewardsDistributor": "",
-  "startBlock_RewardsDistributor": 0
+  "massets": [
+    {
+      "name": "mUSD",
+      "Masset": {
+        "address": "",
+        "startBlock": 1
+      },
+      "BasketManager": {
+        "address": "",
+        "startBlock": 1
+      }
+    }
+  ],
+  "SavingsManager": {
+    "address": "",
+    "startBlock": 1
+  },
+  "RewardsDistributor": {
+    "address": "",
+    "startBlock": 1
+  },
+  "MerkleDrop_BAL": {
+    "address": "",
+    "startBlock": 1
+  },
+  "IncentivisedVotingLockup": {
+    "address": "",
+    "startBlock": 1
+  }
 }

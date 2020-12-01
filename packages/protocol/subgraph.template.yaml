@@ -6,17 +6,52 @@ schema:
 
 dataSources:
   - kind: ethereum/contract
-    name: mUSD
+    name: SavingsManager
     network: '{{network}}'
     source:
-      abi: Masset
-      address: '{{address_mUSD}}'
-      startBlock: {{startBlock_mUSD}}
+      abi: SavingsManager
+      address: '{{SavingsManager.address}}'
+      startBlock: {{SavingsManager.startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
-      file: ./src/mappings/mUSD.ts
+      file: ./src/mappings/SavingsManager.ts
+      entities:
+        - Account
+        - AccountBalance
+        - Token
+        - ExchangeRate
+        - Masset
+      abis:
+        - name: SavingsManager
+          file: ../../node_modules/@mstable/protocol/build/contracts/SavingsManager.json
+        - name: Masset
+          file: ../../node_modules/@mstable/protocol/build/contracts/Masset.json
+        - name: ERC20Detailed
+          file: ../../node_modules/@mstable/protocol/build/contracts/ERC20Detailed.json
+        - name: BasketManager
+          file: ../../node_modules/@mstable/protocol/build/contracts/BasketManager.json
+      eventHandlers:
+        - event: SavingsContractAdded(indexed address,address)
+          handler: handleSavingsContractAdded
+        - event: SavingsRateChanged(uint256)
+          handler: handleSavingsRateChanged
+
+  {{#massets}}
+  # {{name}}
+  - kind: ethereum/contract
+    name: {{name}}
+    network: '{{network}}'
+    source:
+      abi: Masset
+      address: '{{Masset.address}}'
+      startBlock: {{Masset.startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/Masset.ts
       entities:
         - Basket
         - Basset
@@ -47,47 +82,13 @@ dataSources:
           handler: handleRedemptionFeeChanged
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
-
   - kind: ethereum/contract
-    name: SavingsManager
-    network: '{{network}}'
-    source:
-      abi: SavingsManager
-      address: '{{address_SavingsManager}}'
-      startBlock: {{startBlock_SavingsManager}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/mappings/SavingsManager.ts
-      entities:
-        - Account
-        - AccountBalance
-        - Token
-        - ExchangeRate
-        - Masset
-      abis:
-        - name: SavingsManager
-          file: ../../node_modules/@mstable/protocol/build/contracts/SavingsManager.json
-        - name: Masset
-          file: ../../node_modules/@mstable/protocol/build/contracts/Masset.json
-        - name: ERC20Detailed
-          file: ../../node_modules/@mstable/protocol/build/contracts/ERC20Detailed.json
-        - name: BasketManager
-          file: ../../node_modules/@mstable/protocol/build/contracts/BasketManager.json
-      eventHandlers:
-        - event: SavingsContractAdded(indexed address,address)
-          handler: handleSavingsContractAdded
-        - event: SavingsRateChanged(uint256)
-          handler: handleSavingsRateChanged
-
-  - kind: ethereum/contract
-    name: BasketManager
+    name: BasketManager_{{name}}
     network: '{{network}}'
     source:
       abi: BasketManager
-      address: '{{address_BasketManager}}'
-      startBlock: {{startBlock_BasketManager}}
+      address: '{{BasketManager.address}}'
+      startBlock: {{BasketManager.startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -115,6 +116,7 @@ dataSources:
           handler: handleBassetStatusChanged
         - event: BasketStatusChanged()
           handler: handleBasketStatusChanged
+  {{/massets}}
 
 templates:
   - kind: ethereum/contract

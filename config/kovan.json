@@ -1,15 +1,32 @@
 {
   "network": "kovan",
-  "address_mUSD": "0x70605Bdd16e52c86FC7031446D995Cf5c7E1b0e7",
-  "startBlock_mUSD": 20820000,
-  "address_SavingsManager": "0x00b7f2A8369c2eb5527B45b32096cC7A058aF1F6",
-  "startBlock_SavingsManager": 20820000,
-  "address_BasketManager": "0xEDfF2F3CDbf2ef0a6cA73874a0f280F1e48567F2",
-  "startBlock_BasketManager": 20820000,
-  "address_RewardsDistributor": "0x7Fc54480BAD1BbA6Ef1B34777011aC0204578BeE",
-  "startBlock_RewardsDistributor": 20820000,
-  "address_MerkleDrop_BAL": "0x93a222AbaA6d6f3B0779AE6E8C26EBDe4E061740",
-  "startBlock_MerkleDrop_BAL": 20820000,
-  "address_IncentivisedVotingLockup": "0x82Ad5115547A1F9783c9E29cFe59A4A8d3Eba2A7",
-  "startBlock_IncentivisedVotingLockup": 20834108
+  "massets": [
+    {
+      "name": "mUSD",
+      "Masset": {
+        "address": "0x70605Bdd16e52c86FC7031446D995Cf5c7E1b0e7",
+        "startBlock": 20820000
+      },
+      "BasketManager": {
+        "address": "0xEDfF2F3CDbf2ef0a6cA73874a0f280F1e48567F2",
+        "startBlock": 20820000
+      }
+    }
+  ],
+  "SavingsManager": {
+    "address": "0x00b7f2A8369c2eb5527B45b32096cC7A058aF1F6",
+    "startBlock": 20820000
+  },
+  "RewardsDistributor": {
+    "address": "0x7Fc54480BAD1BbA6Ef1B34777011aC0204578BeE",
+    "startBlock": 20820000
+  },
+  "MerkleDrop_BAL": {
+    "address": "0x93a222AbaA6d6f3B0779AE6E8C26EBDe4E061740",
+    "startBlock": 20820000
+  },
+  "IncentivisedVotingLockup": {
+    "address": "0x82Ad5115547A1F9783c9E29cFe59A4A8d3Eba2A7",
+    "startBlock": 20834108
+  }
 }
