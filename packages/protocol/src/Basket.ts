@@ -28,6 +28,7 @@ export function updateBassetEntities(basketManager: BasketManager): Array<Basset
     arr[i].token = tokenEntity.id
     arr[i].ratio = basset.ratio
     arr[i].maxWeight = basset.maxWeight
+    arr[i].removed = false
 
     arr[i].vaultBalance = metrics.getOrCreateWithDecimals(
       bassetAddress,

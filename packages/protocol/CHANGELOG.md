@@ -1,5 +1,9 @@
 ### v.NEXT
 
+- Add a `removed` flag for bAssets instead of removing them from the store
+
+### v0.1.2
+
 - Add support for multiple mAssets
 
 ### v0.1.1
