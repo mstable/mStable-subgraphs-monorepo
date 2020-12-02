@@ -2,7 +2,10 @@
   "name": "@mstable/protocol-subgraph",
   "version": "0.1.2",
   "license": "MIT",
-  "files": ["./queries.graphql", "./schema.generated.graphql"],
+  "files": [
+    "./queries.graphql",
+    "./schema.generated.graphql"
+  ],
   "scripts": {
     "codegen:schema": "yarn run graphql-merge --template='schema.graphql' --schema='schema.generated.graphql'",
     "codegen:graph": "yarn run graph codegen",
@@ -23,8 +26,6 @@
     "deploy:mainnet": "yarn graph deploy mStable/mStable-protocol --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token "
   },
   "dependencies": {
-    "@mstable/subgraph-utils": "file:../utils",
-    "@graphprotocol/graph-cli": "^0.19.0",
-    "@graphprotocol/graph-ts": "^0.19.0"
+    "@mstable/subgraph-utils": "0.1.0"
   }
 }
