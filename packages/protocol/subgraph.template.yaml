@@ -26,6 +26,8 @@ dataSources:
       abis:
         - name: SavingsManager
           file: ../../node_modules/@mstable/protocol/build/contracts/SavingsManager.json
+        - name: SavingsContract
+          file: ./abis/SavingsContract.json
         - name: Masset
           file: ../../node_modules/@mstable/protocol/build/contracts/Masset.json
         - name: ERC20Detailed
@@ -133,7 +135,7 @@ templates:
         - Token
       abis:
         - name: SavingsContract
-          file: ../../node_modules/@mstable/protocol/build/contracts/SavingsContract.json
+          file: ./abis/SavingsContract.json
       eventHandlers:
         - event: AutomaticInterestCollectionSwitched(bool)
           handler: handleAutomaticInterestCollectionSwitched
