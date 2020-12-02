@@ -1,7 +1,8 @@
 import { Address } from '@graphprotocol/graph-ts'
-import { counters, decimal, metrics } from '@mstable/subgraph-utils'
+import { counters, decimal, metrics, token } from '@mstable/subgraph-utils'
 
 import { SavingsContract as SavingsContractEntity } from '../generated/schema'
+import { SavingsContract } from '../generated/templates'
 
 export function createSavingsContract(
   address: Address,
@@ -9,12 +10,26 @@ export function createSavingsContract(
 ): SavingsContractEntity {
   let id = address.toHexString()
   let savingsContractEntity = SavingsContractEntity.load(id)
+  let savingsContractInstance = SavingsContract.bind(address)
+  let version = 1
+  let balance = savingsContractInstance.try_balanceOfUnderlying(address)
+
+  if (!balance.reverted) {
+    version = 2
+  }
 
   if (savingsContractEntity != null) {
     return savingsContractEntity as SavingsContractEntity
   }
 
   savingsContractEntity = new SavingsContractEntity(id)
+
+  savingsContractEntity.version = version
+
+  if (version == 2) {
+    let tokenEntity = token.getOrCreate(address)
+    savingsContractEntity.token = tokenEntity.id
+  }
 
   savingsContractEntity.masset = massetAddress.toHexString()
   savingsContractEntity.automationEnabled = false
