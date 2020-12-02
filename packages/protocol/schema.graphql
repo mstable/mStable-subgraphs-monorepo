@@ -309,9 +309,9 @@ type SavingsContract @entity {
   totalSavings: Metric!
 
   """
-  Total number of savings credits issued
+  Total number of savings credits issued (v1 only)
   """
-  totalCredits: Metric!
+  totalCredits: Metric
 
   """
   The total number of deposits made
@@ -383,12 +383,14 @@ type SavingsContract @entity {
     @derivedFrom(field: "savingsContract")
 
   """
-  Version of the SavingsContract(starting from 1)
+  Version of the savings contract (starting from 1). This value will never change for each entity,
+  and can be used to determine the features of the contract.
   """
   version: Int!
 
   """
-  Specific field for SavingsContractV2(change this later)
+  This field is not present in v1 savings contracts; starting from v2, savings contracts
+  are ERC20-compatible tokens.
   """
   token: Token
 }
