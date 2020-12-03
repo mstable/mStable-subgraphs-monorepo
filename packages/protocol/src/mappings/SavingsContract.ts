@@ -114,7 +114,10 @@ export function handleExchangeRateUpdated(event: ExchangeRateUpdated): void {
   }
 }
 
-export function handleSavingsDeposited(event: SavingsDeposited): void {
+/**
+ * @deprecated
+ */
+function handleSaveV1Deposit(event: SavingsDeposited): void {
   let creditBalanceEntity = getOrCreateCreditBalance(event.params.saver, event.address)
   creditBalanceEntity.amount = creditBalanceEntity.amount.plus(event.params.creditsIssued)
   creditBalanceEntity.save()
@@ -122,10 +125,16 @@ export function handleSavingsDeposited(event: SavingsDeposited): void {
   let accountEntity = new AccountEntity(event.params.saver.toHexString())
   accountEntity.creditBalance = creditBalanceEntity.id
   accountEntity.save()
+}
 
+export function handleSavingsDeposited(event: SavingsDeposited): void {
   let savingsContractEntity = SavingsContractEntity.load(
     event.address.toHexString(),
   ) as SavingsContractEntity
+
+  if (savingsContractEntity.version == 1) {
+    handleSaveV1Deposit(event)
+  }
 
   let massetTotalSupply = metrics.getOrCreate(
     Address.fromString(savingsContractEntity.masset),
@@ -162,7 +171,10 @@ export function handleSavingsDeposited(event: SavingsDeposited): void {
   txEntity.save()
 }
 
-export function handleCreditsRedeemed(event: CreditsRedeemed): void {
+/**
+ * @deprecated
+ */
+function handleSaveV1Redemption(event: CreditsRedeemed): void {
   let creditBalanceEntity = getOrCreateCreditBalance(event.params.redeemer, event.address)
   creditBalanceEntity.amount = creditBalanceEntity.amount.minus(event.params.creditsRedeemed)
   creditBalanceEntity.save()
@@ -170,10 +182,16 @@ export function handleCreditsRedeemed(event: CreditsRedeemed): void {
   let accountEntity = new AccountEntity(event.params.redeemer.toHexString())
   accountEntity.creditBalance = creditBalanceEntity.id
   accountEntity.save()
+}
 
+export function handleCreditsRedeemed(event: CreditsRedeemed): void {
   let savingsContractEntity = SavingsContractEntity.load(
     event.address.toHexString(),
   ) as SavingsContractEntity
+
+  if (savingsContractEntity.version == 1) {
+    handleSaveV1Redemption(event)
+  }
 
   let massetTotalSupply = metrics.getOrCreate(
     Address.fromString(savingsContractEntity.masset),

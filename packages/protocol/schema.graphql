@@ -256,7 +256,8 @@ type Masset @entity {
 }
 
 """
-An Ethereum account that has interacted with parts of mStable
+An Ethereum account that has interacted with Save v1
+@deprecated
 """
 type Account @entity {
   """
@@ -265,13 +266,14 @@ type Account @entity {
   id: ID!
 
   """
-  CreditBalance of the account
+  Credit balance of the account (Save v1 only)
   """
   creditBalance: CreditBalance
 }
 
 """
-A credit balance for a given savings contract
+A credit balance for a given savings contract (Save v1 only)
+@deprecated
 """
 type CreditBalance @entity {
   id: ID!
@@ -310,6 +312,7 @@ type SavingsContract @entity {
 
   """
   Total number of savings credits issued (v1 only)
+  @deprecated
   """
   totalCredits: Metric
 
