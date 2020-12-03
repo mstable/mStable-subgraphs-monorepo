@@ -215,12 +215,32 @@ type Masset @entity {
   cumulativeFeesPaid: Metric!
 
   """
+  The cumulative interest collected from platforms
+  """
+  cumulativeInterestCollected: Metric!
+
+  """
+  The cumulative interest distributed to savers
+  """
+  cumulativeInterestDistributed: Metric!
+
+  """
+  The cumulative amount deposited by liquidators
+  """
+  cumulativeLiquidatorDeposited: Metric!
+
+  """
   The underlying Token for this Masset
   """
   token: Token!
 
   """
-  All savings Contracts for this Masset
+  Current SavingsContract for this Masset (i.e. added/updated via SavingsManager and receiving interest)
+  """
+  currentSavingsContract: SavingsContract
+
+  """
+  All Savings Contracts for this Masset
   """
   savingsContracts: [SavingsContract!]! @derivedFrom(field: "masset")
 
@@ -255,8 +275,10 @@ type Masset @entity {
   redeemTransactions: [RedeemTransaction!]! @derivedFrom(field: "masset")
 }
 
+
 """
-An Ethereum account that has interacted with parts of mStable
+An Ethereum account that has interacted with Save v1
+@deprecated
 """
 type Account @entity {
   """
@@ -265,13 +287,15 @@ type Account @entity {
   id: ID!
 
   """
-  CreditBalance of the account
+  Credit balance of the account (Save v1 only)
+  @deprecated
   """
   creditBalance: CreditBalance
 }
 
 """
-A credit balance for a given savings contract
+A credit balance for a given savings contract (Save v1 only)
+@deprecated
 """
 type CreditBalance @entity {
   id: ID!
@@ -292,11 +316,38 @@ type CreditBalance @entity {
   savingsContract: SavingsContract!
 }
 
+type SavingsManager @entity {
+  """
+  Singleton ID of the SavingsManager == "SavingsManager""
+  """
+  id: ID!
+
+  """
+  Address of the SavingsManager
+  """
+  address: Bytes!
+
+  """
+  Amount of collected interest that will be sent to Savings Contract (100%)
+  """
+  savingsRate: Metric!
+
+  """
+  Flag for whether yield/liquidator streams are frozen
+  """
+  streamsFrozen: Boolean!
+}
+
 type SavingsContract @entity {
   """
   Address of the SavingsContract
   """
   id: ID!
+
+  """
+  Flag for whether the SavingsContract is "active" (i.e. added via the SavingsManager)
+  """
+  active: Boolean!
 
   """
   The Masset using this SavingsContract
@@ -310,6 +361,7 @@ type SavingsContract @entity {
 
   """
   Total number of savings credits issued (v1 only)
+  @deprecated
   """
   totalCredits: Metric
 
@@ -393,6 +445,117 @@ type SavingsContract @entity {
   are ERC20-compatible tokens.
   """
   token: Token
+}
+
+type BoostedSavingsVault @entity {
+  # BoostedSavingsVault address
+  id: ID!
+
+  savingsContract: SavingsContract!
+
+  accounts: [BoostedSavingsVaultAccount!]! @derivedFrom(field: "boostedSavingsVault")
+
+  rewardEntries: [BoostedSavingsVaultRewardEntry!]! @derivedFrom(field: "boostedSavingsVault")
+
+  """
+  Length of token lockup (in seconds), after rewards are earned
+  """
+  lockupDuration: Int!
+
+  """
+  Percentage of earned tokens that are unlocked immediately upon claiming
+  """
+  unlockPercentage: BigInt!
+
+  """
+  Rewards period duration (in seconds)
+  """
+  periodDuration: Int!
+
+  """
+  Timestamp for current rewards period finish
+  """
+  periodFinish: Int!
+
+  """
+  Last time any user took action
+  """
+  lastUpdateTime: Int!
+
+  """
+  The staking token, e.g. imUSD
+  """
+  stakingToken: Token!
+
+  """
+  The reward per token stored
+  """
+  rewardPerTokenStored: BigInt!
+
+  """
+  The reward rate for the rest of the rewards period
+  """
+  rewardRate: BigInt!
+
+  """
+  The rewards token, e.g. MTA
+  """
+  rewardsToken: Token!
+
+  """
+  Rewards distributor contract address
+  """
+  rewardsDistributor: Bytes!
+
+  """
+  Total boosted amount
+  """
+  totalSupply: BigInt!
+
+  """
+  Total staking rewards (rewardRate * periodDuration)
+  """
+  totalStakingRewards: BigInt!
+}
+
+type BoostedSavingsVaultAccount @entity {
+  # {BoostedSavingsVault address}.{account}
+  id: ID!
+
+  boostedSavingsVault: BoostedSavingsVault!
+
+  account: Account!
+
+  rewardPerTokenPaid: BigInt!
+
+  rewards: BigInt!
+
+  lastAction: Int!
+
+  lastClaim: Int!
+
+  rewardCount: Int!
+
+  rewardEntries: [BoostedSavingsVaultRewardEntry!]! @derivedFrom(field: "account")
+}
+
+type BoostedSavingsVaultRewardEntry @entity {
+  # {BoostedSavingsVault address}.{account}.{index}
+  id: ID!
+
+  account: BoostedSavingsVaultAccount!
+
+  boostedSavingsVault: BoostedSavingsVault!
+
+  claimed: Boolean!
+
+  index: Int!
+
+  start: Int!
+
+  finish: Int!
+
+  rate: BigInt!
 }
 
 type ExchangeRate @entity {

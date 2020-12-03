@@ -1,6 +1,6 @@
 specVersion: 0.0.2
 description: mStable Ecosystem Subgraph
-repository: https://gitlab.com/mstable/mstable-subgraphs-monorepo
+repository: https://github.com/mstable/mstable-subgraphs-monorepo
 schema:
   file: ./schema.generated.graphql
 

@@ -1,6 +1,6 @@
 specVersion: 0.0.2
 description: mStable Protocol
-repository: https://gitlab.com/mstable/mstable-subgraphs-monorepo
+repository: https://github.com/mstable/mstable-subgraphs-monorepo
 schema:
   file: ./schema.generated.graphql
 
@@ -25,9 +25,11 @@ dataSources:
         - Masset
       abis:
         - name: SavingsManager
-          file: ../../node_modules/@mstable/protocol/build/contracts/SavingsManager.json
-        - name: SavingsContract
-          file: ./abis/SavingsContract.json
+          file: ./abis/SavingsManager.json
+        - name: SavingsContractV1
+          file: ../../node_modules/@mstable/protocol/build/contracts/SavingsContract.json
+        - name: SavingsContractV2
+          file: ./abis/SavingsContractV2.json
         - name: Masset
           file: ../../node_modules/@mstable/protocol/build/contracts/Masset.json
         - name: ERC20Detailed
@@ -37,8 +39,18 @@ dataSources:
       eventHandlers:
         - event: SavingsContractAdded(indexed address,address)
           handler: handleSavingsContractAdded
+        - event: SavingsContractUpdated(indexed address,address)
+          handler: handleSavingsContractUpdated
         - event: SavingsRateChanged(uint256)
           handler: handleSavingsRateChanged
+        - event: StreamsFrozen()
+          handler: handleStreamsFrozen
+        - event: LiquidatorDeposited(indexed address,uint256)
+          handler: handleLiquidatorDeposited
+        - event: InterestCollected(indexed address,uint256,uint256,uint256)
+          handler: handleInterestCollected
+        - event: InterestDistributed(indexed address,uint256)
+          handler: handleInterestDistributed
 
   {{#massets}}
   # {{name}}
@@ -118,14 +130,53 @@ dataSources:
           handler: handleBassetStatusChanged
         - event: BasketStatusChanged()
           handler: handleBasketStatusChanged
-  {{/massets}}
-
-templates:
+  {{#BoostedSavingsVault}}
   - kind: ethereum/contract
-    name: SavingsContract
+    name: BoostedSavingsVault_{{name}}
     network: '{{network}}'
     source:
-      abi: SavingsContract
+      abi: BoostedSavingsVault
+      address: '{{BoostedSavingsVault.address}}'
+      startBlock: {{BoostedSavingsVault.startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/BoostedSavingsVault.ts
+      entities:
+        - Account
+        - BoostedSavingsVault
+        - BoostedSavingsVaultAccountData
+        - BoostedSavingsVaultAccountRewardEntry
+        - RewardsDistributor
+        - SavingsContract
+        - Token
+      abis:
+        - name: BoostedSavingsVault
+          file: ./abis/BoostedSavingsVault.json
+        - name: ERC20Detailed
+          file: ../../node_modules/@mstable/protocol/build/contracts/ERC20Detailed.json
+      eventHandlers:
+        - event: Staked(indexed address,uint256,address)
+          handler: handleStaked
+        - event: RewardAdded(uint256)
+          handler: handleRewardAdded
+        - event: RewardPaid(indexed address,uint256)
+          handler: handleRewardPaid
+        - event: Withdrawn(indexed address,uint256)
+          handler: handleWithdrawn
+  {{/BoostedSavingsVault}}
+  {{/massets}}
+
+  {{#prereleaseSavingsContracts}}
+  # Prerelease: {{address}}
+  - kind: ethereum/contract
+    name: 'SavingsContract_{{address}}'
+    network: '{{network}}'
+    source:
+      abi: SavingsContractV2
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -134,8 +185,43 @@ templates:
       entities:
         - Token
       abis:
-        - name: SavingsContract
-          file: ./abis/SavingsContract.json
+        - name: SavingsContractV1
+          file: ../../node_modules/@mstable/protocol/build/contracts/SavingsContract.json
+        - name: SavingsContractV2
+          file: ./abis/SavingsContractV2.json
+        - name: ERC20Detailed
+          file: ../../node_modules/@mstable/protocol/build/contracts/ERC20Detailed.json
+      eventHandlers:
+        - event: AutomaticInterestCollectionSwitched(bool)
+          handler: handleAutomaticInterestCollectionSwitched
+        - event: ExchangeRateUpdated(uint256,uint256)
+          handler: handleExchangeRateUpdated
+        - event: SavingsDeposited(indexed address,uint256,uint256)
+          handler: handleSavingsDeposited
+        - event: CreditsRedeemed(indexed address,uint256,uint256)
+          handler: handleCreditsRedeemed
+  {{/prereleaseSavingsContracts}}
+
+templates:
+  - kind: ethereum/contract
+    name: SavingsContract
+    network: '{{network}}'
+    source:
+      abi: SavingsContractV2
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/SavingsContract.ts
+      entities:
+        - Token
+      abis:
+        - name: SavingsContractV1
+          file: ../../node_modules/@mstable/protocol/build/contracts/SavingsContract.json
+        - name: SavingsContractV2
+          file: ./abis/SavingsContractV2.json
+        - name: ERC20Detailed
+          file: ../../node_modules/@mstable/protocol/build/contracts/ERC20Detailed.json
       eventHandlers:
         - event: AutomaticInterestCollectionSwitched(bool)
           handler: handleAutomaticInterestCollectionSwitched

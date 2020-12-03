@@ -2,11 +2,11 @@ import { Address } from '@graphprotocol/graph-ts'
 import { address, counters, decimal, metrics, token } from '@mstable/subgraph-utils'
 
 import { SavingsContract as SavingsContractEntity } from '../generated/schema'
-import { SavingsContract } from '../generated/templates/SavingsContract/SavingsContract'
+import { SavingsContractV2 } from '../generated/SavingsManager/SavingsContractV2'
 
-export function createSavingsContract(
+export function getOrCreateSavingsContract(
   addr: Address,
-  massetAddress: Address,
+  massetAddress: Address | null,
 ): SavingsContractEntity {
   let id = addr.toHexString()
   let savingsContractEntity = SavingsContractEntity.load(id)
@@ -16,8 +16,9 @@ export function createSavingsContract(
   }
 
   savingsContractEntity = new SavingsContractEntity(id)
+  savingsContractEntity.active = false
 
-  let contract = SavingsContract.bind(addr)
+  let contract = SavingsContractV2.bind(addr)
 
   let version = 1
 
@@ -34,9 +35,18 @@ export function createSavingsContract(
     savingsContractEntity.token = tokenEntity.id
   }
 
-  savingsContractEntity.masset = massetAddress.toHexString()
-  savingsContractEntity.automationEnabled = false
+  if (massetAddress != null) {
+    savingsContractEntity.masset = massetAddress.toHexString()
+  } else {
+    let underlying = contract.try_underlying()
+    if (underlying.reverted) {
+      throw new Error('Unable to identify underlying for SavingsContract')
+    } else {
+      savingsContractEntity.masset = underlying.value.toHexString()
+    }
+  }
 
+  savingsContractEntity.automationEnabled = false
   savingsContractEntity.cumulativeDeposited = metrics.getOrCreate(addr, 'cumulativeDeposited').id
   savingsContractEntity.cumulativeWithdrawn = metrics.getOrCreate(addr, 'cumulativeWithdrawn').id
   savingsContractEntity.totalCredits = metrics.getOrCreate(addr, 'totalCredits').id
