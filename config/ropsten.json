@@ -35,5 +35,11 @@
   "MerkleDrop_BAL": {
     "address": "0x5699a17F5169645ad55c71cA64978b4acc60199D",
     "startBlock": 8200000
-  }
+  },
+  "prereleaseSavingsContracts": [
+    {
+      "address": "0x5b7f01dAe6BCE656c9cA4175Eb3E406ADC6c7957",
+      "startBlock": 9239060
+    }
+  ]
 }

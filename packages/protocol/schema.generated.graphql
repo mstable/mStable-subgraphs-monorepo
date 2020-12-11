@@ -330,12 +330,32 @@ type Masset @entity {
   cumulativeFeesPaid: Metric!
 
   """
+  The cumulative interest collected from platforms
+  """
+  cumulativeInterestCollected: Metric!
+
+  """
+  The cumulative interest distributed to savers
+  """
+  cumulativeInterestDistributed: Metric!
+
+  """
+  The cumulative amount deposited by liquidators
+  """
+  cumulativeLiquidatorDeposited: Metric!
+
+  """
   The underlying Token for this Masset
   """
   token: Token!
 
   """
-  All savings Contracts for this Masset
+  Current SavingsContract for this Masset (i.e. added/updated via SavingsManager and receiving interest)
+  """
+  currentSavingsContract: SavingsContract
+
+  """
+  All Savings Contracts for this Masset
   """
   savingsContracts: [SavingsContract!]! @derivedFrom(field: "masset")
 
@@ -409,11 +429,38 @@ type CreditBalance @entity {
   savingsContract: SavingsContract!
 }
 
+type SavingsManager @entity {
+  """
+  Singleton ID of the SavingsManager == "SavingsManager""
+  """
+  id: ID!
+
+  """
+  Address of the SavingsManager
+  """
+  address: Bytes!
+
+  """
+  Amount of collected interest that will be sent to Savings Contract (100%)
+  """
+  savingsRate: Metric!
+
+  """
+  Flag for whether yield/liquidator streams are frozen
+  """
+  streamsFrozen: Boolean!
+}
+
 type SavingsContract @entity {
   """
   Address of the SavingsContract
   """
   id: ID!
+
+  """
+  Flag for whether the SavingsContract is "active" (i.e. added via the SavingsManager)
+  """
+  active: Boolean!
 
   """
   The Masset using this SavingsContract
