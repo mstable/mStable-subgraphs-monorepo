@@ -447,7 +447,7 @@ type SavingsContract @entity {
   """
   Percentage of assets that should be held in the connector, determined by governance
   """
-  fraction: BigInt!
+  fraction: BigInt
 }
 
 type ExchangeRate @entity {
