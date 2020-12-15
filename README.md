@@ -9,8 +9,11 @@ All [mStable](https://mstable.org) subgraphs in one handy repo.
 This project uses [Yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) and [Lerna](https://github.com/lerna/lerna).
 
 ```bash
+# First enable yarn workspaces if needed
+yarn config set workspaces-experimental true
+
 yarn
-yarn lerna bootstrap
+lerna bootstrap
 ```
 
 ## Packages
