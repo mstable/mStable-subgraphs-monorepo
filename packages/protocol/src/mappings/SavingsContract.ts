@@ -6,7 +6,7 @@ import {
   CreditsRedeemed,
   ExchangeRateUpdated,
   SavingsDeposited,
-  FractionUpdated
+  FractionUpdated,
 } from '../../generated/templates/SavingsContract/SavingsContractV2'
 import { SavingsContractV1 } from '../../generated/SavingsManager/SavingsContractV1'
 import { SavingsContractV2 } from '../../generated/SavingsManager/SavingsContractV2'
@@ -220,9 +220,9 @@ function updateTotalSavings(
     totalSavings = totalSavingsV1.value
   } else {
     let v2Contract = SavingsContractV2.bind(addr)
-    let exchangeRate = v2Contract.try_exchangeRate()
-    let totalCredits = v2Contract.try_totalCredits() //this doesnt exist, what do here? :thinking:
-    let totalSavingsV2 = integer.fromNumber(exchangeRate).times(integer.fromNumber(totalCredits))
+    let exchangeRate = v2Contract.exchangeRate()
+    let totalCredits = v2Contract.totalSupply()
+    let totalSavingsV2 = exchangeRate.times(totalCredits)
     totalSavings = totalSavingsV2
   }
 
@@ -239,7 +239,7 @@ function updateTotalSavings(
 }
 
 export function handleFractionUpdated(event: FractionUpdated): void {
-  let savingsContractEntity = getOrCreateSavingsContract(event.address, null)
+  let savingsContractEntity = new SavingsContractEntity(event.address.toHexString())
   savingsContractEntity.fraction = event.params.fraction
   savingsContractEntity.save()
 }
