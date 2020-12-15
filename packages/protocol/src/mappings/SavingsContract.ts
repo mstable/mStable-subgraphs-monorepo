@@ -219,11 +219,10 @@ function updateTotalSavings(
     totalSavings = totalSavingsV1.value
   } else {
     let v2Contract = SavingsContractV2.bind(addr)
-    let totalSavingsV2 = v2Contract.try_totalSupply()
-
-    if (!totalSavingsV2.reverted) {
-      totalSavings = totalSavingsV2.value
-    }
+    let exchangeRate = v2Contract.try_exchangeRate()
+    let totalCredits = v2Contract.try_totalCredits()
+    let totalSavingsV2 = integer.fromNumber(exchangeRate).times(integer.fromNumber(totalCredits))
+    totalSavings = totalSavingsV2
   }
 
   if (totalSavings != null) {
@@ -236,4 +235,10 @@ function updateTotalSavings(
         .times(integer.fromNumber(100)),
     )
   }
+}
+
+export function handleFractionUpdated(event: FractionUpdated): void {
+  let savingsContractEntity = getOrCreateSavingsContract(event.address, null)
+  savingsContractEntity.fraction = event.params.fraction
+  savingsContractEntity.save()
 }
