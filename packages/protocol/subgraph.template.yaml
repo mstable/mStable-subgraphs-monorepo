@@ -51,8 +51,6 @@ dataSources:
           handler: handleInterestCollected
         - event: InterestDistributed(indexed address,uint256)
           handler: handleInterestDistributed
-        - event: FractionUpdated(uint256 fraction)
-          handler: handleFractionUpdated
 
   {{#massets}}
   # {{name}}
@@ -166,6 +164,8 @@ dataSources:
           handler: handleSavingsDeposited
         - event: CreditsRedeemed(indexed address,uint256,uint256)
           handler: handleCreditsRedeemed
+        - event: FractionUpdated(uint256)
+          handler: handleFractionUpdated
   {{/prereleaseSavingsContracts}}
 
 templates:
@@ -197,5 +197,5 @@ templates:
           handler: handleSavingsDeposited
         - event: CreditsRedeemed(indexed address,uint256,uint256)
           handler: handleCreditsRedeemed
-        - event: FractionUpdated(uint256 fraction)
+        - event: FractionUpdated(uint256)
           handler: handleFractionUpdate

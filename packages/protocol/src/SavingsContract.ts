@@ -32,11 +32,12 @@ export function getOrCreateSavingsContract(
 
   if (version == 2) {
     let tokenEntity = token.getOrCreate(addr)
-    let fraction = contract.setFraction() // this is the right function, but it needs an input?
+    savingsContractEntity.token = tokenEntity.id
+    let fraction = contract.try_fraction()
     if (fraction.reverted) {
       throw new Error('Unable to identify underlying for SavingsContract')
     } else {
-      savingsContractEntity.fraction = fraction.value.toHexString()
+      savingsContractEntity.fraction = fraction.value
     }
 
     if (massetAddress != null) {
@@ -55,8 +56,9 @@ export function getOrCreateSavingsContract(
   savingsContractEntity.cumulativeDeposited = metrics.getOrCreate(addr, 'cumulativeDeposited').id
   savingsContractEntity.cumulativeWithdrawn = metrics.getOrCreate(addr, 'cumulativeWithdrawn').id
   savingsContractEntity.totalCredits = metrics.getOrCreate(addr, 'totalCredits').id
-  savingsContractEntity.totalSavings =
+  savingsContractEntity.totalSavings = (
     metrics.getOrCreate(addr, 'exchangeRate').id * metrics.getOrCreate(addr, 'totalCredits').id
+  ).toString() // not sure about this?
   savingsContractEntity.utilisationRate = metrics.getOrCreate(addr, 'utilisationRate').id
   savingsContractEntity.dailyAPY = decimal.ZERO
 

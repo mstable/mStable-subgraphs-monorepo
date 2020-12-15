@@ -6,7 +6,8 @@ import {
   CreditsRedeemed,
   ExchangeRateUpdated,
   SavingsDeposited,
-} from '../../generated/templates/SavingsContract/SavingsContract'
+  FractionUpdated
+} from '../../generated/templates/SavingsContract/SavingsContractV2'
 import { SavingsContractV1 } from '../../generated/SavingsManager/SavingsContractV1'
 import { SavingsContractV2 } from '../../generated/SavingsManager/SavingsContractV2'
 
@@ -220,7 +221,7 @@ function updateTotalSavings(
   } else {
     let v2Contract = SavingsContractV2.bind(addr)
     let exchangeRate = v2Contract.try_exchangeRate()
-    let totalCredits = v2Contract.try_totalCredits()
+    let totalCredits = v2Contract.try_totalCredits() //this doesnt exist, what do here? :thinking:
     let totalSavingsV2 = integer.fromNumber(exchangeRate).times(integer.fromNumber(totalCredits))
     totalSavings = totalSavingsV2
   }

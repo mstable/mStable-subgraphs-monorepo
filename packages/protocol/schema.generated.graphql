@@ -558,6 +558,11 @@ type SavingsContract @entity {
   are ERC20-compatible tokens.
   """
   token: Token
+
+  """
+  TODO: caption?
+  """
+  fraction: BigInt!
 }
 
 type ExchangeRate @entity {
