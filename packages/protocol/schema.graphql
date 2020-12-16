@@ -443,6 +443,11 @@ type SavingsContract @entity {
   are ERC20-compatible tokens.
   """
   token: Token
+
+  """
+  Percentage of assets that should be held in the connector, determined by governance
+  """
+  fraction: BigInt
 }
 
 type ExchangeRate @entity {

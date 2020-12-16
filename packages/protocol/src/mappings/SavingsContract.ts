@@ -6,7 +6,8 @@ import {
   CreditsRedeemed,
   ExchangeRateUpdated,
   SavingsDeposited,
-} from '../../generated/templates/SavingsContract/SavingsContract'
+  FractionUpdated,
+} from '../../generated/templates/SavingsContract/SavingsContractV2'
 import { SavingsContractV1 } from '../../generated/SavingsManager/SavingsContractV1'
 import { SavingsContractV2 } from '../../generated/SavingsManager/SavingsContractV2'
 
@@ -219,11 +220,10 @@ function updateTotalSavings(
     totalSavings = totalSavingsV1.value
   } else {
     let v2Contract = SavingsContractV2.bind(addr)
-    let totalSavingsV2 = v2Contract.try_totalSupply()
-
-    if (!totalSavingsV2.reverted) {
-      totalSavings = totalSavingsV2.value
-    }
+    let exchangeRate = v2Contract.exchangeRate()
+    let totalCredits = v2Contract.totalSupply()
+    let totalSavingsV2 = exchangeRate.times(totalCredits).div(integer.SCALE)
+    totalSavings = totalSavingsV2
   }
 
   if (totalSavings != null) {
@@ -236,4 +236,10 @@ function updateTotalSavings(
         .times(integer.fromNumber(100)),
     )
   }
+}
+
+export function handleFractionUpdated(event: FractionUpdated): void {
+  let savingsContractEntity = new SavingsContractEntity(event.address.toHexString())
+  savingsContractEntity.fraction = event.params.fraction
+  savingsContractEntity.save()
 }

@@ -33,6 +33,10 @@ export function getOrCreateSavingsContract(
   if (version == 2) {
     let tokenEntity = token.getOrCreate(addr)
     savingsContractEntity.token = tokenEntity.id
+    let fraction = contract.try_fraction()
+    if (!fraction.reverted) {
+      savingsContractEntity.fraction = fraction.value
+    }
   }
 
   if (massetAddress != null) {
