@@ -222,7 +222,7 @@ function updateTotalSavings(
     let v2Contract = SavingsContractV2.bind(addr)
     let exchangeRate = v2Contract.exchangeRate()
     let totalCredits = v2Contract.totalSupply()
-    let totalSavingsV2 = exchangeRate.times(totalCredits)
+    let totalSavingsV2 = exchangeRate.times(totalCredits).div(integer.SCALE)
     totalSavings = totalSavingsV2
   }
 
