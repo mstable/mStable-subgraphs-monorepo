@@ -10,7 +10,7 @@ dataSources:
     network: '{{network}}'
     source:
       abi: RewardsDistributor
-      address: '{{address_RewardsDistributor}}'
+      address: '{{RewardsDistributor.address}}'
       startBlock: {{startBlock_RewardsDistributor}}
     mapping:
       kind: ethereum/events
@@ -28,6 +28,8 @@ dataSources:
           file: ../../node_modules/@mstable/protocol/build/contracts/StakingRewards.json
         - name: StakingRewardsWithPlatformToken
           file: ../../node_modules/@mstable/protocol/build/contracts/StakingRewardsWithPlatformToken.json
+        - name: BoostedSavingsVault
+          file: ./abis/BoostedSavingsVault.json
         - name: ERC20Detailed
           file: ../../node_modules/@mstable/protocol/build/contracts/ERC20Detailed.json
       eventHandlers:
@@ -45,7 +47,7 @@ dataSources:
     network: '{{network}}'
     source:
       abi: MerkleDrop
-      address: '{{address_MerkleDrop_BAL}}'
+      address: '{{MerkleDrop_BAL.address}}'
       startBlock: {{startBlock_MerkleDrop_BAL}}
     mapping:
       kind: ethereum/events
