@@ -21,6 +21,7 @@ export namespace BoostedSavingsVault {
     entity.lockupDuration = contract.LOCKUP().toI32()
     entity.unlockPercentage = contract.UNLOCK()
 
+    entity.stakingContract = contract.stakingContract()
     entity.rewardsDistributor = contract.rewardsDistributor()
     entity.rewardsToken = token.getOrCreate(contract.getRewardToken()).id
     entity.stakingToken = token.getOrCreate(contract.stakingToken()).id

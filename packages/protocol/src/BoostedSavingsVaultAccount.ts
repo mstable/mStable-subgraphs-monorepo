@@ -55,8 +55,6 @@ export namespace BoostedSavingsVaultAccount {
 
     let userData = contract.userData(account)
     let lastClaim = contract.userClaim(account)
-    let unclaimedRewards = contract.unclaimedRewards(account)
-    let firstUnclaimedIndex = unclaimedRewards.value1.toI32()
 
     entity.rewardPerTokenPaid = userData.value0
     entity.rewards = userData.value1
@@ -66,13 +64,7 @@ export namespace BoostedSavingsVaultAccount {
 
     let index = 0
     while (entity.rewardCount > 0 && index <= entity.rewardCount - 1) {
-      BoostedSavingsVaultRewardEntry.update(
-        entity.id,
-        index,
-        firstUnclaimedIndex,
-        account,
-        contract,
-      )
+      BoostedSavingsVaultRewardEntry.update(entity.id, index, account, contract)
       index++
     }
 

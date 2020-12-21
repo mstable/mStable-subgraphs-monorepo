@@ -31,7 +31,6 @@ export namespace BoostedSavingsVaultRewardEntry {
     entity.rate = integer.ZERO
     entity.start = 0
     entity.finish = 0
-    entity.claimed = false
 
     entity.save()
 
@@ -41,7 +40,6 @@ export namespace BoostedSavingsVaultRewardEntry {
   export function update(
     accountId: string,
     index: i32,
-    firstUnclaimedIndex: number,
     account: Address,
     contract: BoostedSavingsVault,
   ): BoostedSavingsVaultRewardEntryEntity {
@@ -52,7 +50,6 @@ export namespace BoostedSavingsVaultRewardEntry {
     entity.start = userReward.value0.toI32()
     entity.finish = userReward.value1.toI32()
     entity.rate = userReward.value2
-    entity.claimed = index < firstUnclaimedIndex
     entity.save()
 
     return entity as BoostedSavingsVaultRewardEntryEntity

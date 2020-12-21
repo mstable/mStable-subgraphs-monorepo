@@ -623,6 +623,11 @@ type BoostedSavingsVault @entity {
   rewardsDistributor: Bytes!
 
   """
+  Staking rewards contract address
+  """
+  stakingContract: Bytes!
+
+  """
   Total boosted amount
   """
   totalSupply: BigInt!
@@ -661,8 +666,6 @@ type BoostedSavingsVaultRewardEntry @entity {
   account: BoostedSavingsVaultAccount!
 
   boostedSavingsVault: BoostedSavingsVault!
-
-  claimed: Boolean!
 
   index: Int!
 
