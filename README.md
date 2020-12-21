@@ -13,7 +13,7 @@ This project uses [Yarn workspaces](https://classic.yarnpkg.com/en/docs/workspac
 yarn config set workspaces-experimental true
 
 yarn
-lerna bootstrap
+yarn bootstrap --force-local && yarn lerna link --force-local
 ```
 
 ## Packages

@@ -10,8 +10,8 @@ dataSources:
     network: '{{network}}'
     source:
       abi: IncentivisedVotingLockup
-      address: '{{address_IncentivisedVotingLockup}}'
-      startBlock: {{startBlock_IncentivisedVotingLockup}}
+      address: '{{IncentivisedVotingLockup.address}}'
+      startBlock: {{IncentivisedVotingLockup.startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -51,8 +51,8 @@ dataSources:
     network: '{{network}}'
     source:
       abi: RewardsDistributor
-      address: '{{address_RewardsDistributor}}'
-      startBlock: {{startBlock_RewardsDistributor}}
+      address: '{{RewardsDistributor.address}}'
+      startBlock: {{RewardsDistributor.startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4

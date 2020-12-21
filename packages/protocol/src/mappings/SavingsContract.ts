@@ -1,13 +1,14 @@
-import { Address, BigDecimal } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { counters, events, integer, metrics, transaction, decimal } from '@mstable/subgraph-utils'
 
 import {
   AutomaticInterestCollectionSwitched,
   CreditsRedeemed,
   ExchangeRateUpdated,
-  SavingsContract,
   SavingsDeposited,
 } from '../../generated/templates/SavingsContract/SavingsContract'
+import { SavingsContractV1 } from '../../generated/SavingsManager/SavingsContractV1'
+import { SavingsContractV2 } from '../../generated/SavingsManager/SavingsContractV2'
 
 import {
   Account as AccountEntity,
@@ -18,6 +19,7 @@ import {
 } from '../../generated/schema'
 
 import { getOrCreateCreditBalance } from '../CreditBalance'
+import { getOrCreateSavingsContract } from '../SavingsContract'
 
 const SECONDS_IN_DAY = 86400
 const SECONDS_IN_YEAR = 86400 * 365
@@ -54,9 +56,7 @@ function calculateAPY(start: ExchangeRateEntity, end: ExchangeRateEntity): BigDe
 export function handleExchangeRateUpdated(event: ExchangeRateUpdated): void {
   let id = events.getId(event)
 
-  let savingsContractEntity = SavingsContractEntity.load(
-    event.address.toHexString(),
-  ) as SavingsContractEntity
+  let savingsContractEntity = getOrCreateSavingsContract(event.address, null)
 
   metrics.incrementById(savingsContractEntity.totalSavings, event.params.interestCollected)
 
@@ -114,7 +114,10 @@ export function handleExchangeRateUpdated(event: ExchangeRateUpdated): void {
   }
 }
 
-export function handleSavingsDeposited(event: SavingsDeposited): void {
+/**
+ * @deprecated
+ */
+function handleSaveV1Deposit(event: SavingsDeposited): void {
   let creditBalanceEntity = getOrCreateCreditBalance(event.params.saver, event.address)
   creditBalanceEntity.amount = creditBalanceEntity.amount.plus(event.params.creditsIssued)
   creditBalanceEntity.save()
@@ -122,32 +125,26 @@ export function handleSavingsDeposited(event: SavingsDeposited): void {
   let accountEntity = new AccountEntity(event.params.saver.toHexString())
   accountEntity.creditBalance = creditBalanceEntity.id
   accountEntity.save()
+}
 
-  let savingsContractEntity = SavingsContractEntity.load(
-    event.address.toHexString(),
-  ) as SavingsContractEntity
+export function handleSavingsDeposited(event: SavingsDeposited): void {
+  let savingsContractEntity = getOrCreateSavingsContract(event.address, null)
+
+  if (savingsContractEntity.version == 1) {
+    handleSaveV1Deposit(event)
+  }
 
   let massetTotalSupply = metrics.getOrCreate(
     Address.fromString(savingsContractEntity.masset),
     'token.totalSupply',
   )
 
-  let contract = SavingsContract.bind(event.address)
-  let totalSavings = contract.totalSavings()
-
   counters.incrementById(savingsContractEntity.totalDeposits)
 
   metrics.incrementById(savingsContractEntity.totalCredits, event.params.creditsIssued)
   metrics.incrementById(savingsContractEntity.cumulativeDeposited, event.params.savingsDeposited)
 
-  metrics.updateById(savingsContractEntity.totalSavings, totalSavings)
-  metrics.updateById(
-    savingsContractEntity.utilisationRate,
-    totalSavings
-      .times(integer.SCALE)
-      .div(massetTotalSupply.exact)
-      .times(integer.fromNumber(100)),
-  )
+  updateTotalSavings(savingsContractEntity, massetTotalSupply.exact)
 
   let baseTx = transaction.fromEvent(event)
   let txEntity = new SavingsContractDepositTransactionEntity(baseTx.id)
@@ -162,7 +159,10 @@ export function handleSavingsDeposited(event: SavingsDeposited): void {
   txEntity.save()
 }
 
-export function handleCreditsRedeemed(event: CreditsRedeemed): void {
+/**
+ * @deprecated
+ */
+function handleSaveV1Redemption(event: CreditsRedeemed): void {
   let creditBalanceEntity = getOrCreateCreditBalance(event.params.redeemer, event.address)
   creditBalanceEntity.amount = creditBalanceEntity.amount.minus(event.params.creditsRedeemed)
   creditBalanceEntity.save()
@@ -170,29 +170,23 @@ export function handleCreditsRedeemed(event: CreditsRedeemed): void {
   let accountEntity = new AccountEntity(event.params.redeemer.toHexString())
   accountEntity.creditBalance = creditBalanceEntity.id
   accountEntity.save()
+}
 
-  let savingsContractEntity = SavingsContractEntity.load(
-    event.address.toHexString(),
-  ) as SavingsContractEntity
+export function handleCreditsRedeemed(event: CreditsRedeemed): void {
+  let savingsContractEntity = getOrCreateSavingsContract(event.address, null)
+
+  if (savingsContractEntity.version == 1) {
+    handleSaveV1Redemption(event)
+  }
 
   let massetTotalSupply = metrics.getOrCreate(
     Address.fromString(savingsContractEntity.masset),
     'token.totalSupply',
   )
 
-  let contract = SavingsContract.bind(event.address)
-  let totalSavings = contract.totalSavings()
-
   counters.incrementById(savingsContractEntity.totalWithdrawals)
 
-  metrics.updateById(savingsContractEntity.totalSavings, totalSavings)
-  metrics.updateById(
-    savingsContractEntity.utilisationRate,
-    totalSavings
-      .times(integer.SCALE)
-      .div(massetTotalSupply.exact)
-      .times(integer.fromNumber(100)),
-  )
+  updateTotalSavings(savingsContractEntity, massetTotalSupply.exact)
 
   metrics.incrementById(savingsContractEntity.cumulativeWithdrawn, event.params.creditsRedeemed)
   metrics.decrementById(savingsContractEntity.totalCredits, event.params.creditsRedeemed)
@@ -208,4 +202,38 @@ export function handleCreditsRedeemed(event: CreditsRedeemed): void {
   txEntity.sender = event.params.redeemer
 
   txEntity.save()
+}
+
+function updateTotalSavings(
+  savingsContractEntity: SavingsContractEntity,
+  massetTotalSupply: BigInt,
+): void {
+  let totalSavings: BigInt
+
+  let addr = Address.fromString(savingsContractEntity.id)
+
+  let v1Contract = SavingsContractV1.bind(addr)
+  let totalSavingsV1 = v1Contract.try_totalSavings()
+
+  if (!totalSavingsV1.reverted) {
+    totalSavings = totalSavingsV1.value
+  } else {
+    let v2Contract = SavingsContractV2.bind(addr)
+    let totalSavingsV2 = v2Contract.try_totalSupply()
+
+    if (!totalSavingsV2.reverted) {
+      totalSavings = totalSavingsV2.value
+    }
+  }
+
+  if (totalSavings != null) {
+    metrics.updateById(savingsContractEntity.totalSavings, totalSavings)
+    metrics.updateById(
+      savingsContractEntity.utilisationRate,
+      totalSavings
+        .times(integer.SCALE)
+        .div(massetTotalSupply)
+        .times(integer.fromNumber(100)),
+    )
+  }
 }
