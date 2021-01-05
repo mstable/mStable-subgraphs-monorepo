@@ -11,7 +11,7 @@ dataSources:
     source:
       abi: RewardsDistributor
       address: '{{RewardsDistributor.address}}'
-      startBlock: {{startBlock_RewardsDistributor}}
+      startBlock: {{RewardsDistributor.startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -48,7 +48,7 @@ dataSources:
     source:
       abi: MerkleDrop
       address: '{{MerkleDrop_BAL.address}}'
-      startBlock: {{startBlock_MerkleDrop_BAL}}
+      startBlock: {{MerkleDrop_BAL.startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
