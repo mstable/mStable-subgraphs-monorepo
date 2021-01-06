@@ -435,6 +435,11 @@ type SavingsContract @entity {
     @derivedFrom(field: "savingsContract")
 
   """
+  All Boosted Savings Vaults associated with this Savings Contract.
+  """
+  boostedSavingsVaults: [BoostedSavingsVault!]! @derivedFrom(field: "savingsContract")
+
+  """
   Version of the savings contract (starting from 1). This value will never change for each entity,
   and can be used to determine the features of the contract.
   """
