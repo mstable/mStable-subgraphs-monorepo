@@ -651,6 +651,10 @@ type BoostedSavingsVaultAccount @entity {
 
   account: Account!
 
+  rawBalance: BigInt!
+
+  boostedBalance: BigInt!
+
   rewardPerTokenPaid: BigInt!
 
   rewards: BigInt!

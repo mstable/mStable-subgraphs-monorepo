@@ -1,4 +1,4 @@
-import { Address, log } from '@graphprotocol/graph-ts'
+import { Address } from '@graphprotocol/graph-ts'
 import { integer } from '@mstable/subgraph-utils'
 
 import { BoostedSavingsVault as BoostedSavingsVaultContract } from '../generated/BoostedSavingsVault_mUSD/BoostedSavingsVault'
@@ -36,6 +36,8 @@ export namespace BoostedSavingsVaultAccount {
     let id = getId(boostedSavingsVaultEntity, account)
     entity = new BoostedSavingsVaultAccountEntity(id)
     entity.account = account.toHexString()
+    entity.rawBalance = integer.ZERO
+    entity.boostedBalance = integer.ZERO
     entity.boostedSavingsVault = boostedSavingsVaultEntity.id
     entity.rewardPerTokenPaid = integer.ZERO
     entity.rewards = integer.ZERO
@@ -56,6 +58,8 @@ export namespace BoostedSavingsVaultAccount {
     let userData = contract.userData(account)
     let lastClaim = contract.userClaim(account)
 
+    entity.rawBalance = contract.rawBalanceOf(account)
+    entity.boostedBalance = contract.balanceOf(account)
     entity.rewardPerTokenPaid = userData.value0
     entity.rewards = userData.value1
     entity.lastAction = userData.value2.toI32()
