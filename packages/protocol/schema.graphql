@@ -7,641 +7,829 @@
 Basket Asset (e.g. DAI for the mUSD basket)
 """
 type Basset @entity {
-    """
-    Address of the Basset token contract
-    """
-    id: ID!
+  """
+  Address of the Basset token contract
+  """
+  id: ID!
 
-    """
-    Basket the Basset is contained in
-    """
-    basket: Basket! @derivedFrom(field: "bassets")
+  """
+  Basket the Basset is contained in
+  """
+  basket: Basket! @derivedFrom(field: "bassets")
 
-    """
-    Target weight of the Basset
-    """
-    maxWeight: BigInt!
+  """
+  Target weight of the Basset
+  """
+  maxWeight: BigInt!
 
-    """
-    Basset to Masset ratio for quantity conversion
-    """
-    ratio: BigInt!
+  """
+  Basset to Masset ratio for quantity conversion
+  """
+  ratio: BigInt!
 
-    """
-    Flag that is set when the bAsset is removed from the basket (and unset when added)
-    """
-    removed: Boolean!
+  """
+  Flag that is set when the bAsset is removed from the basket (and unset when added)
+  """
+  removed: Boolean!
 
-    """
-    Status of the Basset, e.g. 'Normal'
-    """
-    status: String!
+  """
+  Status of the Basset, e.g. 'Normal'
+  """
+  status: String!
 
-    """
-    An ERC20 can charge transfer fee, e.g. USDT or DGX tokens
-    """
-    isTransferFeeCharged: Boolean!
+  """
+  An ERC20 can charge transfer fee, e.g. USDT or DGX tokens
+  """
+  isTransferFeeCharged: Boolean!
 
-    """
-    The underlying Token for the Basset
-    """
-    token: Token!
+  """
+  The underlying Token for the Basset
+  """
+  token: Token!
 
-    """
-    Amount of the Basset that is held in collateral
-    """
-    vaultBalance: Metric!
+  """
+  Amount of the Basset that is held in collateral
+  """
+  vaultBalance: Metric!
 
-    """
-    Total number of mint transactions in which the Basset was an input
-    """
-    totalMints: Counter!
+  """
+  Total number of mint transactions in which the Basset was an input
+  """
+  totalMints: Counter!
 
-    """
-    Total number of swap transactions in which the Basset was an input
-    """
-    totalSwapsAsInput: Counter!
+  """
+  Total number of swap transactions in which the Basset was an input
+  """
+  totalSwapsAsInput: Counter!
 
-    """
-    Total number of swap transactions in which the Basset was an output
-    """
-    totalSwapsAsOutput: Counter!
+  """
+  Total number of swap transactions in which the Basset was an output
+  """
+  totalSwapsAsOutput: Counter!
 
-    """
-    Total number of redemption transactions in which the Basset was an output
-    """
-    totalRedemptions: Counter!
+  """
+  Total number of redemption transactions in which the Basset was an output
+  """
+  totalRedemptions: Counter!
 
-    """
-    Total supply of the Basset token
-    """
-    totalSupply: Metric!
+  """
+  Total supply of the Basset token
+  """
+  totalSupply: Metric!
 
-    """
-    Cumulative amount of the Basset that was used in mint transactions as input
-    """
-    cumulativeMinted: Metric!
+  """
+  Cumulative amount of the Basset that was used in mint transactions as input
+  """
+  cumulativeMinted: Metric!
 
-    """
-    Cumulative amount of the Basset that was used in swap transactions as output
-    """
-    cumulativeSwappedAsOutput: Metric!
+  """
+  Cumulative amount of the Basset that was used in swap transactions as output
+  """
+  cumulativeSwappedAsOutput: Metric!
 
-    """
-    Cumulative amount of the Basset that was used in redemption transactions as output (excluding proportional redemption)
-    """
-    cumulativeRedeemed: Metric!
+  """
+  Cumulative amount of the Basset that was used in redemption transactions as output (excluding proportional redemption)
+  """
+  cumulativeRedeemed: Metric!
 
-    """
-    Cumulative amount of fees paid (e.g. for swaps and redemptions) using this Basset
-    """
-    cumulativeFeesPaid: Metric!
+  """
+  Cumulative amount of fees paid (e.g. for swaps and redemptions) using this Basset
+  """
+  cumulativeFeesPaid: Metric!
 }
 
 """
 A Basket of Bassets (e.g. for mUSD)
 """
 type Basket @entity {
-    id: ID!
+  id: ID!
 
-    """
-    The Bassets in the Basket
-    """
-    bassets: [Basset!]!
+  """
+  The Bassets in the Basket
+  """
+  bassets: [Basset!]!
 
-    """
-    The collateralisation ratio of the Basket
-    """
-    collateralisationRatio: BigInt!
+  """
+  The collateralisation ratio of the Basket
+  """
+  collateralisationRatio: BigInt!
 
-    """
-    Max number of Bassets that can be present in the Basket
-    """
-    maxBassets: Int!
+  """
+  Max number of Bassets that can be present in the Basket
+  """
+  maxBassets: Int!
 
-    """
-    Flag for whether the Basket has failed
-    """
-    undergoingRecol: Boolean!
+  """
+  Flag for whether the Basket has failed
+  """
+  undergoingRecol: Boolean!
 
-    """
-    Flag for whether the Basket has failed
-    """
-    failed: Boolean!
+  """
+  Flag for whether the Basket has failed
+  """
+  failed: Boolean!
 
-    """
-    Masset the Basket belongs to
-    """
-    masset: Masset! @derivedFrom(field: "basket")
+  """
+  Masset the Basket belongs to
+  """
+  masset: Masset! @derivedFrom(field: "basket")
 }
 
 """
 An mStable asset (e.g. mUSD)
 """
 type Masset @entity {
-    """
-    Address of the Masset contract
-    """
-    id: ID!
+  """
+  Address of the Masset contract
+  """
+  id: ID!
 
-    """
-    The Basket of Bassets for this Masset
-    """
-    basket: Basket!
+  """
+  The Basket of Bassets for this Masset
+  """
+  basket: Basket!
 
-    """
-    The address of the `BasketManager` contract for this Masset
-    """
-    basketManager: Bytes!
+  """
+  The address of the `BasketManager` contract for this Masset
+  """
+  basketManager: Bytes!
 
-    """
-    The swap fee rate
-    """
-    feeRate: BigInt!
+  """
+  The swap fee rate
+  """
+  feeRate: BigInt!
 
-    """
-    The redemption fee rate
-    """
-    redemptionFeeRate: BigInt!
+  """
+  The redemption fee rate
+  """
+  redemptionFeeRate: BigInt!
 
-    """
-    Total number of mint transactions for this Masset
-    """
-    totalMints: Counter!
+  """
+  Total number of mint transactions for this Masset
+  """
+  totalMints: Counter!
 
-    """
-    Total number of swap transactions for this Masset
-    """
-    totalSwaps: Counter!
+  """
+  Total number of swap transactions for this Masset
+  """
+  totalSwaps: Counter!
 
-    """
-    Total number of redemption transactions for this Masset (excluding proportional redemption)
-    """
-    totalRedemptions: Counter!
+  """
+  Total number of redemption transactions for this Masset (excluding proportional redemption)
+  """
+  totalRedemptions: Counter!
 
-    """
-    Total number of proportional redemption (i.e. `RedeemMasset`) transactions for this Masset
-    """
-    totalRedeemMassets: Counter!
+  """
+  Total number of proportional redemption (i.e. `RedeemMasset`) transactions for this Masset
+  """
+  totalRedeemMassets: Counter!
 
-    """
-    Total supply of the Masset token
-    """
-    totalSupply: Metric!
+  """
+  Total supply of the Masset token
+  """
+  totalSupply: Metric!
 
-    """
-    Cumulative amount of this Masset that has been minted
-    """
-    cumulativeMinted: Metric!
+  """
+  Cumulative amount of this Masset that has been minted
+  """
+  cumulativeMinted: Metric!
 
-    """
-    Cumulative amount of this Masset that has been swapped
-    """
-    cumulativeSwapped: Metric!
+  """
+  Cumulative amount of this Masset that has been swapped
+  """
+  cumulativeSwapped: Metric!
 
-    """
-    Cumulative amount of this Masset that has been redeemed
-    """
-    cumulativeRedeemed: Metric!
+  """
+  Cumulative amount of this Masset that has been redeemed
+  """
+  cumulativeRedeemed: Metric!
 
-    """
-    Cumulative amount of this Masset that has been proportionally redeemed (i.e. `RedeemMasset`)
-    """
-    cumulativeRedeemedMasset: Metric!
+  """
+  Cumulative amount of this Masset that has been proportionally redeemed (i.e. `RedeemMasset`)
+  """
+  cumulativeRedeemedMasset: Metric!
 
-    """
-    Cumulative amount of fees paid (e.g. for swaps and redemptions) for this Masset
-    """
-    cumulativeFeesPaid: Metric!
+  """
+  Cumulative amount of fees paid (e.g. for swaps and redemptions) for this Masset
+  """
+  cumulativeFeesPaid: Metric!
 
-    """
-    The underlying Token for this Masset
-    """
-    token: Token!
+  """
+  The cumulative interest collected from platforms
+  """
+  cumulativeInterestCollected: Metric!
 
-    """
-    All savings Contracts for this Masset
-    """
-    savingsContracts: [SavingsContract!]! @derivedFrom(field: "masset")
+  """
+  The cumulative interest distributed to savers
+  """
+  cumulativeInterestDistributed: Metric!
 
-    """
-    All swap transactions sent with this Masset
-    """
-    swapTransactions: [SwapTransaction!]! @derivedFrom(field: "masset")
+  """
+  The cumulative amount deposited by liquidators
+  """
+  cumulativeLiquidatorDeposited: Metric!
 
-    """
-    All transactions sent with this Masset where a fee was paid
-    """
-    paidFeeTransactions: [PaidFeeTransaction!]! @derivedFrom(field: "masset")
+  """
+  The underlying Token for this Masset
+  """
+  token: Token!
 
-    """
-    All proportional redemption (`RedeemMasset`) transactions sent with this Masset
-    """
-    redeemMassetTransactions: [RedeemMassetTransaction!]! @derivedFrom(field: "masset")
+  """
+  Current SavingsContract for this Masset (i.e. added/updated via SavingsManager and receiving interest)
+  """
+  currentSavingsContract: SavingsContract
 
-    """
-    All mint-multi transactions sent with this Masset
-    """
-    mintMultiTransactions: [MintMultiTransaction!]! @derivedFrom(field: "masset")
+  """
+  All Savings Contracts for this Masset
+  """
+  savingsContracts: [SavingsContract!]! @derivedFrom(field: "masset")
 
-    """
-    All mint-single transactions sent with this Masset
-    """
-    mintSingleTransactions: [MintSingleTransaction!]! @derivedFrom(field: "masset")
+  """
+  All swap transactions sent with this Masset
+  """
+  swapTransactions: [SwapTransaction!]! @derivedFrom(field: "masset")
 
-    """
-    All redemption transactions sent with this Masset (excluding proportional redemptions)
-    """
-    redeemTransactions: [RedeemTransaction!]! @derivedFrom(field: "masset")
+  """
+  All transactions sent with this Masset where a fee was paid
+  """
+  paidFeeTransactions: [PaidFeeTransaction!]! @derivedFrom(field: "masset")
+
+  """
+  All proportional redemption (`RedeemMasset`) transactions sent with this Masset
+  """
+  redeemMassetTransactions: [RedeemMassetTransaction!]! @derivedFrom(field: "masset")
+
+  """
+  All mint-multi transactions sent with this Masset
+  """
+  mintMultiTransactions: [MintMultiTransaction!]! @derivedFrom(field: "masset")
+
+  """
+  All mint-single transactions sent with this Masset
+  """
+  mintSingleTransactions: [MintSingleTransaction!]! @derivedFrom(field: "masset")
+
+  """
+  All redemption transactions sent with this Masset (excluding proportional redemptions)
+  """
+  redeemTransactions: [RedeemTransaction!]! @derivedFrom(field: "masset")
 }
 
+
 """
-An Ethereum account that has interacted with parts of mStable
+An Ethereum account that has interacted with Save v1
+@deprecated
 """
 type Account @entity {
-    """
-    Address of the account
-    """
-    id: ID!
+  """
+  Address of the account
+  """
+  id: ID!
 
-    """
-    CreditBalance of the account
-    """
-    creditBalance: CreditBalance
+  """
+  Credit balance of the account (Save v1 only)
+  @deprecated
+  """
+  creditBalance: CreditBalance
 }
 
 """
-A credit balance for a given savings contract
+A credit balance for a given savings contract (Save v1 only)
+@deprecated
 """
 type CreditBalance @entity {
-    id: ID!
+  id: ID!
 
-    """
-    Account
-    """
-    account: Account!
+  """
+  Account
+  """
+  account: Account!
 
-    """
-    Amount as an exact value
-    """
-    amount: BigInt!
+  """
+  Amount as an exact value
+  """
+  amount: BigInt!
 
-    """
-    Savings contract
-    """
-    savingsContract: SavingsContract!
+  """
+  Savings contract
+  """
+  savingsContract: SavingsContract!
+}
+
+type SavingsManager @entity {
+  """
+  Singleton ID of the SavingsManager == "SavingsManager""
+  """
+  id: ID!
+
+  """
+  Address of the SavingsManager
+  """
+  address: Bytes!
+
+  """
+  Amount of collected interest that will be sent to Savings Contract (100%)
+  """
+  savingsRate: Metric!
+
+  """
+  Flag for whether yield/liquidator streams are frozen
+  """
+  streamsFrozen: Boolean!
 }
 
 type SavingsContract @entity {
-    """
-    Address of the SavingsContract
-    """
-    id: ID!
+  """
+  Address of the SavingsContract
+  """
+  id: ID!
 
-    """
-    The Masset using this SavingsContract
-    """
-    masset: Masset!
+  """
+  Flag for whether the SavingsContract is "active" (i.e. added via the SavingsManager)
+  """
+  active: Boolean!
 
-    """
-    The amount of underlying savings in the contract
-    """
-    totalSavings: Metric!
+  """
+  The Masset using this SavingsContract
+  """
+  masset: Masset!
 
-    """
-    Total number of savings credits issued
-    """
-    totalCredits: Metric!
+  """
+  The amount of underlying savings in the contract
+  """
+  totalSavings: Metric!
 
-    """
-    The total number of deposits made
-    """
-    totalDeposits: Counter!
+  """
+  Total number of savings credits issued (v1 only)
+  @deprecated
+  """
+  totalCredits: Metric
 
-    """
-    The total number of withdrawals made
-    """
-    totalWithdrawals: Counter!
+  """
+  The total number of deposits made
+  """
+  totalDeposits: Counter!
 
-    """
-    The cumulative amount of savings deposited
-    """
-    cumulativeDeposited: Metric!
+  """
+  The total number of withdrawals made
+  """
+  totalWithdrawals: Counter!
 
-    """
-    The cumulative amount of savings withdrawn
-    """
-    cumulativeWithdrawn: Metric!
+  """
+  The cumulative amount of savings deposited
+  """
+  cumulativeDeposited: Metric!
 
-    """
-    The daily APY value; this is derived from the `ExchangeRate` closest to 24h ago from the last-received
-    `ExchangeRate`, and will change whenever a new `ExchangeRate` is created.
-    """
-    dailyAPY: BigDecimal!
+  """
+  The cumulative amount of savings withdrawn
+  """
+  cumulativeWithdrawn: Metric!
 
-    """
-    The share of the Masset that is deposited in the Savings Contract; a rate of 100% would mean all of the
-    Masset being deposited in the Savings Contract.
-    """
-    utilisationRate: Metric!
+  """
+  The daily APY value; this is derived from the `ExchangeRate` closest to 24h ago from the last-received
+  `ExchangeRate`, and will change whenever a new `ExchangeRate` is created.
+  """
+  dailyAPY: BigDecimal!
 
-    """
-    Flag for whether the automatic collection of interest is enabled.
-    """
-    automationEnabled: Boolean!
+  """
+  The share of the Masset that is deposited in the Savings Contract; a rate of 100% would mean all of the
+  Masset being deposited in the Savings Contract.
+  """
+  utilisationRate: Metric!
 
-    """
-    The latest exchange rate that was received
-    """
-    latestExchangeRate: ExchangeRate
+  """
+  Flag for whether the automatic collection of interest is enabled.
+  """
+  automationEnabled: Boolean!
 
-    """
-    The exchange rate that is closest to 24h ago from the latest exchange rate;
-    used to derive daily APYs.
-    """
-    exchangeRate24hAgo: ExchangeRate
+  """
+  The latest exchange rate that was received
+  """
+  latestExchangeRate: ExchangeRate
 
-    """
-    All credit balances relating to this Savings Contract.
-    """
-    creditBalances: [CreditBalance!]! @derivedFrom(field: "savingsContract")
+  """
+  The exchange rate that is closest to 24h ago from the latest exchange rate;
+  used to derive daily APYs.
+  """
+  exchangeRate24hAgo: ExchangeRate
 
-    """
-    All exchange rates relating to this Savings Contract.
-    """
-    exchangeRates: [ExchangeRate!]! @derivedFrom(field: "savingsContract")
+  """
+  All credit balances relating to this Savings Contract.
+  """
+  creditBalances: [CreditBalance!]! @derivedFrom(field: "savingsContract")
 
-    """
-    All deposit transactions sent with this Savings Contract.
-    """
-    depositTransactions: [SavingsContractDepositTransaction!]! @derivedFrom(field: "savingsContract")
+  """
+  All exchange rates relating to this Savings Contract.
+  """
+  exchangeRates: [ExchangeRate!]! @derivedFrom(field: "savingsContract")
 
-    """
-    All withdraw transactions sent with this Savings Contract.
-    """
-    withdrawTransactions: [SavingsContractWithdrawTransaction!]! @derivedFrom(field: "savingsContract")
+  """
+  All deposit transactions sent with this Savings Contract.
+  """
+  depositTransactions: [SavingsContractDepositTransaction!]! @derivedFrom(field: "savingsContract")
+
+  """
+  All withdraw transactions sent with this Savings Contract.
+  """
+  withdrawTransactions: [SavingsContractWithdrawTransaction!]!
+    @derivedFrom(field: "savingsContract")
+
+  """
+  All Boosted Savings Vaults associated with this Savings Contract.
+  """
+  boostedSavingsVaults: [BoostedSavingsVault!]! @derivedFrom(field: "savingsContract")
+
+  """
+  Version of the savings contract (starting from 1). This value will never change for each entity,
+  and can be used to determine the features of the contract.
+  """
+  version: Int!
+
+  """
+  This field is not present in v1 savings contracts; starting from v2, savings contracts
+  are ERC20-compatible tokens.
+  """
+  token: Token
+}
+
+type BoostedSavingsVault @entity {
+  # BoostedSavingsVault address
+  id: ID!
+
+  savingsContract: SavingsContract!
+
+  accounts: [BoostedSavingsVaultAccount!]! @derivedFrom(field: "boostedSavingsVault")
+
+  rewardEntries: [BoostedSavingsVaultRewardEntry!]! @derivedFrom(field: "boostedSavingsVault")
+
+  """
+  Length of token lockup (in seconds), after rewards are earned
+  """
+  lockupDuration: Int!
+
+  """
+  Percentage of earned tokens that are unlocked immediately upon claiming
+  """
+  unlockPercentage: BigInt!
+
+  """
+  Rewards period duration (in seconds)
+  """
+  periodDuration: Int!
+
+  """
+  Timestamp for current rewards period finish
+  """
+  periodFinish: Int!
+
+  """
+  Last time any user took action
+  """
+  lastUpdateTime: Int!
+
+  """
+  The staking token, e.g. imUSD
+  """
+  stakingToken: Token!
+
+  """
+  The reward per token stored
+  """
+  rewardPerTokenStored: BigInt!
+
+  """
+  The reward rate for the rest of the rewards period
+  """
+  rewardRate: BigInt!
+
+  """
+  The rewards token, e.g. MTA
+  """
+  rewardsToken: Token!
+
+  """
+  Rewards distributor contract address
+  """
+  rewardsDistributor: Bytes!
+
+  """
+  Staking rewards contract address
+  """
+  stakingContract: Bytes!
+
+  """
+  Total boosted amount
+  """
+  totalSupply: BigInt!
+
+  """
+  Total staking rewards (rewardRate * periodDuration)
+  """
+  totalStakingRewards: BigInt!
+}
+
+type BoostedSavingsVaultAccount @entity {
+  # {BoostedSavingsVault address}.{account}
+  id: ID!
+
+  boostedSavingsVault: BoostedSavingsVault!
+
+  account: Account!
+
+  rawBalance: BigInt!
+
+  boostedBalance: BigInt!
+
+  rewardPerTokenPaid: BigInt!
+
+  rewards: BigInt!
+
+  lastAction: Int!
+
+  lastClaim: Int!
+
+  rewardCount: Int!
+
+  rewardEntries: [BoostedSavingsVaultRewardEntry!]! @derivedFrom(field: "account")
+}
+
+type BoostedSavingsVaultRewardEntry @entity {
+  # {BoostedSavingsVault address}.{account}.{index}
+  id: ID!
+
+  account: BoostedSavingsVaultAccount!
+
+  boostedSavingsVault: BoostedSavingsVault!
+
+  index: Int!
+
+  start: Int!
+
+  finish: Int!
+
+  rate: BigInt!
 }
 
 type ExchangeRate @entity {
-    id: ID!
+  id: ID!
 
-    """
-    The exchange rate; this is used to derive the `totalSavings` on the Savings Contract;
-    totalCredits * exchangeRate = totalSavings
-    """
-    rate: BigDecimal!
+  """
+  The exchange rate; this is used to derive the `totalSavings` on the Savings Contract;
+  totalCredits * exchangeRate = totalSavings
+  """
+  rate: BigDecimal!
 
-    """
-    The timestamp at which the rate was created.
-    """
-    timestamp: Int!
+  """
+  The timestamp at which the rate was created.
+  """
+  timestamp: Int!
 
-    """
-    The SavingsContract this ExchangeRate relates to.
-    """
-    savingsContract: SavingsContract!
+  """
+  The SavingsContract this ExchangeRate relates to.
+  """
+  savingsContract: SavingsContract!
 
-    """
-    The next exchange rate for the savings contract (by timestamp); used for calculating APY.
-    """
-    next: ExchangeRate
+  """
+  The next exchange rate for the savings contract (by timestamp); used for calculating APY.
+  """
+  next: ExchangeRate
 }
 
 type SwapTransaction implements Transaction @entity {
-    id: ID!
+  id: ID!
 
-    hash: Bytes!
+  hash: Bytes!
 
-    block: Int!
+  block: Int!
 
-    sender: Bytes!
+  sender: Bytes!
 
-    timestamp: BigInt!
+  timestamp: BigInt!
 
-    """
-    The Masset the transaction relates to.
-    """
-    masset: Masset!
+  """
+  The Masset the transaction relates to.
+  """
+  masset: Masset!
 
-    """
-    The amount of the swap output in Masset units
-    """
-    massetUnits: BigInt!
+  """
+  The amount of the swap output in Masset units
+  """
+  massetUnits: BigInt!
 
-    """
-    The Basset used as the input for this swap.
-    """
-    inputBasset: Basset!
+  """
+  The Basset used as the input for this swap.
+  """
+  inputBasset: Basset!
 
-    """
-    The Basset used as the output for this swap.
-    """
-    outputBasset: Basset!
+  """
+  The Basset used as the output for this swap.
+  """
+  outputBasset: Basset!
 
-    """
-    The recipient of the swap output.
-    """
-    recipient: Bytes!
+  """
+  The recipient of the swap output.
+  """
+  recipient: Bytes!
 }
 
 type PaidFeeTransaction implements Transaction @entity {
-    id: ID!
+  id: ID!
 
-    hash: Bytes!
+  hash: Bytes!
 
-    block: Int!
+  block: Int!
 
-    sender: Bytes!
+  sender: Bytes!
 
-    timestamp: BigInt!
+  timestamp: BigInt!
 
-    """
-    The Masset the transaction relates to.
-    """
-    masset: Masset!
+  """
+  The Masset the transaction relates to.
+  """
+  masset: Masset!
 
-    """
-    The amount of the fee that was paid, in Masset units.
-    """
-    massetUnits: BigInt!
+  """
+  The amount of the fee that was paid, in Masset units.
+  """
+  massetUnits: BigInt!
 
-    """
-    The Basset the fee was paid in.
-    """
-    basset: Basset!
+  """
+  The Basset the fee was paid in.
+  """
+  basset: Basset!
 
-    """
-    The amount of the fee that was paid, in Basset units.
-    """
-    bassetUnits: BigInt!
+  """
+  The amount of the fee that was paid, in Basset units.
+  """
+  bassetUnits: BigInt!
 }
 
 type MintSingleTransaction implements Transaction @entity {
-    id: ID!
+  id: ID!
 
-    hash: Bytes!
+  hash: Bytes!
 
-    block: Int!
+  block: Int!
 
-    sender: Bytes!
+  sender: Bytes!
 
-    recipient: Bytes!
+  recipient: Bytes!
 
-    timestamp: BigInt!
+  timestamp: BigInt!
 
-    """
-    The Masset the transaction relates to.
-    """
-    masset: Masset!
+  """
+  The Masset the transaction relates to.
+  """
+  masset: Masset!
 
-    """
-    The amount of the Masset minted, in Masset units.
-    """
-    massetUnits: BigInt!
+  """
+  The amount of the Masset minted, in Masset units.
+  """
+  massetUnits: BigInt!
 
-    """
-    The Basset used as the collateral asset for this mint.
-    """
-    basset: Basset!
+  """
+  The Basset used as the collateral asset for this mint.
+  """
+  basset: Basset!
 
-    """
-    The amount of the Basset used for this mint, in Basset units.
-    """
-    bassetUnits: BigInt!
+  """
+  The amount of the Basset used for this mint, in Basset units.
+  """
+  bassetUnits: BigInt!
 }
 
 type MintMultiTransaction implements Transaction @entity {
-    id: ID!
+  id: ID!
 
-    hash: Bytes!
+  hash: Bytes!
 
-    block: Int!
+  block: Int!
 
-    sender: Bytes!
+  sender: Bytes!
 
-    recipient: Bytes!
+  recipient: Bytes!
 
-    timestamp: BigInt!
+  timestamp: BigInt!
 
-    """
-    The Masset the transaction relates to.
-    """
-    masset: Masset!
+  """
+  The Masset the transaction relates to.
+  """
+  masset: Masset!
 
-    """
-    The amount of the Masset minted, in Masset units.
-    """
-    massetUnits: BigInt!
+  """
+  The amount of the Masset minted, in Masset units.
+  """
+  massetUnits: BigInt!
 
-    """
-    The Bassets used as collateral assets for this mint.
-    """
-    bassets: [Basset!]!
+  """
+  The Bassets used as collateral assets for this mint.
+  """
+  bassets: [Basset!]!
 
-    """
-    The respective Basset units for each Basset used in this mint.
-    """
-    bassetsUnits: [BigInt!]!
+  """
+  The respective Basset units for each Basset used in this mint.
+  """
+  bassetsUnits: [BigInt!]!
 }
 
 type RedeemTransaction implements Transaction @entity {
-    id: ID!
+  id: ID!
 
-    hash: Bytes!
+  hash: Bytes!
 
-    block: Int!
+  block: Int!
 
-    sender: Bytes!
+  sender: Bytes!
 
-    recipient: Bytes!
+  recipient: Bytes!
 
-    timestamp: BigInt!
+  timestamp: BigInt!
 
-    """
-    The Masset the transaction relates to.
-    """
-    masset: Masset!
+  """
+  The Masset the transaction relates to.
+  """
+  masset: Masset!
 
-    """
-    The amount redeemed in Masset units.
-    """
-    massetUnits: BigInt!
+  """
+  The amount redeemed in Masset units.
+  """
+  massetUnits: BigInt!
 
-    """
-    The Bassets selected as assets to redeem.
-    """
-    bassets: [Basset!]!
+  """
+  The Bassets selected as assets to redeem.
+  """
+  bassets: [Basset!]!
 
-    """
-    The respective units of each Basset selected to redeem.
-    """
-    bassetsUnits: [BigInt!]!
+  """
+  The respective units of each Basset selected to redeem.
+  """
+  bassetsUnits: [BigInt!]!
 }
 
 type RedeemMassetTransaction implements Transaction @entity {
-    id: ID!
+  id: ID!
 
-    hash: Bytes!
+  hash: Bytes!
 
-    block: Int!
+  block: Int!
 
-    sender: Bytes!
+  sender: Bytes!
 
-    recipient: Bytes!
+  recipient: Bytes!
 
-    timestamp: BigInt!
+  timestamp: BigInt!
 
-    """
-    The Masset the transaction relates to.
-    """
-    masset: Masset!
+  """
+  The Masset the transaction relates to.
+  """
+  masset: Masset!
 
-    """
-    The amount redeemed in Masset units.
-    """
-    massetUnits: BigInt!
+  """
+  The amount redeemed in Masset units.
+  """
+  massetUnits: BigInt!
 }
 
 type SavingsContractDepositTransaction implements Transaction @entity {
-    id: ID!
+  id: ID!
 
-    hash: Bytes!
+  hash: Bytes!
 
-    block: Int!
+  block: Int!
 
-    sender: Bytes!
+  sender: Bytes!
 
-    timestamp: BigInt!
+  timestamp: BigInt!
 
-    """
-    The SavingsContract the transaction relates to.
-    """
-    savingsContract: SavingsContract!
+  """
+  The SavingsContract the transaction relates to.
+  """
+  savingsContract: SavingsContract!
 
-    """
-    The amount deposited.
-    """
-    amount: BigInt!
+  """
+  The amount deposited.
+  """
+  amount: BigInt!
 }
 
 type SavingsContractWithdrawTransaction implements Transaction @entity {
-    id: ID!
+  id: ID!
 
-    hash: Bytes!
+  hash: Bytes!
 
-    block: Int!
+  block: Int!
 
-    sender: Bytes!
+  sender: Bytes!
 
-    timestamp: BigInt!
+  timestamp: BigInt!
 
-    """
-    The SavingsContract the transaction relates to.
-    """
-    savingsContract: SavingsContract!
+  """
+  The SavingsContract the transaction relates to.
+  """
+  savingsContract: SavingsContract!
 
-    """
-    The amount withdrawn.
-    """
-    amount: BigInt!
+  """
+  The amount withdrawn.
+  """
+  amount: BigInt!
 }

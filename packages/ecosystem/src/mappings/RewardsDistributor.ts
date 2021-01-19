@@ -15,6 +15,7 @@ import { StakingRewardsWithPlatformToken } from '../../generated/RewardsDistribu
 import { RewardsDistributor, StakingRewardsContract } from '../../generated/schema'
 import { getOrCreateStakingRewardsContract } from '../models/StakingRewardsContract'
 import { StakingRewardsContractType } from '../enums'
+import { BoostedSavingsVault } from '../../../protocol/generated/BoostedSavingsVault_mUSD/BoostedSavingsVault'
 
 function getOrCreateRewardsDistributor(address: Address): RewardsDistributor {
   let id = address.toHexString()
@@ -53,55 +54,45 @@ export function handleWhitelisted(event: Whitelisted): void {
 export function handleDistributedReward(event: DistributedReward): void {
   // The receipient may be a StakingRewards or StakingRewardsWithPlatformToken
   // contract, which should be tracked here.
-  if (StakingRewardsContract.load(event.params.recipient.toHexString()) == null) {
-    // Try a function that only exists on the `StakingRewardsWithPlatformToken` contract
-    {
-      let contract = StakingRewardsWithPlatformToken.bind(event.params.recipient)
-      if (!contract.try_platformToken().reverted) {
-        // Track the contract and create the entity
-        {
-          StakingRewardsWithPlatformTokenTemplate.create(event.params.recipient)
-          getOrCreateStakingRewardsContract(
-            event.params.recipient,
-            StakingRewardsContractType.STAKING_REWARDS_WITH_PLATFORM_TOKEN,
-          )
-        }
+  let recipient = event.params.recipient
 
-        // Create the staking token entity, but do not track it
-        {
-          let address = contract.stakingToken()
-          token.getOrCreate(address)
-        }
+  // If the recipient is a staking rewards contract that already exists, no further
+  // action is needed.
+  if (StakingRewardsContract.load(recipient.toHexString()) != null) {
+    return
+  }
 
-        // Create the platform token entity, but do not track it
-        {
-          let address = contract.platformToken()
-          token.getOrCreate(address)
-        }
-
-        // Create the rewards token entity, but do not track it
-        {
-          let address = contract.rewardsToken()
-          token.getOrCreate(address)
-        }
-
-        return
-      }
+  // If it has a LOCKUP defined, it's not in the scope of this subgraph (and is possibly a
+  // boosted savings vault).
+  {
+    let contract = BoostedSavingsVault.bind(recipient)
+    if (!contract.try_LOCKUP().reverted) {
+      return
     }
+  }
 
-    // Try a function that exists on the `StakingRewards` contract
-    let contract = StakingRewards.bind(event.params.recipient)
-    if (!contract.try_rewardsToken().reverted) {
+  // Try a function that only exists on the `StakingRewardsWithPlatformToken` contract
+  {
+    let contract = StakingRewardsWithPlatformToken.bind(recipient)
+    if (!contract.try_platformToken().reverted) {
       // Track the contract and create the entity
-      StakingRewardsTemplate.create(event.params.recipient)
-      getOrCreateStakingRewardsContract(
-        event.params.recipient,
-        StakingRewardsContractType.STAKING_REWARDS,
-      )
+      {
+        StakingRewardsWithPlatformTokenTemplate.create(recipient)
+        getOrCreateStakingRewardsContract(
+          recipient,
+          StakingRewardsContractType.STAKING_REWARDS_WITH_PLATFORM_TOKEN,
+        )
+      }
 
       // Create the staking token entity, but do not track it
       {
         let address = contract.stakingToken()
+        token.getOrCreate(address)
+      }
+
+      // Create the platform token entity, but do not track it
+      {
+        let address = contract.platformToken()
         token.getOrCreate(address)
       }
 
@@ -113,5 +104,30 @@ export function handleDistributedReward(event: DistributedReward): void {
 
       return
     }
+  }
+
+  // Try a function that exists on the `StakingRewards` contract
+  let contract = StakingRewards.bind(recipient)
+  if (!contract.try_rewardsToken().reverted) {
+    // Track the contract and create the entity
+    StakingRewardsTemplate.create(recipient)
+    getOrCreateStakingRewardsContract(
+      event.params.recipient,
+      StakingRewardsContractType.STAKING_REWARDS,
+    )
+
+    // Create the staking token entity, but do not track it
+    {
+      let address = contract.stakingToken()
+      token.getOrCreate(address)
+    }
+
+    // Create the rewards token entity, but do not track it
+    {
+      let address = contract.rewardsToken()
+      token.getOrCreate(address)
+    }
+
+    return
   }
 }

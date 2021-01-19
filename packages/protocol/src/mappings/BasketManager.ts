@@ -3,7 +3,7 @@ import {
   BassetAdded,
   BassetStatusChanged,
   BassetRemoved,
-} from '../../generated/mUSD/BasketManager'
+} from '../../generated/BasketManager_mUSD/BasketManager'
 import { Basset as BassetEntity } from '../../generated/schema'
 import { updateBasket } from '../Basket'
 

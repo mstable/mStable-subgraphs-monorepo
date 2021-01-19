@@ -3,6 +3,9 @@ import { integer } from '@mstable/subgraph-utils'
 
 import { CreditBalance as CreditBalanceEntity } from '../generated/schema'
 
+/**
+ * @deprecated
+ */
 export function getOrCreateCreditBalance(
   account: Address,
   savingsContract: Address,

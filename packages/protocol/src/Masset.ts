@@ -1,7 +1,7 @@
 import { Address } from '@graphprotocol/graph-ts'
 import { integer, counters, metrics, token } from '@mstable/subgraph-utils'
 
-import { Masset } from '../generated/BasketManager/Masset'
+import { Masset } from '../generated/BasketManager_mUSD/Masset'
 import { Masset as MassetEntity } from '../generated/schema'
 
 export function getOrCreateMasset(address: Address): MassetEntity {
@@ -34,6 +34,18 @@ export function getOrCreateMasset(address: Address): MassetEntity {
   ).id
   massetEntity.cumulativeSwapped = metrics.getOrCreate(address, 'cumulativeSwapped').id
   massetEntity.cumulativeFeesPaid = metrics.getOrCreate(address, 'cumulativeFeesPaid').id
+  massetEntity.cumulativeInterestCollected = metrics.getOrCreate(
+    address,
+    'cumulativeInterestCollected',
+  ).id
+  massetEntity.cumulativeInterestDistributed = metrics.getOrCreate(
+    address,
+    'cumulativeInterestDistributed',
+  ).id
+  massetEntity.cumulativeLiquidatorDeposited = metrics.getOrCreate(
+    address,
+    'cumulativeLiquidatorDeposited',
+  ).id
 
   massetEntity.totalMints = counters.getOrCreate(address, 'totalMints').id
   massetEntity.totalRedemptions = counters.getOrCreate(address, 'totalRedemptions').id

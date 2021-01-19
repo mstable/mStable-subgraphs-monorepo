@@ -1,6 +1,7 @@
 ### v.NEXT
 
 - Add a `removed` flag for bAssets instead of removing them from the store
+- Add support for v2 savings contracts
 
 ### v0.1.2
 

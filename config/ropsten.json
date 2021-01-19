@@ -10,6 +10,10 @@
       "BasketManager": {
         "address": "0x7AE685713D0dcccccE3D936D3E0FA382639839Df",
         "startBlock": 8100000
+      },
+      "BoostedSavingsVault": {
+        "address": "0x71a028a6ee4eb9dc595359dee484e3016c935db4",
+        "startBlock": 9304873
       }
     },
     {
@@ -35,5 +39,11 @@
   "MerkleDrop_BAL": {
     "address": "0x5699a17F5169645ad55c71cA64978b4acc60199D",
     "startBlock": 8200000
-  }
+  },
+  "prereleaseSavingsContracts": [
+    {
+      "address": "0x5b7f01dAe6BCE656c9cA4175Eb3E406ADC6c7957",
+      "startBlock": 9239060
+    }
+  ]
 }

@@ -28,5 +28,6 @@
   "IncentivisedVotingLockup": {
     "address": "0xae8bc96da4f9a9613c323478be181fdb2aa0e1bf",
     "startBlock": 10932373
-  }
+  },
+  "prereleaseSavingsContracts": []
 }
