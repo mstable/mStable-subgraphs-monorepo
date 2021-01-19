@@ -41,9 +41,7 @@ function addSavingsContract(massetAddress: Address, savingsContractAddress: Addr
 }
 
 export function handleSavingsContractAdded(event: SavingsContractAdded): void {
-  // Ensure the SavingsManager entity is created, because this should be the first
-  // event from the contract
-  createSavingsManager(event.address)
+  updateSavingsManager(event.address)
 
   // Create the masset if it doesn't exist already
   getOrCreateMasset(event.params.mAsset)
@@ -52,6 +50,8 @@ export function handleSavingsContractAdded(event: SavingsContractAdded): void {
 }
 
 export function handleSavingsContractUpdated(event: SavingsContractUpdated): void {
+  updateSavingsManager(event.address)
+
   addSavingsContract(event.params.mAsset, event.params.savingsContract)
 }
 
@@ -77,14 +77,8 @@ export function handleInterestDistributed(event: InterestDistributed): void {
   metrics.increment(event.params.mAsset, 'cumulativeInterestDistributed', event.params.amountSent)
 }
 
-function createSavingsManager(address: Address): SavingsManagerEntity {
-  let savingsManagerEntity = SavingsManagerEntity.load(SAVINGS_MANAGER_ID)
-
-  if (savingsManagerEntity != null) {
-    return savingsManagerEntity as SavingsManagerEntity
-  }
-
-  savingsManagerEntity = new SavingsManagerEntity(SAVINGS_MANAGER_ID)
+function updateSavingsManager(address: Address): SavingsManagerEntity {
+  let savingsManagerEntity = new SavingsManagerEntity(SAVINGS_MANAGER_ID)
   savingsManagerEntity.address = address
   savingsManagerEntity.streamsFrozen = false
   savingsManagerEntity.savingsRate = metrics.getOrCreate(address, 'savingsRate').id
