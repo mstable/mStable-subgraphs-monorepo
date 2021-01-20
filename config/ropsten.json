@@ -12,8 +12,8 @@
         "startBlock": 8100000
       },
       "BoostedSavingsVault": {
-        "address": "0x71a028a6ee4eb9dc595359dee484e3016c935db4",
-        "startBlock": 9304873
+        "address": "0x7aA0C47e286A4F0FC10953bA8F485b6fF23dB543",
+        "startBlock": 9472540
       }
     },
     {
@@ -28,10 +28,12 @@
       }
     }
   ],
-  "SavingsManager": {
-    "address": "0x4DCaD28D1aA802F6C8c1301FcE25D4b1b3C92C36",
-    "startBlock": 8951560
-  },
+  "savingsManagers": [
+    {
+      "address": "0x4DCaD28D1aA802F6C8c1301FcE25D4b1b3C92C36",
+      "startBlock": 8951560
+    }
+  ],
   "RewardsDistributor": {
     "address": "0x683eB4a6Ddd554A0dB1837E3981be6FFd2C8F333",
     "startBlock": 8200000

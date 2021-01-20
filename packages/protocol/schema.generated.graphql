@@ -390,7 +390,6 @@ type Masset @entity {
   redeemTransactions: [RedeemTransaction!]! @derivedFrom(field: "masset")
 }
 
-
 """
 An Ethereum account that has interacted with Save v1
 @deprecated
@@ -641,6 +640,18 @@ type BoostedSavingsVault @entity {
   Total staking rewards (rewardRate * periodDuration)
   """
   totalStakingRewards: BigInt!
+
+  stakeTransactions: [BoostedSavingsVaultStakeTransaction!]!
+    @derivedFrom(field: "boostedSavingsVault")
+
+  rewardAddedTransactions: [BoostedSavingsVaultRewardAddedTransaction!]!
+    @derivedFrom(field: "boostedSavingsVault")
+
+  rewardPaidTransactions: [BoostedSavingsVaultRewardPaidTransaction!]!
+    @derivedFrom(field: "boostedSavingsVault")
+
+  withdrawTransactions: [BoostedSavingsVaultWithdrawTransaction!]!
+    @derivedFrom(field: "boostedSavingsVault")
 }
 
 type BoostedSavingsVaultAccount @entity {
@@ -666,6 +677,13 @@ type BoostedSavingsVaultAccount @entity {
   rewardCount: Int!
 
   rewardEntries: [BoostedSavingsVaultRewardEntry!]! @derivedFrom(field: "account")
+
+  stakeTransactions: [BoostedSavingsVaultStakeTransaction!]! @derivedFrom(field: "account")
+
+  rewardPaidTransactions: [BoostedSavingsVaultRewardPaidTransaction!]!
+    @derivedFrom(field: "account")
+
+  withdrawTransactions: [BoostedSavingsVaultWithdrawTransaction!]! @derivedFrom(field: "account")
 }
 
 type BoostedSavingsVaultRewardEntry @entity {
@@ -947,4 +965,107 @@ type SavingsContractWithdrawTransaction implements Transaction @entity {
   The amount withdrawn.
   """
   amount: BigInt!
+}
+
+type BoostedSavingsVaultStakeTransaction implements Transaction @entity {
+  id: ID!
+
+  hash: Bytes!
+
+  block: Int!
+
+  sender: Bytes!
+
+  timestamp: BigInt!
+
+  """
+  The BoostedSavingsVault the transaction relates to.
+  """
+  boostedSavingsVault: BoostedSavingsVault!
+
+  """
+  The amount staked.
+  """
+  amount: BigInt!
+
+  """
+  The account the staked amount is being added for.
+  """
+  account: BoostedSavingsVaultAccount!
+}
+
+type BoostedSavingsVaultRewardAddedTransaction implements Transaction @entity {
+  id: ID!
+
+  hash: Bytes!
+
+  block: Int!
+
+  sender: Bytes!
+
+  timestamp: BigInt!
+
+  """
+  The BoostedSavingsVault the transaction relates to.
+  """
+  boostedSavingsVault: BoostedSavingsVault!
+
+  """
+  The amount of rewards added.
+  """
+  amount: BigInt!
+}
+
+type BoostedSavingsVaultRewardPaidTransaction implements Transaction @entity {
+  id: ID!
+
+  hash: Bytes!
+
+  block: Int!
+
+  sender: Bytes!
+
+  timestamp: BigInt!
+
+  """
+  The BoostedSavingsVault the transaction relates to.
+  """
+  boostedSavingsVault: BoostedSavingsVault!
+
+  """
+  The amount of the reward paid.
+  """
+  amount: BigInt!
+
+  """
+  The account receiving the rewarded amount.
+  """
+  account: BoostedSavingsVaultAccount!
+}
+
+type BoostedSavingsVaultWithdrawTransaction implements Transaction @entity {
+  id: ID!
+
+  hash: Bytes!
+
+  block: Int!
+
+  sender: Bytes!
+
+  timestamp: BigInt!
+
+  """
+  The BoostedSavingsVault the transaction relates to.
+  """
+  boostedSavingsVault: BoostedSavingsVault!
+
+  """
+  The amount of the stake withdrawn.
+  """
+  amount: BigInt!
+
+  """
+  The account the stake is withdrawn for.
+  """
+  account: BoostedSavingsVaultAccount!
 }

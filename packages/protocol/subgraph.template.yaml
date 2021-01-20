@@ -28,15 +28,15 @@ dataSources:
         - name: SavingsManager
           file: ./abis/SavingsManager.json
         - name: SavingsContractV1
-          file: ../../node_modules/@mstable/protocol/build/contracts/SavingsContract.json
+          file: ./abis/SavingsContractV1.json
         - name: SavingsContractV2
-          file: ./abis/SavingsContractV2.json
+          file: ../../node_modules/@mstable/protocol/build/contracts/contracts/savings/SavingsContract.sol/SavingsContract.json
         - name: Masset
-          file: ../../node_modules/@mstable/protocol/build/contracts/Masset.json
+          file: ../../node_modules/@mstable/protocol/build/contracts/contracts/masset/Masset.sol/Masset.json
         - name: ERC20Detailed
-          file: ../../node_modules/@mstable/protocol/build/contracts/ERC20Detailed.json
+          file: ../../node_modules/@mstable/protocol/build/contracts/@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol/ERC20Detailed.json
         - name: BasketManager
-          file: ../../node_modules/@mstable/protocol/build/contracts/BasketManager.json
+          file: ../../node_modules/@mstable/protocol/build/contracts/contracts/masset/BasketManager.sol/BasketManager.json
       eventHandlers:
         - event: SavingsContractAdded(indexed address,address)
           handler: handleSavingsContractAdded
@@ -74,11 +74,11 @@ dataSources:
         - Token
       abis:
         - name: Masset
-          file: ../../node_modules/@mstable/protocol/build/contracts/Masset.json
+          file: ../../node_modules/@mstable/protocol/build/contracts/contracts/masset/Masset.sol/Masset.json
         - name: ERC20Detailed
-          file: ../../node_modules/@mstable/protocol/build/contracts/ERC20Detailed.json
+          file: ../../node_modules/@mstable/protocol/build/contracts/@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol/ERC20Detailed.json
         - name: BasketManager
-          file: ../../node_modules/@mstable/protocol/build/contracts/BasketManager.json
+          file: ../../node_modules/@mstable/protocol/build/contracts/contracts/masset/BasketManager.sol/BasketManager.json
       eventHandlers:
         - event: Minted(indexed address,address,uint256,address,uint256)
           handler: handleMinted
@@ -116,11 +116,11 @@ dataSources:
         - Token
       abis:
         - name: BasketManager
-          file: ../../node_modules/@mstable/protocol/build/contracts/BasketManager.json
+          file: ../../node_modules/@mstable/protocol/build/contracts/contracts/masset/BasketManager.sol/BasketManager.json
         - name: Masset
-          file: ../../node_modules/@mstable/protocol/build/contracts/Masset.json
+          file: ../../node_modules/@mstable/protocol/build/contracts/contracts/masset/Masset.sol/Masset.json
         - name: ERC20Detailed
-          file: ../../node_modules/@mstable/protocol/build/contracts/ERC20Detailed.json
+          file: ../../node_modules/@mstable/protocol/build/contracts/@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol/ERC20Detailed.json
       eventHandlers:
         - event: BassetAdded(indexed address,address)
           handler: handleBassetAdded
@@ -153,11 +153,15 @@ dataSources:
         - RewardsDistributor
         - SavingsContract
         - Token
+        - BoostedSavingsVaultStakeTransaction
+        - BoostedSavingsVaultRewardAddedTransaction
+        - BoostedSavingsVaultRewardPaidTransaction
+        - BoostedSavingsVaultWithdrawTransaction
       abis:
         - name: BoostedSavingsVault
           file: ./abis/BoostedSavingsVault.json
         - name: ERC20Detailed
-          file: ../../node_modules/@mstable/protocol/build/contracts/ERC20Detailed.json
+          file: ../../node_modules/@mstable/protocol/build/contracts/@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol/ERC20Detailed.json
       eventHandlers:
         - event: Staked(indexed address,uint256,address)
           handler: handleStaked
@@ -188,11 +192,11 @@ dataSources:
         - Token
       abis:
         - name: SavingsContractV1
-          file: ../../node_modules/@mstable/protocol/build/contracts/SavingsContract.json
+          file: ./abis/SavingsContractV1.json
         - name: SavingsContractV2
-          file: ./abis/SavingsContractV2.json
+          file: ../../node_modules/@mstable/protocol/build/contracts/contracts/savings/SavingsContract.sol/SavingsContract.json
         - name: ERC20Detailed
-          file: ../../node_modules/@mstable/protocol/build/contracts/ERC20Detailed.json
+          file: ../../node_modules/@mstable/protocol/build/contracts/@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol/ERC20Detailed.json
       eventHandlers:
         - event: AutomaticInterestCollectionSwitched(bool)
           handler: handleAutomaticInterestCollectionSwitched
@@ -219,11 +223,11 @@ templates:
         - Token
       abis:
         - name: SavingsContractV1
-          file: ../../node_modules/@mstable/protocol/build/contracts/SavingsContract.json
+          file: ./abis/SavingsContractV1.json
         - name: SavingsContractV2
-          file: ./abis/SavingsContractV2.json
+          file: ../../node_modules/@mstable/protocol/build/contracts/contracts/savings/SavingsContract.sol/SavingsContract.json
         - name: ERC20Detailed
-          file: ../../node_modules/@mstable/protocol/build/contracts/ERC20Detailed.json
+          file: ../../node_modules/@mstable/protocol/build/contracts/@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol/ERC20Detailed.json
       eventHandlers:
         - event: AutomaticInterestCollectionSwitched(bool)
           handler: handleAutomaticInterestCollectionSwitched
