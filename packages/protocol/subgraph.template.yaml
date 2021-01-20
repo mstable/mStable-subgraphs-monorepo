@@ -5,13 +5,14 @@ schema:
   file: ./schema.generated.graphql
 
 dataSources:
+  {{#savingsManagers}}
   - kind: ethereum/contract
-    name: SavingsManager
+    name: 'SavingsManager.{{address}}'
     network: '{{network}}'
     source:
       abi: SavingsManager
-      address: '{{SavingsManager.address}}'
-      startBlock: {{SavingsManager.startBlock}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -51,6 +52,7 @@ dataSources:
           handler: handleInterestCollected
         - event: InterestDistributed(indexed address,uint256)
           handler: handleInterestDistributed
+  {{/savingsManagers}}
 
   {{#massets}}
   # {{name}}

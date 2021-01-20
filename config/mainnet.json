@@ -13,10 +13,20 @@
       }
     }
   ],
-  "SavingsManager": {
-    "address": "0xcEfCBb45BE41331337d49a131faF424D1e50234f",
-    "startBlock": 10000000
-  },
+  "savingsManagers": [
+    {
+      "address": "0xcEfCBb45BE41331337d49a131faF424D1e50234f",
+      "startBlock": 10000000
+    },
+    {
+      "address": "0x7046b0BfC4C5EEB90559C0805DD9c1A6f4815370",
+      "startBlock": 10561375
+    },
+    {
+      "address": "0x9781c4e9b9cc6ac18405891df20ad3566fb6b301",
+      "startBlock": 11426088
+    }
+  ],
   "RewardsDistributor": {
     "address": "0x04dfDfa471b79cc9E6E8C355e6C71F8eC4916C50",
     "startBlock": 10000000
