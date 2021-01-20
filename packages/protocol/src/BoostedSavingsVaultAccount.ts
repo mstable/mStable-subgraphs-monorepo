@@ -11,7 +11,10 @@ import {
 import { BoostedSavingsVaultRewardEntry } from './BoostedSavingsVaultRewardEntry'
 
 export namespace BoostedSavingsVaultAccount {
-  function getId(boostedSavingsVaultEntity: BoostedSavingsVaultEntity, account: Address): string {
+  export function getId(
+    boostedSavingsVaultEntity: BoostedSavingsVaultEntity,
+    account: Address,
+  ): string {
     let accountId = account.toHexString()
     return boostedSavingsVaultEntity.id.concat('.').concat(accountId)
   }
