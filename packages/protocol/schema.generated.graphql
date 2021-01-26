@@ -133,9 +133,9 @@ type Basset @entity {
   basket: Basket! @derivedFrom(field: "bassets")
 
   """
-  Target weight of the Basset
+  Target weight of the Basset (mUSD only)
   """
-  maxWeight: BigInt!
+  maxWeight: BigInt
 
   """
   Basset to Masset ratio for quantity conversion
@@ -225,9 +225,9 @@ type Basket @entity {
   bassets: [Basset!]!
 
   """
-  The collateralisation ratio of the Basket
+  The collateralisation ratio of the Basket (mUSD only)
   """
-  collateralisationRatio: BigInt!
+  collateralisationRatio: BigInt
 
   """
   Max number of Bassets that can be present in the Basket
@@ -265,9 +265,9 @@ type Masset @entity {
   basket: Basket!
 
   """
-  The address of the `BasketManager` contract for this Masset
+  The address of the `BasketManager` contract for this Masset (mUSD only)
   """
-  basketManager: Bytes!
+  basketManager: Bytes
 
   """
   The swap fee rate

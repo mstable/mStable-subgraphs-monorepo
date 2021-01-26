@@ -18,13 +18,13 @@
     },
     {
       "name": "mBTC",
-      "Masset": {
-        "address": "0x05beA40D1590e751422472745EC2836a0d8D3630",
-        "startBlock": 9170744
+      "CurvedMasset": {
+        "address": "0xC8c0ae5465362CD671749e274B726612E992257d",
+        "startBlock": 9533933
       },
-      "BasketManager": {
-        "address": "0x47bD06d35251d9Fd13A798f638c71A654A323101",
-        "startBlock": 9170628
+      "BoostedSavingsVault": {
+        "address": "0x44b1c9a85e61eF485635d5FB1cA2DA267ebbE7e2",
+        "startBlock": 9533952
       }
     }
   ],

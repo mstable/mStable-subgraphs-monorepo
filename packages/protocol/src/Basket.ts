@@ -8,6 +8,7 @@ import {
 import { Masset } from '../generated/mUSD/Masset'
 
 import { Basket as BasketEntity, Basset as BassetEntity } from '../generated/schema'
+import { CurvedMasset } from '../generated/mBTC/CurvedMasset'
 
 export function updateBassetEntities(basketManager: BasketManager): Array<BassetEntity> {
   let getBassetsResult = basketManager.getBassets()
@@ -74,6 +75,89 @@ export function updateBassetEntities(basketManager: BasketManager): Array<Basset
   }
 
   return arr
+}
+
+function updateBassetEntitiesCurvedMasset(curvedMasset: CurvedMasset): Array<BassetEntity> {
+  let result = curvedMasset.getBassets()
+  let bassetsPersonal = result.value0
+  let bassetsData = result.value1
+
+  let arr = new Array<BassetEntity>()
+  let length = bassetsPersonal.length
+
+  for (let i = 0; i < length; i++) {
+    let bassetData = bassetsData[i]
+    let bassetPersonal = bassetsPersonal[i]
+
+    let bassetAddress = bassetPersonal.addr
+    arr.push(new BassetEntity(bassetAddress.toHexString()))
+
+    let tokenEntity = token.getOrCreate(bassetAddress)
+    let decimals = tokenEntity.decimals
+
+    arr[i].token = tokenEntity.id
+    arr[i].ratio = bassetData.ratio
+    arr[i].removed = false
+
+    arr[i].vaultBalance = metrics.getOrCreateWithDecimals(
+      bassetAddress,
+      'vaultBalance',
+      decimals,
+    ).id
+    metrics.updateByIdWithDecimals(arr[i].vaultBalance, bassetData.vaultBalance, decimals)
+
+    arr[i].isTransferFeeCharged = bassetPersonal.hasTxFee
+    arr[i].status = mapBassetStatus(bassetPersonal.status)
+
+    arr[i].totalSupply = metrics.getOrCreateWithDecimals(
+      bassetAddress,
+      'token.totalSupply',
+      decimals,
+    ).id
+    arr[i].cumulativeMinted = metrics.getOrCreateWithDecimals(
+      bassetAddress,
+      'cumulativeMinted',
+      decimals,
+    ).id
+    arr[i].cumulativeRedeemed = metrics.getOrCreateWithDecimals(
+      bassetAddress,
+      'cumulativeRedeemed',
+      decimals,
+    ).id
+    arr[i].cumulativeFeesPaid = metrics.getOrCreateWithDecimals(
+      bassetAddress,
+      'cumulativeFeesPaid',
+      decimals,
+    ).id
+    arr[i].cumulativeSwappedAsOutput = metrics.getOrCreateWithDecimals(
+      bassetAddress,
+      'cumulativeSwappedAsOutput',
+      decimals,
+    ).id
+
+    arr[i].totalMints = counters.getOrCreate(bassetAddress, 'totalMints').id
+    arr[i].totalRedemptions = counters.getOrCreate(bassetAddress, 'totalRedemptions').id
+    arr[i].totalSwapsAsInput = counters.getOrCreate(bassetAddress, 'totalSwapsAsInput').id
+    arr[i].totalSwapsAsOutput = counters.getOrCreate(bassetAddress, 'totalSwapsAsOutput').id
+    arr[i].save()
+  }
+
+  return arr
+}
+
+export function updateBasketCurvedMasset(massetAddress: Address): void {
+  let basketEntity = new BasketEntity(massetAddress.toHexString())
+
+  let curvedMasset = CurvedMasset.bind(massetAddress)
+  let basket = curvedMasset.getBasket()
+
+  let bassetEntities = updateBassetEntitiesCurvedMasset(curvedMasset)
+
+  basketEntity.bassets = bassetEntities.map<string>((basset: BassetEntity) => basset.id)
+  basketEntity.undergoingRecol = basket.value0
+  basketEntity.failed = basket.value1
+  basketEntity.maxBassets = curvedMasset.maxBassets()
+  basketEntity.save()
 }
 
 export function getBasketData(massetAddress: Address): BasketManager__getBasketResultBStruct {

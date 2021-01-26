@@ -26,9 +26,6 @@ fragment TokenAll on Token {
   totalBurns {
     value
   }
-  transfers {
-    value
-  }
 }
 
 fragment SavingsContractAll on SavingsContract {
@@ -36,15 +33,12 @@ fragment SavingsContractAll on SavingsContract {
   address: id
   automationEnabled
   creditBalances(first: 5) {
-    account
+    account {
+      id
+    }
     amount
   }
-  dailyAPY {
-    ...MetricAll
-  }
-  savingsRate {
-    ...MetricAll
-  }
+  dailyAPY
   latestExchangeRate {
     rate
     timestamp
@@ -52,7 +46,7 @@ fragment SavingsContractAll on SavingsContract {
   totalCredits {
     ...MetricAll
   }
-  totalDeposited {
+  cumulativeDeposited {
     ...MetricAll
   }
   totalSavings {
@@ -118,19 +112,19 @@ fragment MassetAll on Masset {
   totalRedeemMassets {
     value
   }
-  totalMinted {
+  cumulativeMinted {
     ...MetricAll
   }
-  totalSwapped {
+  cumulativeSwapped {
     ...MetricAll
   }
-  totalRedeemed {
+  cumulativeRedeemed {
     ...MetricAll
   }
-  totalRedeemedMasset {
+  cumulativeRedeemedMasset {
     ...MetricAll
   }
-  totalFeesPaid {
+  cumulativeFeesPaid {
     ...MetricAll
   }
   token {

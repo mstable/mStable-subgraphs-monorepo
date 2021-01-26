@@ -29,6 +29,8 @@ dataSources:
           file: ./abis/SavingsManager.json
         - name: SavingsContractV1
           file: ./abis/SavingsContractV1.json
+        - name: CurvedMasset
+          file: ./abis/CurvedMasset.json
         - name: SavingsContractV2
           file: ../../node_modules/@mstable/protocol/build/contracts/contracts/savings/SavingsContract.sol/SavingsContract.json
         - name: Masset
@@ -56,6 +58,7 @@ dataSources:
 
   {{#massets}}
   # {{name}}
+  {{#Masset}}
   - kind: ethereum/contract
     name: {{name}}
     network: '{{network}}'
@@ -98,6 +101,48 @@ dataSources:
           handler: handleRedemptionFeeChanged
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
+  {{/Masset}}
+  {{#CurvedMasset}}
+  - kind: ethereum/contract
+    name: {{name}}
+    network: '{{network}}'
+    source:
+      abi: CurvedMasset
+      address: '{{CurvedMasset.address}}'
+      startBlock: {{CurvedMasset.startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/CurvedMasset.ts
+      entities:
+        - Basket
+        - Basset
+        - Token
+      abis:
+        - name: CurvedMasset
+          file: ./abis/CurvedMasset.json
+        - name: ERC20Detailed
+          file: ../../node_modules/@mstable/protocol/build/contracts/@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol/ERC20Detailed.json
+        - name: BasketManager
+          file: ../../node_modules/@mstable/protocol/build/contracts/contracts/masset/BasketManager.sol/BasketManager.json
+      eventHandlers:
+        - event: Minted(indexed address,address,uint256,address,uint256)
+          handler: handleMinted
+        - event: MintedMulti(indexed address,address,uint256,address[],uint256[])
+          handler: handleMintedMulti
+        - event: Swapped(indexed address,address,address,uint256,uint256,address)
+          handler: handleSwapped
+        - event: Redeemed(indexed address,address,uint256,address,uint256,uint256)
+          handler: handleRedeemed
+        - event: SwapFeeChanged(uint256)
+          handler: handleSwapFeeChanged
+        - event: RedemptionFeeChanged(uint256)
+          handler: handleRedemptionFeeChanged
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+  {{/CurvedMasset}}
+  {{#BasketManager}}
   - kind: ethereum/contract
     name: BasketManager_{{name}}
     network: '{{network}}'
@@ -132,6 +177,7 @@ dataSources:
           handler: handleBassetStatusChanged
         - event: BasketStatusChanged()
           handler: handleBasketStatusChanged
+  {{/BasketManager}}
   {{#BoostedSavingsVault}}
   - kind: ethereum/contract
     name: BoostedSavingsVault_{{name}}

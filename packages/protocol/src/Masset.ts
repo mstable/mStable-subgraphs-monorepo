@@ -18,7 +18,16 @@ export function getOrCreateMasset(address: Address): MassetEntity {
   let contract = Masset.bind(address)
 
   massetEntity.feeRate = contract.swapFee()
-  massetEntity.basketManager = contract.getBasketManager()
+
+  /**
+   * @deprecated
+   * BasketManager is for non-CurvedMasset only
+   */
+  let basketManager = contract.try_getBasketManager()
+  if (!basketManager.reverted) {
+    massetEntity.basketManager = basketManager.value
+  }
+
   massetEntity.basket = id
   massetEntity.token = token.getOrCreate(address).id
 

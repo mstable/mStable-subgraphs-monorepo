@@ -40,7 +40,15 @@ function addSavingsContract(massetAddress: Address, savingsContractAddress: Addr
   massetEntity.save()
 }
 
+let TEST_MASSET_1 = Address.fromHexString('0x05bea40d1590e751422472745ec2836a0d8d3630')
+let TEST_MASSET_2 = Address.fromHexString('0xb5beccef3513b8a75a1c12e6d52ae6f582aaa584')
+
 export function handleSavingsContractAdded(event: SavingsContractAdded): void {
+  // Exclude test massets
+  if (event.params.mAsset.equals(TEST_MASSET_1) || event.params.mAsset.equals(TEST_MASSET_2)) {
+    return
+  }
+
   updateSavingsManager(event.address)
 
   // Create the masset if it doesn't exist already
@@ -50,6 +58,11 @@ export function handleSavingsContractAdded(event: SavingsContractAdded): void {
 }
 
 export function handleSavingsContractUpdated(event: SavingsContractUpdated): void {
+  // Exclude test massets
+  if (event.params.mAsset.equals(TEST_MASSET_1) || event.params.mAsset.equals(TEST_MASSET_2)) {
+    return
+  }
+
   updateSavingsManager(event.address)
 
   addSavingsContract(event.params.mAsset, event.params.savingsContract)
