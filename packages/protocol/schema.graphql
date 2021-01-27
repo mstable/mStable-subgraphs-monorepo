@@ -155,6 +155,11 @@ type Masset @entity {
   basketManager: Bytes
 
   """
+  The address of the `ForgeValidator` or `InvariantValidator` contract
+  """
+  forgeValidator: Bytes!
+
+  """
   The swap fee rate
   """
   feeRate: BigInt!

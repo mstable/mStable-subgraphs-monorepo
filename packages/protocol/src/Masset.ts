@@ -28,6 +28,8 @@ export function getOrCreateMasset(address: Address): MassetEntity {
     massetEntity.basketManager = basketManager.value
   }
 
+  massetEntity.forgeValidator = contract.forgeValidator()
+
   massetEntity.basket = id
   massetEntity.token = token.getOrCreate(address).id
 
