@@ -2,6 +2,7 @@ import { Address } from '@graphprotocol/graph-ts'
 import { metrics } from '@mstable/subgraph-utils'
 
 import { SavingsContract as SavingsContractTemplate } from '../../generated/templates'
+// FIXME: - Fix these imports
 import {
   SavingsContractAdded,
   SavingsContractUpdated,
@@ -10,7 +11,7 @@ import {
   InterestCollected,
   InterestDistributed,
   StreamsFrozen,
-} from '../../generated/SavingsManager/SavingsManager'
+} from '../../generated/SavingsManager.0x4DCaD28D1aA802F6C8c1301FcE25D4b1b3C92C36/SavingsManager'
 import {
   SavingsManager as SavingsManagerEntity,
   SavingsContract as SavingsContractEntity,

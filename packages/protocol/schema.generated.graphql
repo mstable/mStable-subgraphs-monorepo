@@ -275,6 +275,16 @@ type Masset @entity {
   forgeValidator: Bytes!
 
   """
+  Optional start time for `InvariantValidator` contract
+  """
+  invariantStartTime: Int
+
+  """
+  Optional starting TVL cap for `InvariantValidator` contract
+  """
+  invariantStartingCap: BigInt
+
+  """
   The swap fee rate
   """
   feeRate: BigInt!

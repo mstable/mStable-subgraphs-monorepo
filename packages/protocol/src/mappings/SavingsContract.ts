@@ -6,9 +6,10 @@ import {
   CreditsRedeemed,
   ExchangeRateUpdated,
   SavingsDeposited,
-} from '../../generated/templates/SavingsContract/SavingsContract'
-import { SavingsContractV1 } from '../../generated/SavingsManager/SavingsContractV1'
-import { SavingsContractV2 } from '../../generated/SavingsManager/SavingsContractV2'
+} from '../../generated/templates/SavingsContract/SavingsContractV1'
+// FIXME: - Fix these imports
+import { SavingsContractV1 } from '../../generated/SavingsManager.0x4DCaD28D1aA802F6C8c1301FcE25D4b1b3C92C36/SavingsContractV1'
+import { SavingsContractV2 } from '../../generated/SavingsManager.0x4DCaD28D1aA802F6C8c1301FcE25D4b1b3C92C36/SavingsContractV2'
 
 import {
   Account as AccountEntity,

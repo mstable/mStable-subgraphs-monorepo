@@ -2,6 +2,7 @@ import { Address } from '@graphprotocol/graph-ts'
 import { integer, counters, metrics, token } from '@mstable/subgraph-utils'
 
 import { Masset } from '../generated/BasketManager_mUSD/Masset'
+import { InvariantValidator } from '../generated/mBTC/InvariantValidator'
 import { Masset as MassetEntity } from '../generated/schema'
 
 export function getOrCreateMasset(address: Address): MassetEntity {
@@ -32,6 +33,13 @@ export function getOrCreateMasset(address: Address): MassetEntity {
 
   massetEntity.basket = id
   massetEntity.token = token.getOrCreate(address).id
+
+  let invariantValidator = InvariantValidator.bind(massetEntity.forgeValidator as Address)
+  let invariantStartTime = invariantValidator.try_startTime()
+  if (!invariantStartTime.reverted) {
+    massetEntity.invariantStartTime = invariantStartTime.value.toI32()
+    massetEntity.invariantStartingCap = invariantValidator.startingCap()
+  }
 
   let redemptionFee = contract.try_redemptionFee()
   massetEntity.redemptionFeeRate = redemptionFee.reverted ? integer.ZERO : redemptionFee.value

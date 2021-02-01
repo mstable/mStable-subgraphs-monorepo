@@ -27,7 +27,7 @@ dataSources:
         - name: Empty
           file: ./subgraph/Empty.json
         - name: ERC20Detailed
-          file: ../../node_modules/@mstable/protocol/build/contracts/ERC20Detailed.json
+          file: ../../node_modules/@mstable/protocol/build/contracts/@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol/ERC20Detailed.json
       eventHandlers:
         - event: Empty()
           handler: empty
