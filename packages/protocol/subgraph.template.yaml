@@ -78,6 +78,8 @@ dataSources:
       abis:
         - name: Masset
           file: ../../node_modules/@mstable/protocol/build/contracts/contracts/masset/Masset.sol/Masset.json
+        - name: InvariantValidator
+          file: ./abis/InvariantValidator.json
         - name: ERC20Detailed
           file: ../../node_modules/@mstable/protocol/build/contracts/@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol/ERC20Detailed.json
         - name: BasketManager
