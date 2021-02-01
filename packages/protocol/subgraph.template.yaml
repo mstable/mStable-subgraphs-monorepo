@@ -39,6 +39,8 @@ dataSources:
           file: ../../node_modules/@mstable/protocol/build/contracts/@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol/ERC20Detailed.json
         - name: BasketManager
           file: ../../node_modules/@mstable/protocol/build/contracts/contracts/masset/BasketManager.sol/BasketManager.json
+        - name: InvariantValidator
+          file: ./abis/InvariantValidator.json
       eventHandlers:
         - event: SavingsContractAdded(indexed address,address)
           handler: handleSavingsContractAdded
