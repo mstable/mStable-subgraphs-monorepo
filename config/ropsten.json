@@ -19,12 +19,12 @@
     {
       "name": "mBTC",
       "CurvedMasset": {
-        "address": "0xC8c0ae5465362CD671749e274B726612E992257d",
-        "startBlock": 9533933
+        "address": "0x5F3e440BBC038A143FD115c0BEcb65Bd0ecF6a7E",
+        "startBlock": 9600122
       },
       "BoostedSavingsVault": {
-        "address": "0x44b1c9a85e61eF485635d5FB1cA2DA267ebbE7e2",
-        "startBlock": 9533952
+        "address": "0x975Eb4f3C7F4420911fA85c26587a5eC27FaA229",
+        "startBlock": 9600122
       }
     }
   ],

@@ -82,6 +82,8 @@ dataSources:
           file: ../../node_modules/@mstable/protocol/build/contracts/contracts/masset/Masset.sol/Masset.json
         - name: InvariantValidator
           file: ./abis/InvariantValidator.json
+        - name: CurvedMasset
+          file: ./abis/CurvedMasset.json
         - name: ERC20Detailed
           file: ../../node_modules/@mstable/protocol/build/contracts/@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol/ERC20Detailed.json
         - name: BasketManager
@@ -120,6 +122,7 @@ dataSources:
       language: wasm/assemblyscript
       file: ./src/mappings/CurvedMasset.ts
       entities:
+        - AmpData
         - Basket
         - Basset
         - Token
@@ -147,6 +150,31 @@ dataSources:
           handler: handleRedemptionFeeChanged
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
+  - kind: ethereum/contract
+    name: '{{name}}.Manager'
+    network: '{{network}}'
+    source:
+      abi: Manager
+      address: '{{CurvedMasset.address}}'
+      startBlock: {{CurvedMasset.startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/Manager.ts
+      entities:
+        - AmpData
+        - Masset
+      abis:
+        - name: CurvedMasset
+          file: ./abis/CurvedMasset.json
+        - name: Manager
+          file: ./abis/Manager.json
+      eventHandlers:
+        - event: RampA(uint256,uint256,uint256,uint256)
+          handler: handleRampA
+        - event: StopRampA(uint256,uint256)
+          handler: handleStopRampA
   {{/CurvedMasset}}
   {{#BasketManager}}
   - kind: ethereum/contract
