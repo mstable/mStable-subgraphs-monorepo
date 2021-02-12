@@ -3,12 +3,12 @@ import {
   BassetAdded,
   BassetStatusChanged,
   BassetRemoved,
-} from '../../generated/BasketManager_mUSD/BasketManager'
+} from '../../generated/LegacyMasset/BasketManager'
 import { Basset as BassetEntity } from '../../generated/schema'
-import { updateBasket } from '../Basket'
+import { updateBasketLegacy } from '../Basket'
 
 export function handleBassetAdded(event: BassetAdded): void {
-  updateBasket(event.address)
+  updateBasketLegacy(event.address)
 
   let bassetEntity = new BassetEntity(event.params.bAsset.toHexString())
   bassetEntity.removed = false
@@ -16,7 +16,7 @@ export function handleBassetAdded(event: BassetAdded): void {
 }
 
 export function handleBassetRemoved(event: BassetRemoved): void {
-  updateBasket(event.address)
+  updateBasketLegacy(event.address)
 
   let bassetEntity = new BassetEntity(event.params.bAsset.toHexString())
   bassetEntity.removed = true
@@ -24,13 +24,13 @@ export function handleBassetRemoved(event: BassetRemoved): void {
 }
 
 export function handleBasketWeightsUpdated(event: BasketWeightsUpdated): void {
-  updateBasket(event.address)
+  updateBasketLegacy(event.address)
 }
 
 export function handleBassetStatusChanged(event: BassetStatusChanged): void {
-  updateBasket(event.address)
+  updateBasketLegacy(event.address)
 }
 
 export function handleBasketStatusChanged(event: BassetStatusChanged): void {
-  updateBasket(event.address)
+  updateBasketLegacy(event.address)
 }

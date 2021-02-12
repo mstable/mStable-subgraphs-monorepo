@@ -2,8 +2,7 @@ import { Address } from '@graphprotocol/graph-ts'
 import { address, counters, decimal, metrics, token } from '@mstable/subgraph-utils'
 
 import { SavingsContract as SavingsContractEntity } from '../generated/schema'
-// FIXME: - Import issue
-import { SavingsContractV2 } from '../generated/SavingsManager.0x4DCaD28D1aA802F6C8c1301FcE25D4b1b3C92C36/SavingsContractV2'
+import { SavingsContractV2 } from '../generated/templates/SavingsContract/SavingsContractV2'
 
 export function getOrCreateSavingsContract(
   addr: Address,

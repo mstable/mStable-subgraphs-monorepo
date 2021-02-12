@@ -5,12 +5,12 @@ import {
   BasketManager,
   BasketManager__getBasketResultBStruct,
 } from '../generated/mUSD/BasketManager'
-import { Masset } from '../generated/mUSD/Masset'
+import { LegacyMasset } from '../generated/LegacyMasset/LegacyMasset'
+import { Masset } from '../generated/templates/Masset/Masset'
 
 import { Basket as BasketEntity, Basset as BassetEntity } from '../generated/schema'
-import { CurvedMasset } from '../generated/mBTC/CurvedMasset'
 
-export function updateBassetEntities(basketManager: BasketManager): Array<BassetEntity> {
+export function updateBassetEntitiesLegacy(basketManager: BasketManager): Array<BassetEntity> {
   let getBassetsResult = basketManager.getBassets()
 
   let arr = new Array<BassetEntity>()
@@ -77,8 +77,8 @@ export function updateBassetEntities(basketManager: BasketManager): Array<Basset
   return arr
 }
 
-function updateBassetEntitiesCurvedMasset(curvedMasset: CurvedMasset): Array<BassetEntity> {
-  let result = curvedMasset.getBassets()
+function updateBassetEntities(masset: Masset): Array<BassetEntity> {
+  let result = masset.getBassets()
   let bassetsPersonal = result.value0
   let bassetsData = result.value1
 
@@ -145,36 +145,36 @@ function updateBassetEntitiesCurvedMasset(curvedMasset: CurvedMasset): Array<Bas
   return arr
 }
 
-export function updateBasketCurvedMasset(massetAddress: Address): void {
+export function updateBasket(massetAddress: Address): void {
   let basketEntity = new BasketEntity(massetAddress.toHexString())
 
-  let curvedMasset = CurvedMasset.bind(massetAddress)
-  let basket = curvedMasset.getBasket()
+  let masset = Masset.bind(massetAddress)
+  let basket = masset.getBasket()
 
-  let bassetEntities = updateBassetEntitiesCurvedMasset(curvedMasset)
+  let bassetEntities = updateBassetEntities(masset)
 
   basketEntity.bassets = bassetEntities.map<string>((basset: BassetEntity) => basset.id)
   basketEntity.undergoingRecol = basket.value0
   basketEntity.failed = basket.value1
-  basketEntity.maxBassets = curvedMasset.maxBassets()
+  basketEntity.maxBassets = masset.maxBassets()
   basketEntity.save()
 }
 
-export function getBasketData(massetAddress: Address): BasketManager__getBasketResultBStruct {
-  let masset = Masset.bind(massetAddress)
-  let basketManager = BasketManager.bind(masset.getBasketManager())
+export function getBasketDataLegacy(massetAddress: Address): BasketManager__getBasketResultBStruct {
+  let legacyMasset = LegacyMasset.bind(massetAddress)
+  let basketManager = BasketManager.bind(legacyMasset.getBasketManager())
   return basketManager.getBasket()
 }
 
-export function updateBasket(basketManagerAddress: Address): void {
+export function updateBasketLegacy(basketManagerAddress: Address): void {
   let basketManager = BasketManager.bind(basketManagerAddress)
   let massetAddress = basketManager.mAsset()
 
   let basketEntity = new BasketEntity(massetAddress.toHexString())
 
-  let basketData = getBasketData(massetAddress)
+  let basketData = getBasketDataLegacy(massetAddress)
 
-  let bassetEntities = updateBassetEntities(basketManager)
+  let bassetEntities = updateBassetEntitiesLegacy(basketManager)
 
   basketEntity.bassets = bassetEntities.map<string>((basset: BassetEntity) => basset.id)
   basketEntity.undergoingRecol = basketData.undergoingRecol
@@ -185,7 +185,7 @@ export function updateBasket(basketManagerAddress: Address): void {
 }
 
 // @ts-ignore
-function mapBassetStatus(status: i32): string {
+export function mapBassetStatus(status: i32): string {
   switch (status) {
     case 0:
       return 'Default'

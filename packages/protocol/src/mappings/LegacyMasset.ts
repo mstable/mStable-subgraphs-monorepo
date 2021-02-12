@@ -1,70 +1,53 @@
+import { Address } from '@graphprotocol/graph-ts'
 import { transaction, counters, metrics, integer, token } from '@mstable/subgraph-utils'
 import { Transfer as ERC20Transfer } from '@mstable/subgraph-utils/generated/Empty/ERC20Detailed'
 
 import {
   Minted,
   MintedMulti,
+  PaidFee,
   Redeemed,
-  RedeemedMulti,
+  RedeemedMasset,
   RedemptionFeeChanged,
   SwapFeeChanged,
   Swapped,
   Transfer,
-} from '../../generated/mBTC/CurvedMasset'
+} from '../../generated/mUSD/Masset'
+import { BasketManager } from '../../generated/mUSD/BasketManager'
 
 import {
   Basset as BassetEntity,
   Masset as MassetEntity,
   MintMultiTransaction as MintMultiTransactionEntity,
   MintSingleTransaction as MintSingleTransactionEntity,
+  PaidFeeTransaction as PaidFeeTransactionEntity,
+  RedeemMassetTransaction as RedeemMassetTransactionEntity,
   RedeemTransaction as RedeemTransactionEntity,
   SwapTransaction as SwapTransactionEntity,
 } from '../../generated/schema'
 
-import { updateBasketCurvedMasset } from '../Basket'
+import { getOrCreateMasset } from '../Masset'
+import { updateBassetEntitiesLegacy } from '../Basket'
 
 export function handleTransfer(event: Transfer): void {
   token.handleTransfer(event as ERC20Transfer)
 }
 
+function updateVaultBalances(massetAddress: Address): Array<BassetEntity> {
+  let massetEntity = getOrCreateMasset(massetAddress)
+
+  let basketManager = BasketManager.bind(massetEntity.basketManager as Address)
+  return updateBassetEntitiesLegacy(basketManager)
+}
+
 export function handleMinted(event: Minted): void {
   let masset = event.address
 
-  updateBasketCurvedMasset(masset)
+  updateVaultBalances(masset)
 
   let massetUnits = event.params.mAssetQuantity
-  let bassetUnits = event.params.inputQuantity
-  let basset = event.params.input
-
-  counters.increment(masset, 'totalMints')
-  counters.increment(basset, 'totalMints')
-  metrics.increment(masset, 'cumulativeMinted', massetUnits)
-  metrics.increment(basset, 'cumulativeMinted', bassetUnits)
-
-  let baseTx = transaction.fromEvent(event)
-  let txEntity = new MintSingleTransactionEntity(baseTx.id)
-  txEntity.timestamp = baseTx.timestamp
-  txEntity.block = baseTx.block
-  txEntity.hash = baseTx.hash
-
-  txEntity.recipient = event.params.recipient
-  txEntity.sender = event.params.minter
-  txEntity.masset = masset.toHexString()
-  txEntity.massetUnits = massetUnits
-  txEntity.basset = basset.toHexString()
-  txEntity.bassetUnits = bassetUnits
-
-  txEntity.save()
-}
-
-export function handleMintedIdx(event: Minted): void {
-  let masset = event.address
-
-  updateBasketCurvedMasset(masset)
-
-  let massetUnits = event.params.mAssetQuantity
-  let bassetUnits = event.params.inputQuantity
-  let basset = event.params.input
+  let bassetUnits = event.params.bAssetQuantity
+  let basset = event.params.bAsset
 
   counters.increment(masset, 'totalMints')
   counters.increment(basset, 'totalMints')
@@ -90,11 +73,11 @@ export function handleMintedIdx(event: Minted): void {
 export function handleMintedMulti(event: MintedMulti): void {
   let masset = event.address
 
-  updateBasketCurvedMasset(masset)
+  updateVaultBalances(masset)
 
   let massetUnits = event.params.mAssetQuantity
-  let bassetsUnits = event.params.inputQuantities
-  let bassets = event.params.inputs
+  let bassetsUnits = event.params.bAssetQuantities
+  let bassets = event.params.bAssets
 
   for (let i = 0; i < bassets.length; i++) {
     let basset = bassets[i]
@@ -116,7 +99,7 @@ export function handleMintedMulti(event: MintedMulti): void {
   txEntity.sender = event.params.minter
   txEntity.masset = masset.toHexString()
   txEntity.massetUnits = massetUnits
-  txEntity.bassets = event.params.inputs.map<string>(b => b.toHexString())
+  txEntity.bassets = event.params.bAssets.map<string>(b => b.toHexString())
   txEntity.bassetsUnits = bassetsUnits
 
   txEntity.save()
@@ -125,10 +108,10 @@ export function handleMintedMulti(event: MintedMulti): void {
 export function handleSwapped(event: Swapped): void {
   let masset = event.address
 
-  updateBasketCurvedMasset(masset)
-
   let inputBasset = BassetEntity.load(event.params.input.toHexString()) as BassetEntity
   let outputBasset = BassetEntity.load(event.params.output.toHexString()) as BassetEntity
+
+  updateVaultBalances(masset)
 
   let outputAmountInBassetUnits = event.params.outputAmount
   let massetUnits = integer.toRatio(outputAmountInBassetUnits, outputBasset.ratio)
@@ -156,15 +139,13 @@ export function handleSwapped(event: Swapped): void {
   txEntity.save()
 }
 
-export function handleRedeemedMulti(event: RedeemedMulti): void {
+export function handleRedeemed(event: Redeemed): void {
+  updateVaultBalances(event.address)
+
   let masset = event.address
-
-  updateBasketCurvedMasset(masset)
-
   let massetUnits = event.params.mAssetQuantity
-  let bassets = event.params.outputs
-  let bassetsUnits = event.params.outputQuantity
-  let scaledFee = event.params.scaledFee
+  let bassets = event.params.bAssets
+  let bassetsUnits = event.params.bAssetQuantities
 
   for (let i = 0; i < bassets.length; i++) {
     let basset = bassets[i]
@@ -175,7 +156,6 @@ export function handleRedeemedMulti(event: RedeemedMulti): void {
 
   counters.increment(masset, 'totalRedemptions')
   metrics.increment(masset, 'cumulativeRedeemed', massetUnits)
-  metrics.increment(masset, 'cumulativeFeesPaid', scaledFee)
 
   let baseTx = transaction.fromEvent(event)
   let txEntity = new RedeemTransactionEntity(baseTx.id)
@@ -193,29 +173,17 @@ export function handleRedeemedMulti(event: RedeemedMulti): void {
   txEntity.save()
 }
 
-export function handleRedeemed(event: Redeemed): void {
+export function handleRedeemedMasset(event: RedeemedMasset): void {
+  let bassets = updateVaultBalances(event.address)
+
   let masset = event.address
-
-  updateBasketCurvedMasset(masset)
-
   let massetUnits = event.params.mAssetQuantity
-  let scaledFee = event.params.scaledFee
 
-  let basset = event.params.output
-  let bassetUnits = event.params.outputQuantity
-  let bassetEntity = BassetEntity.load(basset.toHexString()) as BassetEntity
-  let rawFee = integer.fromRatio(scaledFee, bassetEntity.ratio)
-
-  counters.incrementById(bassetEntity.totalRedemptions)
-  metrics.incrementById(bassetEntity.cumulativeFeesPaid, rawFee)
-  metrics.incrementById(bassetEntity.cumulativeRedeemed, bassetUnits)
-
-  counters.increment(masset, 'totalRedemptions')
-  metrics.increment(masset, 'cumulativeFeesPaid', scaledFee)
-  metrics.increment(masset, 'cumulativeRedeemed', massetUnits)
+  counters.increment(masset, 'totalRedeemMassets')
+  metrics.increment(masset, 'cumulativeRedeemedMasset', massetUnits)
 
   let baseTx = transaction.fromEvent(event)
-  let txEntity = new RedeemTransactionEntity(baseTx.id)
+  let txEntity = new RedeemMassetTransactionEntity(baseTx.id)
   txEntity.timestamp = baseTx.timestamp
   txEntity.block = baseTx.block
   txEntity.hash = baseTx.hash
@@ -224,8 +192,33 @@ export function handleRedeemed(event: Redeemed): void {
   txEntity.sender = event.params.redeemer
   txEntity.masset = masset.toHexString()
   txEntity.massetUnits = massetUnits
-  txEntity.bassets = [basset.toHexString()]
-  txEntity.bassetsUnits = [bassetUnits]
+
+  txEntity.save()
+}
+
+export function handlePaidFee(event: PaidFee): void {
+  let masset = event.address
+
+  let basset = event.params.asset.toHexString()
+  let bassetUnits = event.params.feeQuantity
+  let bassetEntity = BassetEntity.load(basset)
+
+  let massetUnits = integer.toRatio(bassetUnits, bassetEntity.ratio)
+
+  metrics.increment(masset, 'cumulativeFeesPaid', massetUnits)
+  metrics.incrementById(bassetEntity.cumulativeFeesPaid, bassetUnits)
+
+  let baseTx = transaction.fromEvent(event)
+  let txEntity = new PaidFeeTransactionEntity(baseTx.id)
+  txEntity.timestamp = baseTx.timestamp
+  txEntity.block = baseTx.block
+  txEntity.hash = baseTx.hash
+
+  txEntity.sender = event.params.payer
+  txEntity.masset = masset.toHexString()
+  txEntity.massetUnits = massetUnits
+  txEntity.basset = basset
+  txEntity.bassetUnits = bassetUnits
 
   txEntity.save()
 }

@@ -2,14 +2,13 @@ import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { counters, events, integer, metrics, transaction, decimal } from '@mstable/subgraph-utils'
 
 import {
+  SavingsContractV1,
   AutomaticInterestCollectionSwitched,
   CreditsRedeemed,
   ExchangeRateUpdated,
   SavingsDeposited,
-} from '../../generated/templates/SavingsContract/SavingsContractV1'
-// FIXME: - Fix these imports
-import { SavingsContractV1 } from '../../generated/SavingsManager.0x4DCaD28D1aA802F6C8c1301FcE25D4b1b3C92C36/SavingsContractV1'
-import { SavingsContractV2 } from '../../generated/SavingsManager.0x4DCaD28D1aA802F6C8c1301FcE25D4b1b3C92C36/SavingsContractV2'
+} from '../../generated/SavingsManager/SavingsContractV1'
+import { SavingsContractV2 } from '../../generated/SavingsManager/SavingsContractV2'
 
 import {
   Account as AccountEntity,

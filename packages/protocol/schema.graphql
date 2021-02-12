@@ -142,13 +142,13 @@ Lower A = higher rate of change = higher slippage.
 type AmpData @entity {
   id: ID!
 
-  initialA: BigInt!
+  currentA: BigInt!
 
-  futureA: BigInt!
+  targetA: BigInt!
 
-  initialATime: BigInt!
+  startTime: BigInt!
 
-  futureATime: BigInt!
+  rampEndTime: BigInt!
 }
 
 """
@@ -179,6 +179,16 @@ type Masset @entity {
   Amplification data
   """
   ampData: AmpData
+
+  """
+  Cache size
+  """
+  cacheSize: BigInt
+
+  """
+  Hard min weight for bAssets
+  """
+  hardMin: BigInt
 
   """
   Hard max weight for bAssets

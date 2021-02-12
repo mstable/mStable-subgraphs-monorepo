@@ -1,8 +1,7 @@
-import { Address } from '@graphprotocol/graph-ts'
+import { Address, log } from '@graphprotocol/graph-ts'
 import { metrics } from '@mstable/subgraph-utils'
 
 import { SavingsContract as SavingsContractTemplate } from '../../generated/templates'
-// FIXME: - Fix these imports
 import {
   SavingsContractAdded,
   SavingsContractUpdated,
@@ -11,7 +10,7 @@ import {
   InterestCollected,
   InterestDistributed,
   StreamsFrozen,
-} from '../../generated/SavingsManager.0x4DCaD28D1aA802F6C8c1301FcE25D4b1b3C92C36/SavingsManager'
+} from '../../generated/SavingsManager/SavingsManager'
 import {
   SavingsManager as SavingsManagerEntity,
   SavingsContract as SavingsContractEntity,
@@ -44,13 +43,20 @@ function addSavingsContract(massetAddress: Address, savingsContractAddress: Addr
 let TEST_MASSET_1 = Address.fromHexString('0x05bea40d1590e751422472745ec2836a0d8d3630')
 let TEST_MASSET_2 = Address.fromHexString('0xb5beccef3513b8a75a1c12e6d52ae6f582aaa584')
 let TEST_MASSET_3 = Address.fromHexString('0xc8c0ae5465362cd671749e274b726612e992257d')
+let TEST_MASSET_4 = Address.fromHexString('0x5f3e440bbc038a143fd115c0becb65bd0ecf6a7e')
 
 export function handleSavingsContractAdded(event: SavingsContractAdded): void {
+  log.debug('SavingsContractAdded {} {}', [
+    event.params.mAsset.toHexString(),
+    event.params.savingsContract.toHexString(),
+  ])
+
   // Exclude test massets
   if (
     event.params.mAsset.equals(TEST_MASSET_1) ||
     event.params.mAsset.equals(TEST_MASSET_2) ||
-    event.params.mAsset.equals(TEST_MASSET_3)
+    event.params.mAsset.equals(TEST_MASSET_3) ||
+    event.params.mAsset.equals(TEST_MASSET_4)
   ) {
     return
   }
