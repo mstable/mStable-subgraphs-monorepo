@@ -1,20 +1,20 @@
 {
   "network": "mainnet",
-  "massets": [
+  "mUSD": {
+    "LegacyMasset": {
+      "address": "0xe2f2a5C287993345a840Db3B0845fbC70f5935a5",
+      "startBlock": 10000000
+    },
+    "BasketManager": {
+      "address": "0x66126B4aA2a1C07536Ef8E5e8bD4EfDA1FdEA96D",
+      "startBlock": 10000000
+    }
+  },
+  "boostedSavingsVaults": [
     {
       "name": "mUSD",
-      "Masset": {
-        "address": "0xe2f2a5C287993345a840Db3B0845fbC70f5935a5",
-        "startBlock": 10000000
-      },
-      "BasketManager": {
-        "address": "0x66126B4aA2a1C07536Ef8E5e8bD4EfDA1FdEA96D",
-        "startBlock": 10000000
-      },
-      "BoostedSavingsVault": {
-        "address": "0x78BefCa7de27d07DC6e71da295Cc2946681A6c7B",
-        "startBlock": 11678260
-      }
+      "address": "0x78BefCa7de27d07DC6e71da295Cc2946681A6c7B",
+      "startBlock": 11678260
     }
   ],
   "savingsManagers": [

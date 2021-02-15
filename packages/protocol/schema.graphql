@@ -18,9 +18,9 @@ type Basset @entity {
   basket: Basket! @derivedFrom(field: "bassets")
 
   """
-  Target weight of the Basset
+  Target weight of the Basset (mUSD only)
   """
-  maxWeight: BigInt!
+  maxWeight: BigInt
 
   """
   Basset to Masset ratio for quantity conversion
@@ -110,9 +110,9 @@ type Basket @entity {
   bassets: [Basset!]!
 
   """
-  The collateralisation ratio of the Basket
+  The collateralisation ratio of the Basket (mUSD only)
   """
-  collateralisationRatio: BigInt!
+  collateralisationRatio: BigInt
 
   """
   Max number of Bassets that can be present in the Basket
@@ -136,6 +136,22 @@ type Basket @entity {
 }
 
 """
+Amplification value; amplifies the rate of change of the curve.
+Lower A = higher rate of change = higher slippage.
+"""
+type AmpData @entity {
+  id: ID!
+
+  currentA: BigInt!
+
+  targetA: BigInt!
+
+  startTime: BigInt!
+
+  rampEndTime: BigInt!
+}
+
+"""
 An mStable asset (e.g. mUSD)
 """
 type Masset @entity {
@@ -150,9 +166,49 @@ type Masset @entity {
   basket: Basket!
 
   """
-  The address of the `BasketManager` contract for this Masset
+  The address of the `BasketManager` contract for this Masset (mUSD only)
   """
-  basketManager: Bytes!
+  basketManager: Bytes
+
+  """
+  The address of the `ForgeValidator` or `InvariantValidator` contract
+  """
+  forgeValidator: Bytes!
+
+  """
+  Amplification data
+  """
+  ampData: AmpData
+
+  """
+  Cache size
+  """
+  cacheSize: BigInt
+
+  """
+  Hard min weight for bAssets
+  """
+  hardMin: BigInt
+
+  """
+  Hard max weight for bAssets
+  """
+  hardMax: BigInt
+
+  """
+  Optional start time for `InvariantValidator` contract
+  """
+  invariantStartTime: Int
+
+  """
+  Optional starting TVL cap for `InvariantValidator` contract
+  """
+  invariantStartingCap: BigInt
+
+  """
+  Optional cap factor for `InvariantValidator` contract
+  """
+  invariantCapFactor: BigInt
 
   """
   The swap fee rate

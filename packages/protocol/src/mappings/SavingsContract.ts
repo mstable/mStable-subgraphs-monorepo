@@ -2,12 +2,12 @@ import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { counters, events, integer, metrics, transaction, decimal } from '@mstable/subgraph-utils'
 
 import {
+  SavingsContractV1,
   AutomaticInterestCollectionSwitched,
   CreditsRedeemed,
   ExchangeRateUpdated,
   SavingsDeposited,
-} from '../../generated/templates/SavingsContract/SavingsContract'
-import { SavingsContractV1 } from '../../generated/SavingsManager/SavingsContractV1'
+} from '../../generated/SavingsManager/SavingsContractV1'
 import { SavingsContractV2 } from '../../generated/SavingsManager/SavingsContractV2'
 
 import {
