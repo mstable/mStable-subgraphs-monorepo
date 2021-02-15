@@ -10,6 +10,12 @@
       "startBlock": 10000000
     }
   },
+  "mBTC": {
+    "Masset": {
+      "address": "0x945Facb997494CC2570096c74b5F66A3507330a1",
+      "startBlock": 11840521
+    }
+  },
   "boostedSavingsVaults": [
     {
       "name": "mUSD",

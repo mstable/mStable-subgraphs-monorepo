@@ -3,6 +3,7 @@ import { integer, counters, metrics, token } from '@mstable/subgraph-utils'
 
 import { LegacyMasset } from '../generated/templates/Masset/LegacyMasset'
 import { Masset } from '../generated/templates/Masset/Masset'
+
 import { InvariantValidator } from '../generated/templates/Masset/InvariantValidator'
 import { AmpData as AmpDataEntity, Masset as MassetEntity } from '../generated/schema'
 import { updateBasket } from './Basket'

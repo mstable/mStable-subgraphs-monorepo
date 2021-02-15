@@ -282,6 +282,8 @@ export function handleForgeValidatorChanged(event: ForgeValidatorChanged): void 
 // export function handleTransferFeeEnabled(event: TransferFeeEnabled): void {}
 
 export function handleBassetAdded(event: BassetAdded): void {
+  updateBasket(event.address)
+
   let bassetEntity = new BassetEntity(event.params.bAsset.toHexString())
   bassetEntity.removed = false
   bassetEntity.save()
