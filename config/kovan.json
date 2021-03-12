@@ -37,5 +37,12 @@
   "IncentivisedVotingLockup": {
     "address": "0x82Ad5115547A1F9783c9E29cFe59A4A8d3Eba2A7",
     "startBlock": 20834108
-  }
+  },
+  "boostedSavingsVaults": [
+    {
+      "name": "mBTC",
+      "address": "0x06F1711b04011f2f0acD0370B24D9A7e23516255",
+      "startBlock": 23517826
+    }
+  ]
 }

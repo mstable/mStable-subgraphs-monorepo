@@ -1,12 +1,17 @@
-import { Address } from '@graphprotocol/graph-ts'
+import { Address, log } from '@graphprotocol/graph-ts'
 import { integer, token } from '@mstable/subgraph-utils'
 
 import { BoostedSavingsVault as BoostedSavingsVaultContract } from '../generated/BoostedSavingsVault_mUSD/BoostedSavingsVault'
 
-import { BoostedSavingsVault as BoostedSavingsVaultEntity } from '../generated/schema'
+import {
+  BoostedSavingsVault as BoostedSavingsVaultEntity,
+  FeederPool as FeederPoolEntity,
+  SavingsContract as SavingsContractEntity,
+} from '../generated/schema'
 
 export namespace BoostedSavingsVault {
   export function getOrCreate(addr: Address): BoostedSavingsVaultEntity {
+    log.debug('BoostedSavingsVault.getOrCreate {}', [addr.toHexString()])
     let id = addr.toHexString()
 
     let entity = BoostedSavingsVaultEntity.load(id)
@@ -27,7 +32,16 @@ export namespace BoostedSavingsVault {
     entity.rewardsDistributor = contract.rewardsDistributor()
     entity.rewardsToken = token.getOrCreate(contract.getRewardToken()).id
     entity.stakingToken = token.getOrCreate(contract.stakingToken()).id
-    entity.savingsContract = entity.stakingToken
+
+    let savingsContractEntity = SavingsContractEntity.load(entity.stakingToken)
+    if (savingsContractEntity != null) {
+      entity.savingsContract = savingsContractEntity.id
+    }
+
+    // let fpEntity = FeederPoolEntity.load(entity.stakingToken)
+    // if (fpEntity != null) {
+    entity.feederPool = entity.stakingToken
+    // }
 
     entity = update(entity as BoostedSavingsVaultEntity, contract)
 

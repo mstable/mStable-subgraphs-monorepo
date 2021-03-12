@@ -21,6 +21,14 @@ const main = async () => {
         '../../node_modules/@mstable/protocol/build/contracts/masset/Manager.sol/Manager.json',
       ],
     },
+    {
+      contractName: 'FeederPoolExtended',
+      sourceABI: '../../node_modules/@mstable/protocol/build/contracts/feeders/FeederPool.sol/FeederPool.json',
+      otherABIs: [
+        '../../node_modules/@mstable/protocol/build/contracts/feeders/FeederManager.sol/FeederManager.json',
+        '../../node_modules/@mstable/protocol/build/contracts/feeders/InterestValidator.sol/InterestValidator.json',
+      ]
+    },
   ]
 
   await Promise.all(

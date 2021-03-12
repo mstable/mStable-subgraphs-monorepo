@@ -5,7 +5,6 @@ import { Transfer as ERC20Transfer } from '@mstable/subgraph-utils/generated/Emp
 import {
   AmpData as AmpDataEntity,
   Basset as BassetEntity,
-  Masset as MassetEntity,
   MintMultiTransaction as MintMultiTransactionEntity,
   MintSingleTransaction as MintSingleTransactionEntity,
   PaidFeeTransaction as PaidFeeTransactionEntity,
@@ -53,7 +52,9 @@ export function handleTransfer(event: Transfer): void {
 export function handleMinted(event: Minted): void {
   let masset = event.address
 
+  getOrCreateMasset(masset)
   updateBasket(masset)
+
   let massetUnits = event.params.mAssetQuantity
   let bassetUnits = event.params.inputQuantity
   let basset = event.params.input
@@ -82,6 +83,7 @@ export function handleMinted(event: Minted): void {
 export function handleMintedMulti(event: MintedMulti): void {
   let masset = event.address
 
+  getOrCreateMasset(masset)
   updateBasket(masset)
 
   let massetUnits = event.params.mAssetQuantity
@@ -117,6 +119,7 @@ export function handleMintedMulti(event: MintedMulti): void {
 export function handleSwapped(event: Swapped): void {
   let masset = event.address
 
+  getOrCreateMasset(masset)
   updateBasket(masset)
 
   let inputBasset = BassetEntity.load(event.params.input.toHexString()) as BassetEntity
@@ -151,6 +154,7 @@ export function handleSwapped(event: Swapped): void {
 export function handleRedeemedMulti(event: RedeemedMulti): void {
   let masset = event.address
 
+  getOrCreateMasset(masset)
   updateBasket(masset)
 
   let massetUnits = event.params.mAssetQuantity
@@ -188,6 +192,7 @@ export function handleRedeemedMulti(event: RedeemedMulti): void {
 export function handleRedeemed(event: Redeemed): void {
   let masset = event.address
 
+  getOrCreateMasset(masset)
   updateBasket(masset)
 
   let massetUnits = event.params.mAssetQuantity
@@ -223,6 +228,8 @@ export function handleRedeemed(event: Redeemed): void {
 }
 
 export function handleManager_StartRampA(event: Manager_StartRampA): void {
+  getOrCreateMasset(event.address)
+
   let ampDataEntity = new AmpDataEntity(event.address.toHexString())
   ampDataEntity.currentA = event.params.currentA
   ampDataEntity.startTime = event.params.startTime
@@ -232,6 +239,8 @@ export function handleManager_StartRampA(event: Manager_StartRampA): void {
 }
 
 export function handleManager_StopRampA(event: Manager_StopRampA): void {
+  getOrCreateMasset(event.address)
+
   let ampDataEntity = new AmpDataEntity(event.address.toHexString())
   ampDataEntity.currentA = event.params.currentA
   ampDataEntity.startTime = event.params.time
@@ -241,31 +250,33 @@ export function handleManager_StopRampA(event: Manager_StopRampA): void {
 }
 
 export function handleCacheSizeChanged(event: CacheSizeChanged): void {
-  let massetEntity = new MassetEntity(event.address.toHexString())
+  let massetEntity = getOrCreateMasset(event.address)
   massetEntity.cacheSize = event.params.cacheSize
   massetEntity.save()
 }
 
 export function handleFeesChanged(event: FeesChanged): void {
-  let massetEntity = new MassetEntity(event.address.toHexString())
+  let massetEntity = getOrCreateMasset(event.address)
   massetEntity.feeRate = event.params.swapFee
   massetEntity.redemptionFeeRate = event.params.redemptionFee
+  massetEntity.save()
 }
 
 export function handleWeightLimitsChanged(event: WeightLimitsChanged): void {
-  let massetEntity = new MassetEntity(event.address.toHexString())
+  let massetEntity = getOrCreateMasset(event.address)
   massetEntity.hardMin = event.params.min
   massetEntity.hardMax = event.params.max
   massetEntity.save()
 }
 
 export function handleForgeValidatorChanged(event: ForgeValidatorChanged): void {
-  let massetEntity = new MassetEntity(event.address.toHexString())
+  let massetEntity = getOrCreateMasset(event.address)
   massetEntity.forgeValidator = event.params.forgeValidator
   massetEntity.save()
 }
 
 export function handleManager_BassetAdded(event: Manager_BassetAdded): void {
+  getOrCreateMasset(event.address)
   updateBasket(event.address)
 
   let bassetEntity = new BassetEntity(event.params.bAsset.toHexString())
@@ -274,6 +285,8 @@ export function handleManager_BassetAdded(event: Manager_BassetAdded): void {
 }
 
 export function handleManager_BassetStatusChanged(event: Manager_BassetStatusChanged): void {
+  getOrCreateMasset(event.address)
+
   let bassetEntity = new BassetEntity(event.params.bAsset.toHexString())
   bassetEntity.status = mapBassetStatus(event.params.status)
   bassetEntity.save()
@@ -323,6 +336,7 @@ export function handleLegacyMasset_RedeemedMasset(event: LegacyMasset_RedeemedMa
   let masset = event.address
   let massetUnits = event.params.mAssetQuantity
 
+  getOrCreateMasset(masset)
   updateBasket(masset)
 
   counters.increment(masset, 'totalRedeemMassets')
@@ -385,6 +399,8 @@ export function handleLegacyMasset_Redeemed(event: LegacyMasset_Redeemed): void 
 export function handleLegacyMasset_PaidFee(event: LegacyMasset_PaidFee): void {
   let masset = event.address
 
+  getOrCreateMasset(masset)
+
   let basset = event.params.asset.toHexString()
   let bassetUnits = event.params.feeQuantity
   let bassetEntity = BassetEntity.load(basset)
@@ -413,9 +429,9 @@ export function handleLegacyMasset_PaidFee(event: LegacyMasset_PaidFee): void {
  * @deprecated
  */
 export function handleLegacyMasset_SwapFeeChanged(event: LegacyMasset_SwapFeeChanged): void {
-  let masset = new MassetEntity(event.address.toHexString())
-  masset.feeRate = event.params.fee
-  masset.save()
+  let massetEntity = getOrCreateMasset(event.address)
+  massetEntity.feeRate = event.params.fee
+  massetEntity.save()
 }
 
 /**
@@ -424,9 +440,9 @@ export function handleLegacyMasset_SwapFeeChanged(event: LegacyMasset_SwapFeeCha
 export function handleLegacyMasset_RedemptionFeeChanged(
   event: LegacyMasset_RedemptionFeeChanged,
 ): void {
-  let masset = new MassetEntity(event.address.toHexString())
-  masset.redemptionFeeRate = event.params.fee
-  masset.save()
+  let massetEntity = getOrCreateMasset(event.address)
+  massetEntity.redemptionFeeRate = event.params.fee
+  massetEntity.save()
 }
 
 /**

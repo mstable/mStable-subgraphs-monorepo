@@ -32,7 +32,7 @@ export function handleAutomaticInterestCollectionSwitched(
   savingsContractEntity.save()
 }
 
-// Calculation: (1 + 0.001) ^ 365 - 1
+// Calculation:  (1 + 0.001) ^ 365 - 1
 function calculateAPY(start: ExchangeRateEntity, end: ExchangeRateEntity): BigDecimal {
   let timeDiff = integer.fromNumber(end.timestamp - start.timestamp)
   let rateDiff = end.rate.div(start.rate)
