@@ -11,12 +11,21 @@
         "address": "0xEDfF2F3CDbf2ef0a6cA73874a0f280F1e48567F2",
         "startBlock": 20820000
       }
+    },
+    {
+      "name": "mBTC",
+      "Masset": {
+        "address": "0x93d00a315a17450cc23c96ecc48007dde13cef1a",
+        "startBlock": 23517826
+      }
     }
   ],
-  "SavingsManager": {
-    "address": "0x00b7f2A8369c2eb5527B45b32096cC7A058aF1F6",
-    "startBlock": 20820000
-  },
+  "savingsManagers": [
+    {
+      "address": "0x00b7f2A8369c2eb5527B45b32096cC7A058aF1F6",
+      "startBlock": 20820000
+    }
+  ],
   "RewardsDistributor": {
     "address": "0x7Fc54480BAD1BbA6Ef1B34777011aC0204578BeE",
     "startBlock": 20820000
@@ -28,6 +37,5 @@
   "IncentivisedVotingLockup": {
     "address": "0x82Ad5115547A1F9783c9E29cFe59A4A8d3Eba2A7",
     "startBlock": 20834108
-  },
-  "prereleaseSavingsContracts": []
+  }
 }

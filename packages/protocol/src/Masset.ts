@@ -1,10 +1,10 @@
 import { Address } from '@graphprotocol/graph-ts'
 import { integer, counters, metrics, token } from '@mstable/subgraph-utils'
 
-import { LegacyMasset } from '../generated/templates/Masset/LegacyMasset'
-import { Masset } from '../generated/templates/Masset/Masset'
+import { Masset } from '../generated/Masset/Masset'
+import { LegacyMasset } from '../generated/Masset/LegacyMasset'
 
-import { InvariantValidator } from '../generated/templates/Masset/InvariantValidator'
+import { InvariantValidator } from '../generated/Masset/InvariantValidator'
 import { AmpData as AmpDataEntity, Masset as MassetEntity } from '../generated/schema'
 import { updateBasket } from './Basket'
 
@@ -19,25 +19,30 @@ export function getOrCreateMasset(address: Address): MassetEntity {
 
   massetEntity = new MassetEntity(id)
 
+  let masset = Masset.bind(address)
   let legacyMasset = LegacyMasset.bind(address)
-
-  massetEntity.feeRate = legacyMasset.swapFee()
 
   /**
    * @deprecated
-   * BasketManager is for Legacy Massets only
+   */
+  let feeRate = legacyMasset.try_swapFee()
+  if (!feeRate.reverted) {
+    massetEntity.feeRate = feeRate.value
+  }
+
+  /**
+   * @deprecated
    */
   let basketManager = legacyMasset.try_getBasketManager()
   if (!basketManager.reverted) {
     massetEntity.basketManager = basketManager.value
   }
 
-  massetEntity.forgeValidator = legacyMasset.forgeValidator()
+  massetEntity.forgeValidator = masset.forgeValidator()
 
   massetEntity.basket = id
   massetEntity.token = token.getOrCreate(address).id
 
-  let masset = Masset.bind(address)
   let weightLimits = masset.try_weightLimits()
 
   // If this didn't revert, then we're dealing with a new Masset
@@ -62,7 +67,7 @@ export function getOrCreateMasset(address: Address): MassetEntity {
     updateBasket(address)
   }
 
-  let redemptionFee = legacyMasset.try_redemptionFee()
+  let redemptionFee = masset.try_redemptionFee()
   massetEntity.redemptionFeeRate = redemptionFee.reverted ? integer.ZERO : redemptionFee.value
 
   massetEntity.totalSupply = metrics.getOrCreate(address, 'token.totalSupply').id

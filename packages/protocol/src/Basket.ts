@@ -4,9 +4,9 @@ import { counters, metrics, token } from '@mstable/subgraph-utils'
 import {
   BasketManager,
   BasketManager__getBasketResultBStruct,
-} from '../generated/mUSD/BasketManager'
+} from '../generated/BasketManager/BasketManager'
 import { LegacyMasset } from '../generated/LegacyMasset/LegacyMasset'
-import { Masset } from '../generated/templates/Masset/Masset'
+import { Masset } from '../generated/Masset/Masset'
 
 import { Basket as BasketEntity, Basset as BassetEntity } from '../generated/schema'
 
@@ -146,11 +146,21 @@ function updateBassetEntities(masset: Masset): Array<BassetEntity> {
 }
 
 export function updateBasket(massetAddress: Address): void {
-  let basketEntity = new BasketEntity(massetAddress.toHexString())
+  let basket = Masset.bind(massetAddress).try_getBasket()
 
+  if (basket.reverted) {
+    let basketManagerAddress = LegacyMasset.bind(massetAddress).getBasketManager()
+    updateBasketLegacy(basketManagerAddress)
+  } else {
+    updateBasketV2(massetAddress)
+  }
+}
+
+function updateBasketV2(massetAddress: Address): void {
   let masset = Masset.bind(massetAddress)
   let basket = masset.getBasket()
 
+  let basketEntity = new BasketEntity(massetAddress.toHexString())
   let bassetEntities = updateBassetEntities(masset)
 
   basketEntity.bassets = bassetEntities.map<string>((basset: BassetEntity) => basset.id)
@@ -160,7 +170,7 @@ export function updateBasket(massetAddress: Address): void {
   basketEntity.save()
 }
 
-export function getBasketDataLegacy(massetAddress: Address): BasketManager__getBasketResultBStruct {
+function getBasketDataLegacy(massetAddress: Address): BasketManager__getBasketResultBStruct {
   let legacyMasset = LegacyMasset.bind(massetAddress)
   let basketManager = BasketManager.bind(legacyMasset.getBasketManager())
   return basketManager.getBasket()
