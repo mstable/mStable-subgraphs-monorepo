@@ -1024,7 +1024,7 @@
         },
         {
           "indexed": false,
-          "internalType": "enum MassetStructs.BassetStatus",
+          "internalType": "enum BassetStatus",
           "name": "status",
           "type": "uint8"
         }
@@ -1592,7 +1592,7 @@
           "type": "bool"
         },
         {
-          "internalType": "enum MassetStructs.BassetStatus",
+          "internalType": "enum BassetStatus",
           "name": "status",
           "type": "uint8"
         }
@@ -1782,12 +1782,12 @@
               "type": "bool"
             },
             {
-              "internalType": "enum MassetStructs.BassetStatus",
+              "internalType": "enum BassetStatus",
               "name": "status",
               "type": "uint8"
             }
           ],
-          "internalType": "struct MassetStructs.BassetPersonal",
+          "internalType": "struct BassetPersonal",
           "name": "personal",
           "type": "tuple"
         },
@@ -1804,7 +1804,7 @@
               "type": "uint128"
             }
           ],
-          "internalType": "struct MassetStructs.BassetData",
+          "internalType": "struct BassetData",
           "name": "data",
           "type": "tuple"
         }
@@ -1834,12 +1834,12 @@
               "type": "bool"
             },
             {
-              "internalType": "enum MassetStructs.BassetStatus",
+              "internalType": "enum BassetStatus",
               "name": "status",
               "type": "uint8"
             }
           ],
-          "internalType": "struct MassetStructs.BassetPersonal[]",
+          "internalType": "struct BassetPersonal[]",
           "name": "personal",
           "type": "tuple[]"
         },
@@ -1856,7 +1856,7 @@
               "type": "uint128"
             }
           ],
-          "internalType": "struct MassetStructs.BassetData[]",
+          "internalType": "struct BassetData[]",
           "name": "data",
           "type": "tuple[]"
         }
@@ -1888,12 +1888,12 @@
                   "type": "uint128"
                 }
               ],
-              "internalType": "struct MassetStructs.WeightLimits",
+              "internalType": "struct WeightLimits",
               "name": "limits",
               "type": "tuple"
             }
           ],
-          "internalType": "struct MassetStructs.InvariantConfig",
+          "internalType": "struct InvariantConfig",
           "name": "config",
           "type": "tuple"
         }
@@ -2103,12 +2103,12 @@
               "type": "bool"
             },
             {
-              "internalType": "enum MassetStructs.BassetStatus",
+              "internalType": "enum BassetStatus",
               "name": "status",
               "type": "uint8"
             }
           ],
-          "internalType": "struct MassetStructs.BassetPersonal[]",
+          "internalType": "struct BassetPersonal[]",
           "name": "_bAssets",
           "type": "tuple[]"
         },
@@ -2132,12 +2132,12 @@
                   "type": "uint128"
                 }
               ],
-              "internalType": "struct MassetStructs.WeightLimits",
+              "internalType": "struct WeightLimits",
               "name": "limits",
               "type": "tuple"
             }
           ],
-          "internalType": "struct MassetStructs.InvariantConfig",
+          "internalType": "struct InvariantConfig",
           "name": "_config",
           "type": "tuple"
         }

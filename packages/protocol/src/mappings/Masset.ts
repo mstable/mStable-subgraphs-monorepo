@@ -18,14 +18,6 @@ import {
   CacheSizeChanged,
   FeesChanged,
   ForgeValidatorChanged,
-  LegacyMasset_PaidFee,
-  LegacyMasset_RedeemedMasset,
-  LegacyMasset_RedemptionFeeChanged,
-  LegacyMasset_SwapFeeChanged,
-  Manager_BassetAdded,
-  Manager_BassetStatusChanged,
-  Manager_StartRampA,
-  Manager_StopRampA,
   Minted,
   MintedMulti,
   Redeemed,
@@ -33,7 +25,22 @@ import {
   Swapped,
   Transfer,
   WeightLimitsChanged,
-} from '../../generated/BasketManager/MassetExtended'
+} from '../../generated/Masset/Masset'
+import {
+  BassetAdded as Manager_BassetAdded,
+  BassetStatusChanged as Manager_BassetStatusChanged,
+  StartRampA as Manager_StartRampA,
+  StopRampA as Manager_StopRampA,
+} from '../../generated/Masset/Manager'
+import {
+  PaidFee as LegacyMasset_PaidFee,
+  Redeemed as LegacyMasset_Redeemed,
+  RedeemedMasset as LegacyMasset_RedeemedMasset,
+  RedemptionFeeChanged as LegacyMasset_RedemptionFeeChanged,
+  SwapFeeChanged as LegacyMasset_SwapFeeChanged,
+  Swapped as LegacyMasset_Swapped,
+} from '../../generated/LegacyMasset/LegacyMasset'
+
 import { BasketManager } from '../../generated/BasketManager/BasketManager'
 
 import { mapBassetStatus, updateBasket, updateBassetEntitiesLegacy } from '../Basket'
@@ -275,11 +282,48 @@ export function handleManager_BassetStatusChanged(event: Manager_BassetStatusCha
 /**
  * @deprecated
  */
+export function handleLegacyMasset_Swapped(event: LegacyMasset_Swapped): void {
+  let masset = event.address
+
+  let inputBasset = BassetEntity.load(event.params.input.toHexString()) as BassetEntity
+  let outputBasset = BassetEntity.load(event.params.output.toHexString()) as BassetEntity
+
+  updateBasket(masset)
+
+  let outputAmountInBassetUnits = event.params.outputAmount
+  let massetUnits = integer.toRatio(outputAmountInBassetUnits, outputBasset.ratio)
+
+  counters.increment(masset, 'totalSwaps')
+  metrics.increment(masset, 'cumulativeSwapped', massetUnits)
+
+  counters.incrementById(inputBasset.totalSwapsAsInput)
+  counters.incrementById(outputBasset.totalSwapsAsOutput)
+  metrics.incrementById(outputBasset.cumulativeSwappedAsOutput, outputAmountInBassetUnits)
+
+  let baseTx = transaction.fromEvent(event)
+  let txEntity = new SwapTransactionEntity(baseTx.id)
+  txEntity.timestamp = baseTx.timestamp
+  txEntity.block = baseTx.block
+  txEntity.hash = baseTx.hash
+
+  txEntity.recipient = event.params.recipient
+  txEntity.sender = event.params.swapper
+  txEntity.masset = masset.toHexString()
+  txEntity.massetUnits = massetUnits
+  txEntity.outputBasset = outputBasset.id
+  txEntity.inputBasset = inputBasset.id
+
+  txEntity.save()
+}
+
+/**
+ * @deprecated
+ */
 export function handleLegacyMasset_RedeemedMasset(event: LegacyMasset_RedeemedMasset): void {
   let masset = event.address
   let massetUnits = event.params.mAssetQuantity
 
-  updateVaultBalancesLegacy(masset)
+  updateBasket(masset)
 
   counters.increment(masset, 'totalRedeemMassets')
   metrics.increment(masset, 'cumulativeRedeemedMasset', massetUnits)
@@ -294,6 +338,43 @@ export function handleLegacyMasset_RedeemedMasset(event: LegacyMasset_RedeemedMa
   txEntity.sender = event.params.redeemer
   txEntity.masset = masset.toHexString()
   txEntity.massetUnits = massetUnits
+
+  txEntity.save()
+}
+
+/**
+ * @deprecated
+ */
+export function handleLegacyMasset_Redeemed(event: LegacyMasset_Redeemed): void {
+  let masset = event.address
+  let massetUnits = event.params.mAssetQuantity
+  let bassets = event.params.bAssets
+  let bassetsUnits = event.params.bAssetQuantities
+
+  updateBasket(masset)
+
+  for (let i = 0; i < bassets.length; i++) {
+    let basset = bassets[i]
+    let bassetUnits = bassetsUnits[i]
+    counters.increment(basset, 'totalRedemptions')
+    metrics.increment(basset, 'cumulativeRedeemed', bassetUnits)
+  }
+
+  counters.increment(masset, 'totalRedemptions')
+  metrics.increment(masset, 'cumulativeRedeemed', massetUnits)
+
+  let baseTx = transaction.fromEvent(event)
+  let txEntity = new RedeemTransactionEntity(baseTx.id)
+  txEntity.timestamp = baseTx.timestamp
+  txEntity.block = baseTx.block
+  txEntity.hash = baseTx.hash
+
+  txEntity.recipient = event.params.recipient
+  txEntity.sender = event.params.redeemer
+  txEntity.masset = masset.toHexString()
+  txEntity.massetUnits = massetUnits
+  txEntity.bassets = bassets.map<string>(b => b.toHexString())
+  txEntity.bassetsUnits = bassetsUnits
 
   txEntity.save()
 }
