@@ -1,1038 +1,8 @@
 {
-  "contractName": "MassetExtended",
+  "contractName": "FeederPoolExtended",
   "abi": [
     {
-      "name": "LegacyMasset_Approval",
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "spender",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "value",
-          "type": "uint256"
-        }
-      ],
-      "type": "event"
-    },
-    {
-      "name": "LegacyMasset_ForgeValidatorChanged",
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "forgeValidator",
-          "type": "address"
-        }
-      ],
-      "type": "event"
-    },
-    {
-      "name": "LegacyMasset_Minted",
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "minter",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "mAssetQuantity",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "bAsset",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "bAssetQuantity",
-          "type": "uint256"
-        }
-      ],
-      "type": "event"
-    },
-    {
-      "name": "LegacyMasset_MintedMulti",
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "minter",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "mAssetQuantity",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address[]",
-          "name": "bAssets",
-          "type": "address[]"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256[]",
-          "name": "bAssetQuantities",
-          "type": "uint256[]"
-        }
-      ],
-      "type": "event"
-    },
-    {
-      "name": "LegacyMasset_PaidFee",
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "payer",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "asset",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "feeQuantity",
-          "type": "uint256"
-        }
-      ],
-      "type": "event"
-    },
-    {
-      "name": "LegacyMasset_Redeemed",
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "redeemer",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "mAssetQuantity",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address[]",
-          "name": "bAssets",
-          "type": "address[]"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256[]",
-          "name": "bAssetQuantities",
-          "type": "uint256[]"
-        }
-      ],
-      "type": "event"
-    },
-    {
-      "name": "LegacyMasset_RedeemedMasset",
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "redeemer",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "mAssetQuantity",
-          "type": "uint256"
-        }
-      ],
-      "type": "event"
-    },
-    {
-      "name": "LegacyMasset_RedemptionFeeChanged",
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "fee",
-          "type": "uint256"
-        }
-      ],
-      "type": "event"
-    },
-    {
-      "name": "LegacyMasset_SwapFeeChanged",
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "fee",
-          "type": "uint256"
-        }
-      ],
-      "type": "event"
-    },
-    {
-      "name": "LegacyMasset_Swapped",
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "swapper",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "input",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "output",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "outputAmount",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        }
-      ],
-      "type": "event"
-    },
-    {
-      "name": "LegacyMasset_Transfer",
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "to",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "value",
-          "type": "uint256"
-        }
-      ],
-      "type": "event"
-    },
-    {
-      "name": "LegacyMasset_allowance",
-      "constant": true,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "spender",
-          "type": "address"
-        }
-      ],
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_approve",
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "spender",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_balanceOf",
-      "constant": true,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "account",
-          "type": "address"
-        }
-      ],
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_collectInterest",
-      "constant": false,
-      "inputs": [],
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "totalInterestGained",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "newSupply",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_decimals",
-      "constant": true,
-      "inputs": [],
-      "outputs": [
-        {
-          "internalType": "uint8",
-          "name": "",
-          "type": "uint8"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_decreaseAllowance",
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "spender",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "subtractedValue",
-          "type": "uint256"
-        }
-      ],
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_forgeValidator",
-      "constant": true,
-      "inputs": [],
-      "outputs": [
-        {
-          "internalType": "contract IForgeValidator",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_getBasketManager",
-      "constant": true,
-      "inputs": [],
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_getSwapOutput",
-      "constant": true,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_input",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "_output",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_quantity",
-          "type": "uint256"
-        }
-      ],
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        },
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        },
-        {
-          "internalType": "uint256",
-          "name": "output",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_increaseAllowance",
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "spender",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "addedValue",
-          "type": "uint256"
-        }
-      ],
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_initialize",
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_nameArg",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "_symbolArg",
-          "type": "string"
-        },
-        {
-          "internalType": "address",
-          "name": "_nexus",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "_forgeValidator",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "_basketManager",
-          "type": "address"
-        }
-      ],
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_lockForgeValidator",
-      "constant": false,
-      "inputs": [],
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_mint",
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_bAsset",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_bAssetQuantity",
-          "type": "uint256"
-        }
-      ],
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "massetMinted",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_mintMulti",
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address[]",
-          "name": "_bAssets",
-          "type": "address[]"
-        },
-        {
-          "internalType": "uint256[]",
-          "name": "_bAssetQuantity",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "address",
-          "name": "_recipient",
-          "type": "address"
-        }
-      ],
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "massetMinted",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_mintTo",
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_bAsset",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_bAssetQuantity",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "_recipient",
-          "type": "address"
-        }
-      ],
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "massetMinted",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_name",
-      "constant": true,
-      "inputs": [],
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_nexus",
-      "constant": true,
-      "inputs": [],
-      "outputs": [
-        {
-          "internalType": "contract INexus",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_redeem",
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_bAsset",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_bAssetQuantity",
-          "type": "uint256"
-        }
-      ],
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "massetRedeemed",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_redeemMasset",
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_mAssetQuantity",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "_recipient",
-          "type": "address"
-        }
-      ],
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_redeemMulti",
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address[]",
-          "name": "_bAssets",
-          "type": "address[]"
-        },
-        {
-          "internalType": "uint256[]",
-          "name": "_bAssetQuantities",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "address",
-          "name": "_recipient",
-          "type": "address"
-        }
-      ],
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "massetRedeemed",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_redeemTo",
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_bAsset",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_bAssetQuantity",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "_recipient",
-          "type": "address"
-        }
-      ],
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "massetRedeemed",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_redemptionFee",
-      "constant": true,
-      "inputs": [],
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_setRedemptionFee",
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_redemptionFee",
-          "type": "uint256"
-        }
-      ],
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_setSwapFee",
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_swapFee",
-          "type": "uint256"
-        }
-      ],
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_swap",
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_input",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "_output",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_quantity",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "_recipient",
-          "type": "address"
-        }
-      ],
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "output",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_swapFee",
-      "constant": true,
-      "inputs": [],
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_symbol",
-      "constant": true,
-      "inputs": [],
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_totalSupply",
-      "constant": true,
-      "inputs": [],
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_transfer",
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_transferFrom",
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "sender",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "name": "LegacyMasset_upgradeForgeValidator",
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_newForgeValidator",
-          "type": "address"
-        }
-      ],
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "name": "Manager_BasketStatusChanged",
-      "anonymous": false,
-      "inputs": [],
-      "type": "event"
-    },
-    {
-      "name": "Manager_BassetAdded",
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "bAsset",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "integrator",
-          "type": "address"
-        }
-      ],
-      "type": "event"
-    },
-    {
-      "name": "Manager_BassetStatusChanged",
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "bAsset",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "enum BassetStatus",
-          "name": "status",
-          "type": "uint8"
-        }
-      ],
-      "type": "event"
-    },
-    {
-      "name": "Manager_BassetsMigrated",
+      "name": "FeederManager_BassetsMigrated",
       "anonymous": false,
       "inputs": [
         {
@@ -1051,7 +21,7 @@
       "type": "event"
     },
     {
-      "name": "Manager_StartRampA",
+      "name": "FeederManager_StartRampA",
       "anonymous": false,
       "inputs": [
         {
@@ -1082,7 +52,7 @@
       "type": "event"
     },
     {
-      "name": "Manager_StopRampA",
+      "name": "FeederManager_StopRampA",
       "anonymous": false,
       "inputs": [
         {
@@ -1101,29 +71,156 @@
       "type": "event"
     },
     {
-      "name": "Manager_TransferFeeEnabled",
+      "name": "InterestValidator_undefined",
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_nexus",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "name": "InterestValidator_InterestCollected",
       "anonymous": false,
       "inputs": [
         {
           "indexed": true,
           "internalType": "address",
-          "name": "bAsset",
+          "name": "feederPool",
           "type": "address"
         },
         {
           "indexed": false,
-          "internalType": "bool",
-          "name": "enabled",
-          "type": "bool"
+          "internalType": "uint256",
+          "name": "interest",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "newTotalSupply",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "apy",
+          "type": "uint256"
         }
       ],
       "type": "event"
+    },
+    {
+      "name": "InterestValidator_Paused",
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "type": "event"
+    },
+    {
+      "name": "InterestValidator_Unpaused",
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "type": "event"
+    },
+    {
+      "name": "InterestValidator_collectAndValidateInterest",
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "_feeders",
+          "type": "address[]"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "name": "InterestValidator_lastBatchCollected",
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "name": "InterestValidator_nexus",
+      "inputs": [],
+      "outputs": [
+        {
+          "internalType": "contract INexus",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "name": "InterestValidator_pause",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "name": "InterestValidator_paused",
+      "inputs": [],
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "name": "InterestValidator_unpause",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
       "inputs": [
         {
           "internalType": "address",
           "name": "_nexus",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_mAsset",
           "type": "address"
         }
       ],
@@ -1160,6 +257,25 @@
       "inputs": [
         {
           "indexed": false,
+          "internalType": "address[]",
+          "name": "bAssets",
+          "type": "address[]"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newIntegrator",
+          "type": "address"
+        }
+      ],
+      "name": "BassetsMigrated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
           "internalType": "uint256",
           "name": "cacheSize",
           "type": "uint256"
@@ -1182,22 +298,15 @@
           "internalType": "uint256",
           "name": "redemptionFee",
           "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "govFee",
+          "type": "uint256"
         }
       ],
       "name": "FeesChanged",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "forgeValidator",
-          "type": "address"
-        }
-      ],
-      "name": "ForgeValidatorChanged",
       "type": "event"
     },
     {
@@ -1218,7 +327,7 @@
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "mAssetQuantity",
+          "name": "output",
           "type": "uint256"
         },
         {
@@ -1255,7 +364,7 @@
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "mAssetQuantity",
+          "name": "output",
           "type": "uint256"
         },
         {
@@ -1272,6 +381,19 @@
         }
       ],
       "name": "MintedMulti",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "Paused",
       "type": "event"
     },
     {
@@ -1364,6 +486,56 @@
       "anonymous": false,
       "inputs": [
         {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "currentA",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "targetA",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "startTime",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "rampEndTime",
+          "type": "uint256"
+        }
+      ],
+      "name": "StartRampA",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "currentA",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "time",
+          "type": "uint256"
+        }
+      ],
+      "name": "StopRampA",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
           "indexed": true,
           "internalType": "address",
           "name": "swapper",
@@ -1390,7 +562,7 @@
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "scaledFee",
+          "name": "fee",
           "type": "uint256"
         },
         {
@@ -1426,6 +598,19 @@
         }
       ],
       "name": "Transfer",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "Unpaused",
       "type": "event"
     },
     {
@@ -1472,34 +657,6 @@
       "type": "function"
     },
     {
-      "inputs": [],
-      "name": "ampData",
-      "outputs": [
-        {
-          "internalType": "uint64",
-          "name": "initialA",
-          "type": "uint64"
-        },
-        {
-          "internalType": "uint64",
-          "name": "targetA",
-          "type": "uint64"
-        },
-        {
-          "internalType": "uint64",
-          "name": "rampStartTime",
-          "type": "uint64"
-        },
-        {
-          "internalType": "uint64",
-          "name": "rampEndTime",
-          "type": "uint64"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "inputs": [
         {
           "internalType": "address",
@@ -1526,83 +683,6 @@
     {
       "inputs": [
         {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "bAssetData",
-      "outputs": [
-        {
-          "internalType": "uint128",
-          "name": "ratio",
-          "type": "uint128"
-        },
-        {
-          "internalType": "uint128",
-          "name": "vaultBalance",
-          "type": "uint128"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "name": "bAssetIndexes",
-      "outputs": [
-        {
-          "internalType": "uint8",
-          "name": "",
-          "type": "uint8"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "bAssetPersonal",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "addr",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "integrator",
-          "type": "address"
-        },
-        {
-          "internalType": "bool",
-          "name": "hasTxFee",
-          "type": "bool"
-        },
-        {
-          "internalType": "enum BassetStatus",
-          "name": "status",
-          "type": "uint8"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "address",
           "name": "account",
           "type": "address"
@@ -1621,50 +701,8 @@
     },
     {
       "inputs": [],
-      "name": "basket",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "undergoingRecol",
-          "type": "bool"
-        },
-        {
-          "internalType": "bool",
-          "name": "failed",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "cacheSize",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "collectInterest",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "mintAmount",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "newSupply",
-          "type": "uint256"
-        }
-      ],
+      "name": "collectPendingFees",
+      "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
@@ -1684,6 +722,83 @@
         }
       ],
       "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "data",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "swapFee",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "redemptionFee",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "govFee",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "pendingFees",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "cacheSize",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "initialA",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "targetA",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "rampStartTime",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "rampEndTime",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct AmpData",
+          "name": "ampData",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint128",
+              "name": "min",
+              "type": "uint128"
+            },
+            {
+              "internalType": "uint128",
+              "name": "max",
+              "type": "uint128"
+            }
+          ],
+          "internalType": "struct WeightLimits",
+          "name": "weightLimits",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -1721,37 +836,6 @@
         }
       ],
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "forgeValidator",
-      "outputs": [
-        {
-          "internalType": "contract IInvariantValidator",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getBasket",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        },
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -1805,7 +889,7 @@
             }
           ],
           "internalType": "struct BassetData",
-          "name": "data",
+          "name": "vaultData",
           "type": "tuple"
         }
       ],
@@ -1840,7 +924,7 @@
             }
           ],
           "internalType": "struct BassetPersonal[]",
-          "name": "personal",
+          "name": "",
           "type": "tuple[]"
         },
         {
@@ -1857,7 +941,7 @@
             }
           ],
           "internalType": "struct BassetData[]",
-          "name": "data",
+          "name": "vaultData",
           "type": "tuple[]"
         }
       ],
@@ -1870,6 +954,11 @@
       "outputs": [
         {
           "components": [
+            {
+              "internalType": "uint256",
+              "name": "supply",
+              "type": "uint256"
+            },
             {
               "internalType": "uint256",
               "name": "a",
@@ -1893,7 +982,7 @@
               "type": "tuple"
             }
           ],
-          "internalType": "struct InvariantConfig",
+          "internalType": "struct FeederConfig",
           "name": "config",
           "type": "tuple"
         }
@@ -1950,6 +1039,24 @@
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "getPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "k",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "address[]",
@@ -1966,7 +1073,7 @@
       "outputs": [
         {
           "internalType": "uint256",
-          "name": "mAssetQuantity",
+          "name": "fpTokenQuantity",
           "type": "uint256"
         }
       ],
@@ -1982,7 +1089,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "_mAssetQuantity",
+          "name": "_fpTokenQuantity",
           "type": "uint256"
         }
       ],
@@ -2030,24 +1137,6 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "_bAsset",
-          "type": "address"
-        },
-        {
-          "internalType": "bool",
-          "name": "_belowPeg",
-          "type": "bool"
-        }
-      ],
-      "name": "handlePegLoss",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
           "name": "spender",
           "type": "address"
         },
@@ -2081,9 +1170,31 @@
           "type": "string"
         },
         {
-          "internalType": "address",
-          "name": "_forgeValidator",
-          "type": "address"
+          "components": [
+            {
+              "internalType": "address",
+              "name": "addr",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "integrator",
+              "type": "address"
+            },
+            {
+              "internalType": "bool",
+              "name": "hasTxFee",
+              "type": "bool"
+            },
+            {
+              "internalType": "enum BassetStatus",
+              "name": "status",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct BassetPersonal",
+          "name": "_mAsset",
+          "type": "tuple"
         },
         {
           "components": [
@@ -2108,9 +1219,14 @@
               "type": "uint8"
             }
           ],
-          "internalType": "struct BassetPersonal[]",
-          "name": "_bAssets",
-          "type": "tuple[]"
+          "internalType": "struct BassetPersonal",
+          "name": "_fAsset",
+          "type": "tuple"
+        },
+        {
+          "internalType": "address[]",
+          "name": "_mpAssets",
+          "type": "address[]"
         },
         {
           "components": [
@@ -2149,12 +1265,12 @@
     },
     {
       "inputs": [],
-      "name": "maxBassets",
+      "name": "mAsset",
       "outputs": [
         {
-          "internalType": "uint8",
+          "internalType": "address",
           "name": "",
-          "type": "uint8"
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -2260,19 +1376,6 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_bAsset",
-          "type": "address"
-        }
-      ],
-      "name": "negateIsolation",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
       "inputs": [],
       "name": "nexus",
       "outputs": [
@@ -2280,6 +1383,26 @@
           "internalType": "contract INexus",
           "name": "",
           "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "pause",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "paused",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
         }
       ],
       "stateMutability": "view",
@@ -2294,7 +1417,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "_mAssetQuantity",
+          "name": "_fpTokenQuantity",
           "type": "uint256"
         },
         {
@@ -2333,7 +1456,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "_maxMassetQuantity",
+          "name": "_maxInputQuantity",
           "type": "uint256"
         },
         {
@@ -2346,7 +1469,7 @@
       "outputs": [
         {
           "internalType": "uint256",
-          "name": "mAssetQuantity",
+          "name": "fpTokenQuantity",
           "type": "uint256"
         }
       ],
@@ -2357,7 +1480,7 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "_mAssetQuantity",
+          "name": "_inputQuantity",
           "type": "uint256"
         },
         {
@@ -2371,7 +1494,7 @@
           "type": "address"
         }
       ],
-      "name": "redeemMasset",
+      "name": "redeemProportionately",
       "outputs": [
         {
           "internalType": "uint256[]",
@@ -2380,19 +1503,6 @@
         }
       ],
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "redemptionFee",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -2419,27 +1529,14 @@
           "internalType": "uint256",
           "name": "_redemptionFee",
           "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_govFee",
+          "type": "uint256"
         }
       ],
       "name": "setFees",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_bAsset",
-          "type": "address"
-        },
-        {
-          "internalType": "bool",
-          "name": "_flag",
-          "type": "bool"
-        }
-      ],
-      "name": "setTransferFeesFlag",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -2488,19 +1585,6 @@
       "type": "function"
     },
     {
-      "inputs": [],
-      "name": "surplus",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "inputs": [
         {
           "internalType": "address",
@@ -2537,19 +1621,6 @@
         }
       ],
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "swapFee",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -2632,34 +1703,10 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_newForgeValidator",
-          "type": "address"
-        }
-      ],
-      "name": "upgradeForgeValidator",
+      "inputs": [],
+      "name": "unpause",
       "outputs": [],
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "weightLimits",
-      "outputs": [
-        {
-          "internalType": "uint128",
-          "name": "min",
-          "type": "uint128"
-        },
-        {
-          "internalType": "uint128",
-          "name": "max",
-          "type": "uint128"
-        }
-      ],
-      "stateMutability": "view",
       "type": "function"
     }
   ]

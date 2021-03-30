@@ -55,5 +55,27 @@
   "MerkleDrop_BAL": {
     "address": "0x5699a17F5169645ad55c71cA64978b4acc60199D",
     "startBlock": 8200000
-  }
+  },
+  "feederPools": [
+    {
+      "pool": {
+        "address": "0xfBEecBf204650e53b04C77C378401A30E1cb9E79",
+        "startBlock": 9725011
+      },
+      "vault": {
+        "address": "0xaE077412FE8c3DF00393a63E49cAAe2658a33019",
+        "startBlock": 9725028
+      }
+    },
+    {
+      "pool": {
+        "address": "0x81FcCF0872382b24ff3B3629B6b6C2D387ed3E34",
+        "startBlock": 9919850
+      },
+      "vault": {
+        "address": "0xB3114E33FC6ff5f3C452980cCbE7Cf1dE1Fc822b",
+        "startBlock": 9920553
+      }
+    }
+  ]
 }

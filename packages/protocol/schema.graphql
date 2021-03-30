@@ -12,10 +12,10 @@ type Basset @entity {
   """
   id: ID!
 
-  """
-  Basket the Basset is contained in
-  """
-  basket: Basket! @derivedFrom(field: "bassets")
+#  """
+#  Basket the Basset is contained in
+#  """
+#  basket: Basket! @derivedFrom(field: "bassets")
 
   """
   Target weight of the Basset (mUSD only)
@@ -130,9 +130,9 @@ type Basket @entity {
   failed: Boolean!
 
   """
-  Masset the Basket belongs to
+  Masset the Basket belongs to (optional)
   """
-  masset: Masset! @derivedFrom(field: "basket")
+  masset: Masset @derivedFrom(field: "basket")
 }
 
 """
@@ -511,7 +511,10 @@ type BoostedSavingsVault @entity {
   # BoostedSavingsVault address
   id: ID!
 
-  savingsContract: SavingsContract!
+  """
+  Optionally, the Savings Contract associated with this vault
+  """
+  savingsContract: SavingsContract
 
   accounts: [BoostedSavingsVaultAccount!]! @derivedFrom(field: "boostedSavingsVault")
 
