@@ -1,5 +1,5 @@
-import { Address } from '@graphprotocol/graph-ts'
-import { transaction, counters, metrics, integer, token } from '@mstable/subgraph-utils'
+import { Address, log } from '@graphprotocol/graph-ts'
+import { transaction, counters, metrics, integer, token, address } from '@mstable/subgraph-utils'
 import { Transfer as ERC20Transfer } from '@mstable/subgraph-utils/generated/Empty/ERC20Detailed'
 
 import {
@@ -28,9 +28,17 @@ import {
   FeederManager_StartRampA,
   FeederManager_StopRampA,
 } from '../../generated/templates/FeederPool/FeederPoolExtended'
+import { FeederPoolAccount } from '../FeederPoolAccount'
 
 export function handleTransfer(event: Transfer): void {
   token.handleTransfer(event as ERC20Transfer)
+
+  if (event.params.from.notEqual(address.ZERO_ADDRESS)) {
+    FeederPoolAccount.update(event.address, event.params.from, event.block.timestamp)
+  }
+  if (event.params.to.notEqual(address.ZERO_ADDRESS)) {
+    FeederPoolAccount.update(event.address, event.params.to, event.block.timestamp)
+  }
 }
 
 export function handleMinted(event: Minted): void {
@@ -109,10 +117,14 @@ export function handleSwapped(event: Swapped): void {
   updateFeederPoolBassets(feederPool)
   updatePrice(event.address)
 
-  let inputBasset = BassetEntity.load(getFPBassetId(feederPool, event.params.input)) as BassetEntity
-  let outputBasset = BassetEntity.load(
-    getFPBassetId(feederPool, event.params.output),
-  ) as BassetEntity
+  // Determine whether they are mpAssets or fpAssets
+  let inputMPAsset = BassetEntity.load(event.params.input.toHexString())
+  let outputMPAsset = BassetEntity.load(event.params.output.toHexString())
+  let inputFPAsset = BassetEntity.load(getFPBassetId(feederPool, event.params.input))
+  let outputFPAsset = BassetEntity.load(getFPBassetId(feederPool, event.params.output))
+
+  let inputBasset = (inputMPAsset != null ? inputMPAsset : inputFPAsset) as BassetEntity
+  let outputBasset = (outputMPAsset != null ? outputMPAsset : outputFPAsset) as BassetEntity
 
   let outputAmountInBassetUnits = event.params.outputAmount
   let massetUnits = integer.toRatio(outputAmountInBassetUnits, outputBasset.ratio)
@@ -189,7 +201,12 @@ export function handleRedeemed(event: Redeemed): void {
 
   let basset = event.params.output
   let bassetUnits = event.params.outputQuantity
-  let bassetEntity = BassetEntity.load(getFPBassetId(feederPool, basset)) as BassetEntity
+
+  let mpAsset = BassetEntity.load(basset.toHexString())
+  let fpAsset = BassetEntity.load(getFPBassetId(feederPool, basset))
+
+  let bassetEntity = (mpAsset != null ? mpAsset : fpAsset) as BassetEntity
+
   let rawFee = integer.fromRatio(scaledFee, bassetEntity.ratio)
 
   counters.incrementById(bassetEntity.totalRedemptions)
@@ -249,6 +266,7 @@ export function handleFeesChanged(event: FeesChanged): void {
   let fpEntity = getOrCreateFeederPool(event.address)
   fpEntity.swapFeeRate = event.params.swapFee
   fpEntity.redemptionFeeRate = event.params.redemptionFee
+  fpEntity.governanceFeeRate = event.params.govFee
   fpEntity.save()
 }
 

@@ -1,0 +1,25 @@
+{
+  "name": "@mstable/feeders-subgraph",
+  "version": "0.1.0",
+  "license": "MIT",
+  "files": [
+    "./queries.graphql",
+    "./schema.generated.graphql"
+  ],
+  "scripts": {
+    "codegen:schema": "yarn run graphql-merge --template='schema.graphql' --schema='schema.generated.graphql'",
+    "codegen:graph": "yarn run graph codegen",
+    "codegen": "yarn run codegen:schema && yarn run codegen:graph",
+    "build": "yarn graph build",
+    "prepare-codegen": "func() { node ./combine-abis.js && yarn run --silent mustache \"../../config/$1.json\" subgraph.template.yaml > subgraph.yaml && yarn run codegen; }; func",
+    "prepare:ropsten": "yarn run prepare-codegen ropsten",
+    "prepare:mainnet": "yarn run prepare-codegen mainnet",
+    "deploy:ropsten": "yarn graph deploy mStable/mStable-feeders-ropsten --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
+    "deploy:staging": "yarn graph deploy mStable/mStable-feeders-staging --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
+    "deploy:mainnet": "yarn graph deploy mStable/mStable-feeders --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
+    "lint": "yarn run prettier './src/**/*.{ts,tsx}' --write"
+  },
+  "dependencies": {
+    "@mstable/subgraph-utils": "0.1.0"
+  }
+}

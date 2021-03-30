@@ -1,4 +1,4 @@
-import { Address, log } from '@graphprotocol/graph-ts'
+import { Address } from '@graphprotocol/graph-ts'
 import { counters, decimal, integer, metrics, token } from '@mstable/subgraph-utils'
 
 import { FeederPoolExtended } from '../generated/templates/FeederPool/FeederPoolExtended'
@@ -9,10 +9,9 @@ import {
   Basset as BassetEntity,
   FeederPool as FeederPoolEntity,
 } from '../generated/schema'
-import { mapBassetStatus } from './Basket'
+import { FeederPool } from '../generated/templates/FeederPool/FeederPool'
 
 export function getOrCreateFeederPool(address: Address): FeederPoolEntity {
-  log.debug('getOrCreateFeederPool {}', [address.toHexString()])
   let id = address.toHexString()
 
   let feederPool = FeederPoolExtended.bind(address)
@@ -81,18 +80,12 @@ export function getOrCreateFeederPool(address: Address): FeederPoolEntity {
   let fassetPersonal = bassets.value0[1]
 
   token.getOrCreate(fassetPersonal.addr)
+  token.getOrCreate(massetPersonal.addr)
 
   fpEntity.fasset = fassetPersonal.addr.toHexString()
   fpEntity.masset = massetPersonal.addr.toHexString()
 
-  let bassetEntities = updateFeederPoolBassets(address)
-
   let basketEntity = new BasketEntity(id)
-  basketEntity.maxBassets = bassetEntities.length
-  basketEntity.bassets = [bassetEntities[0].id, bassetEntities[1].id]
-  basketEntity.failed = false
-  basketEntity.undergoingRecol = false
-  basketEntity.save()
   fpEntity.basket = basketEntity.id
 
   fpEntity.price = integer.ZERO
@@ -100,6 +93,14 @@ export function getOrCreateFeederPool(address: Address): FeederPoolEntity {
   fpEntity.dailyAPY = decimal.ZERO
 
   fpEntity.save()
+
+  let bassetEntities = updateFeederPoolBassets(address)
+
+  basketEntity.maxBassets = bassetEntities.length
+  basketEntity.bassets = [bassetEntities[0].id, bassetEntities[1].id]
+  basketEntity.failed = false
+  basketEntity.undergoingRecol = false
+  basketEntity.save()
 
   return fpEntity as FeederPoolEntity
 }
@@ -116,11 +117,13 @@ export function getFPBassetId(fpAddress: Address, bassetAddress: Address): strin
   return fpAddress.toHexString() + '.' + bassetAddress.toHexString()
 }
 
-export function updateFeederPoolBassets(address: Address): Array<BassetEntity> {
-  let feederPool = FeederPoolExtended.bind(address)
-  let result = feederPool.getBassets()
-  let bassetsPersonal = result.value0
-  let bassetsData = result.value1
+function updateBassets(isMasset: boolean, address: Address): Array<BassetEntity> {
+  // This can be a Masset, but they have the same interface here
+  let contract = FeederPool.bind(address)
+
+  let getBassetsResult = contract.getBassets()
+  let bassetsPersonal = getBassetsResult.value0
+  let bassetsData = getBassetsResult.value1
 
   let arr = new Array<BassetEntity>()
   let length = bassetsPersonal.length
@@ -129,7 +132,10 @@ export function updateFeederPoolBassets(address: Address): Array<BassetEntity> {
     let bassetData = bassetsData[i]
     let bassetPersonal = bassetsPersonal[i]
 
-    let bassetId = getFPBassetId(address, bassetPersonal.addr)
+    let bassetId = isMasset
+      ? bassetPersonal.addr.toHexString()
+      : getFPBassetId(address, bassetPersonal.addr)
+
     arr.push(new BassetEntity(bassetId))
 
     let tokenEntity = token.getOrCreate(bassetPersonal.addr)
@@ -163,4 +169,34 @@ export function updateFeederPoolBassets(address: Address): Array<BassetEntity> {
   }
 
   return arr
+}
+
+export function updateFeederPoolBassets(address: Address): Array<BassetEntity> {
+  let fpEntity = FeederPoolEntity.load(address.toHexString()) as FeederPoolEntity
+  updateBassets(true, Address.fromString(fpEntity.masset))
+  return updateBassets(false, address)
+}
+
+// @ts-ignore
+export function mapBassetStatus(status: i32): string {
+  switch (status) {
+    case 0:
+      return 'Default'
+    case 1:
+      return 'Normal'
+    case 2:
+      return 'BrokenBelowPeg'
+    case 3:
+      return 'BrokenAbovePeg'
+    case 4:
+      return 'Blacklisted'
+    case 5:
+      return 'Liquidating'
+    case 6:
+      return 'Liquidated'
+    case 7:
+      return 'Failed'
+    default:
+      throw new Error(`Unknown basset status ${status}`)
+  }
 }

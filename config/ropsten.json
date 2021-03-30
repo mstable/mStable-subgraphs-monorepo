@@ -66,6 +66,16 @@
         "address": "0xaE077412FE8c3DF00393a63E49cAAe2658a33019",
         "startBlock": 9725028
       }
+    },
+    {
+      "pool": {
+        "address": "0x81FcCF0872382b24ff3B3629B6b6C2D387ed3E34",
+        "startBlock": 9919850
+      },
+      "vault": {
+        "address": "0xB3114E33FC6ff5f3C452980cCbE7Cf1dE1Fc822b",
+        "startBlock": 9920553
+      }
     }
   ]
 }

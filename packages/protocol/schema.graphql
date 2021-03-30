@@ -133,11 +133,6 @@ type Basket @entity {
   Masset the Basket belongs to (optional)
   """
   masset: Masset @derivedFrom(field: "basket")
-
-  """
-  FeederPool the Basket belongs to (optional)
-  """
-  feederPool: FeederPool @derivedFrom(field: "basket")
 }
 
 """
@@ -304,11 +299,6 @@ type Masset @entity {
   All Savings Contracts for this Masset
   """
   savingsContracts: [SavingsContract!]! @derivedFrom(field: "masset")
-
-  """
-  All Feeder Pools for this Masset
-  """
-  feederPools: [FeederPool!]! @derivedFrom(field: "masset")
 
   """
   All swap transactions sent with this Masset
@@ -525,11 +515,6 @@ type BoostedSavingsVault @entity {
   Optionally, the Savings Contract associated with this vault
   """
   savingsContract: SavingsContract
-
-  """
-  Optionally, the Feeder Pool associated with this vault
-  """
-  feederPool: FeederPool
 
   accounts: [BoostedSavingsVaultAccount!]! @derivedFrom(field: "boostedSavingsVault")
 
@@ -1027,214 +1012,4 @@ type BoostedSavingsVaultWithdrawTransaction implements Transaction @entity {
   The account the stake is withdrawn for.
   """
   account: BoostedSavingsVaultAccount!
-}
-
-type FeederPool @entity {
-  id: ID!
-  ampData: AmpData!
-  basket: Basket!
-  cacheSize: BigInt!
-  cumulativeFeesPaid: Metric!
-  cumulativeInterestCollected: Metric!
-  cumulativeInterestDistributed: Metric!
-  cumulativeLiquidatorDeposited: Metric!
-  cumulativeMinted: Metric!
-  cumulativeRedeemed: Metric!
-  cumulativeSwapped: Metric!
-  dailyAPY: BigDecimal!
-  invariantK: BigInt!
-  fasset: Token!
-  governanceFeeRate: BigInt!
-  hardMax: BigInt!
-  hardMin: BigInt!
-  masset: Masset!
-  pendingFees: BigInt!
-  price: BigInt!
-  swapFeeRate: BigInt!
-  redemptionFeeRate: BigInt!
-  token: Token!
-  totalMints: Counter!
-  totalRedeemMassets: Counter!
-  totalRedemptions: Counter!
-  totalSupply: Metric!
-  totalSwaps: Counter!
-  mintMultiTransactions: [FPMintMultiTransaction!]! @derivedFrom(field: "feederPool")
-  mintSingleTransactions: [FPMintSingleTransaction!]! @derivedFrom(field: "feederPool")
-#  paidFeeTransactions: [FPPaidFeeTransaction!]! @derivedFrom(field: "feederPool")
-  redeemTransactions: [FPRedeemTransaction!]! @derivedFrom(field: "feederPool")
-  swapTransactions: [FPSwapTransaction!]! @derivedFrom(field: "feederPool")
-  vault: BoostedSavingsVault! @derivedFrom(field: "feederPool")
-}
-
-type FPSwapTransaction implements Transaction @entity {
-  id: ID!
-
-  hash: Bytes!
-
-  block: Int!
-
-  sender: Bytes!
-
-  timestamp: BigInt!
-
-  """
-  The Feeder Pool the transaction relates to.
-  """
-  feederPool: FeederPool!
-
-  """
-  The amount of the swap output in Masset units
-  """
-  massetUnits: BigInt!
-
-  """
-  The Basset used as the input for this swap.
-  """
-  inputBasset: Basset!
-
-  """
-  The Basset used as the output for this swap.
-  """
-  outputBasset: Basset!
-
-  """
-  The recipient of the swap output.
-  """
-  recipient: Bytes!
-}
-
-#type FPPaidFeeTransaction implements Transaction @entity {
-#  id: ID!
-#
-#  hash: Bytes!
-#
-#  block: Int!
-#
-#  sender: Bytes!
-#
-#  timestamp: BigInt!
-#
-#  """
-#  The Feeder Pool the transaction relates to.
-#  """
-#  feederPool: FeederPool!
-#
-#  """
-#  The amount of the fee that was paid, in FeederPool token units.
-#  """
-#  massetUnits: BigInt!
-#
-#  """
-#  The Basset the fee was paid in.
-#  """
-#  basset: Basset!
-#
-#  """
-#  The amount of the fee that was paid, in Basset units.
-#  """
-#  bassetUnits: BigInt!
-#}
-
-type FPMintSingleTransaction implements Transaction @entity {
-  id: ID!
-
-  hash: Bytes!
-
-  block: Int!
-
-  sender: Bytes!
-
-  recipient: Bytes!
-
-  timestamp: BigInt!
-
-  """
-  The Feeder Pool the transaction relates to.
-  """
-  feederPool: FeederPool!
-
-  """
-  The amount minted in Masset units.
-  """
-  massetUnits: BigInt!
-
-  """
-  The token used as the collateral asset for this mint.
-  This can be fAsset, mAsset or mpAsset (main pool asset).
-  """
-  input: Token!
-
-  """
-  The amount of the Basset used for this mint, in Basset units.
-  """
-  bassetUnits: BigInt!
-}
-
-type FPMintMultiTransaction implements Transaction @entity {
-  id: ID!
-
-  hash: Bytes!
-
-  block: Int!
-
-  sender: Bytes!
-
-  recipient: Bytes!
-
-  timestamp: BigInt!
-
-  """
-  The Feeder Pool the transaction relates to.
-  """
-  feederPool: FeederPool!
-
-  """
-  The amount minted in Masset units.
-  """
-  massetUnits: BigInt!
-
-  """
-  The tokens used as the collateral asset for this mint.
-  This can be fAsset or mAsset.
-  """
-  inputs: [Basset!]!
-
-  """
-  The respective Basset units for each Basset used in this mint.
-  """
-  bassetsUnits: [BigInt!]!
-}
-
-type FPRedeemTransaction implements Transaction @entity {
-  id: ID!
-
-  hash: Bytes!
-
-  block: Int!
-
-  sender: Bytes!
-
-  recipient: Bytes!
-
-  timestamp: BigInt!
-
-  """
-  The Feeder Pool the transaction relates to.
-  """
-  feederPool: FeederPool!
-
-  """
-  The amount redeemed in Masset units.
-  """
-  massetUnits: BigInt!
-
-  """
-  The Bassets selected as assets to redeem.
-  """
-  bassets: [Basset!]!
-
-  """
-  The respective units of each Basset selected to redeem.
-  """
-  bassetsUnits: [BigInt!]!
 }
