@@ -257,6 +257,25 @@
       "inputs": [
         {
           "indexed": false,
+          "internalType": "address[]",
+          "name": "bAssets",
+          "type": "address[]"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newIntegrator",
+          "type": "address"
+        }
+      ],
+      "name": "BassetsMigrated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
           "internalType": "uint256",
           "name": "cacheSize",
           "type": "uint256"
@@ -278,6 +297,12 @@
           "indexed": false,
           "internalType": "uint256",
           "name": "redemptionFee",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "govFee",
           "type": "uint256"
         }
       ],
@@ -455,6 +480,56 @@
         }
       ],
       "name": "RedeemedMulti",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "currentA",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "targetA",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "startTime",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "rampEndTime",
+          "type": "uint256"
+        }
+      ],
+      "name": "StartRampA",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "currentA",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "time",
+          "type": "uint256"
+        }
+      ],
+      "name": "StopRampA",
       "type": "event"
     },
     {
@@ -1453,6 +1528,11 @@
         {
           "internalType": "uint256",
           "name": "_redemptionFee",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_govFee",
           "type": "uint256"
         }
       ],

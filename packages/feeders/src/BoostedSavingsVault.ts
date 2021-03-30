@@ -3,7 +3,10 @@ import { integer, token } from '@mstable/subgraph-utils'
 
 import { BoostedSavingsVault as BoostedSavingsVaultContract } from '../generated/templates/FeederPool/BoostedSavingsVault'
 
-import { BoostedSavingsVault as BoostedSavingsVaultEntity } from '../generated/schema'
+import {
+  BoostedSavingsVault as BoostedSavingsVaultEntity,
+  FeederPool as FeederPoolEntity,
+} from '../generated/schema'
 
 export namespace BoostedSavingsVault {
   export function getOrCreate(addr: Address): BoostedSavingsVaultEntity {
@@ -21,14 +24,16 @@ export namespace BoostedSavingsVault {
     entity.lockupDuration = contract.LOCKUP().toI32()
     entity.unlockPercentage = contract.UNLOCK()
 
-    entity.stakingContract = contract.stakingContract()
+    entity.stakingContract = contract.stakingToken()
     token.getOrCreate(entity.stakingContract as Address)
 
     entity.rewardsDistributor = contract.rewardsDistributor()
     entity.rewardsToken = token.getOrCreate(contract.getRewardToken()).id
     entity.stakingToken = token.getOrCreate(contract.stakingToken()).id
 
-    entity.feederPool = entity.stakingToken
+    if (FeederPoolEntity.load(entity.stakingToken) != null) {
+      entity.feederPool = entity.stakingToken
+    }
 
     entity = update(entity as BoostedSavingsVaultEntity, contract)
 

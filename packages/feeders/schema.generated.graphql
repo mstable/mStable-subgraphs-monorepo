@@ -271,9 +271,14 @@ type BoostedSavingsVault @entity {
   id: ID!
 
   """
-  The Feeder Pool associated with this vault
+  ID of the vault on the BoostDirector contract
   """
-  feederPool: FeederPool!
+  directorVaultId: Int!
+
+  """
+  The Feeder Pool associated with this vault (optional)
+  """
+  feederPool: FeederPool
 
   accounts: [BoostedSavingsVaultAccount!]! @derivedFrom(field: "boostedSavingsVault")
 
@@ -363,6 +368,8 @@ type Account @entity {
   boostedSavingsVaultAccounts: [BoostedSavingsVaultAccount!]! @derivedFrom(field: "account")
 
   feederPoolAccounts: [FeederPoolAccount!]! @derivedFrom(field: "account")
+
+  boostDirection: [BoostedSavingsVault!]!
 }
 
 type BoostedSavingsVaultAccount @entity {
@@ -751,4 +758,12 @@ type FPRedeemTransaction implements Transaction @entity {
   The respective units of each Basset selected to redeem.
   """
   bassetsUnits: [BigInt!]!
+}
+
+type BoostDirector @entity {
+  id: ID!
+
+  stakingContract: Token!
+
+  whitelisted: [BoostedSavingsVault!]!
 }

@@ -35,13 +35,6 @@
       }
     }
   ],
-  "boostedSavingsVaults": [
-    {
-      "name": "mUSD",
-      "address": "0x7aA0C47e286A4F0FC10953bA8F485b6fF23dB543",
-      "startBlock": 9472540
-    }
-  ],
   "savingsManagers": [
     {
       "address": "0x4DCaD28D1aA802F6C8c1301FcE25D4b1b3C92C36",
@@ -58,24 +51,33 @@
   },
   "feederPools": [
     {
-      "pool": {
-        "address": "0xfBEecBf204650e53b04C77C378401A30E1cb9E79",
-        "startBlock": 9725011
-      },
-      "vault": {
-        "address": "0xaE077412FE8c3DF00393a63E49cAAe2658a33019",
-        "startBlock": 9725028
-      }
+      "address": "0xfBEecBf204650e53b04C77C378401A30E1cb9E79",
+      "startBlock": 9725011
     },
     {
-      "pool": {
-        "address": "0x81FcCF0872382b24ff3B3629B6b6C2D387ed3E34",
-        "startBlock": 9919850
-      },
-      "vault": {
-        "address": "0xB3114E33FC6ff5f3C452980cCbE7Cf1dE1Fc822b",
-        "startBlock": 9920553
-      }
+      "address": "0x81FcCF0872382b24ff3B3629B6b6C2D387ed3E34",
+      "startBlock": 9919850
+    }
+  ],
+  "boostDirector": {
+    "address": "0xaE077412FE8c3DF00393a63E49cAAe2658a33019",
+    "startBlock": 9725028
+  },
+  "vaults.exclude": [
+    {
+      "name": "mUSD",
+      "address": "0x7aA0C47e286A4F0FC10953bA8F485b6fF23dB543",
+      "startBlock": 9472540
+    }
+  ],
+  "vaults": [
+    {
+      "address": "0xaE077412FE8c3DF00393a63E49cAAe2658a33019",
+      "startBlock": 9725028
+    },
+    {
+      "address": "0xB3114E33FC6ff5f3C452980cCbE7Cf1dE1Fc822b",
+      "startBlock": 9920553
     }
   ]
 }

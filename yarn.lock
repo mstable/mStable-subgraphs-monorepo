@@ -825,7 +825,7 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@mstable/protocol@^2.0.0":
+"@mstable/protocol@2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@mstable/protocol/-/protocol-2.0.0.tgz#db9c1e51f86edb8693b3861a8e23a9b7aeb5feb5"
   integrity sha512-JQXKay8JWndg98+NIhTIvRaxGH+5U+9twLRZreIZBO1SgIk04hsbWbelX+jHOIWVOF/UaqBtlHJZ+AFOJ5RSRQ==
