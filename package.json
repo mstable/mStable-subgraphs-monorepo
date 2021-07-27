@@ -20,7 +20,7 @@
     "deploy:kovan": "lerna exec --parallel --scope @mstable/*-subgraph -- yarn run deploy:kovan"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "^0.21.0",
+    "@graphprotocol/graph-cli": "^0.21.1",
     "@graphprotocol/graph-ts": "^0.20.1",
     "@mstable/protocol": "2.2.1",
     "mustache": "^4.0.1",
