@@ -1,4 +1,4 @@
-import { BigDecimal, ethereum, log } from '@graphprotocol/graph-ts'
+import { BigDecimal, ethereum } from '@graphprotocol/graph-ts'
 import {
   transaction,
   counters,
@@ -44,35 +44,25 @@ const SECONDS_IN_YEAR = 86400 * 365
 
 // Calculation: (1 + 0.001) ^ 365 - 1
 function calculateAPY(start: FeederPoolPriceEntity, end: FeederPoolPriceEntity): BigDecimal {
-  log.debug('calculateAPY start {} end {}', [start.id.toString(), end.id.toString()])
   let timeDiff = integer.fromNumber(end.timestamp - start.timestamp)
   let rateDiff = end.price.div(start.price)
 
-  log.debug('calculateAPY timeDiff {} rateDiff {}', [timeDiff.toString(), rateDiff.toString()])
   let portionOfYear = timeDiff.times(integer.SCALE).div(integer.fromNumber(SECONDS_IN_YEAR))
 
-  log.debug('calculateAPY portionOfYear {}', [portionOfYear.toString()])
   if (portionOfYear.equals(integer.ZERO)) {
     return decimal.ZERO
   }
 
   let portionsInYear = integer.SCALE.div(portionOfYear)
-  log.debug('calculateAPY portionsInYear {}', [portionsInYear.toString()])
 
   // Use primitives because BigInt will overflow
   let portionsInYearI32 = portionsInYear.toI32()
   let rateF64 = parseFloat(rateDiff.toString())
-  log.debug('calculateAPY rateF64 {}', [rateF64.toString()])
 
   let apyF64 = rateF64 ** portionsInYearI32
-  log.debug('calculateAPY apyF64 {}', [apyF64.toString()])
   let apyPercentage = apyF64 - 1
-  log.debug('calculateAPY apyPercentage {}', [apyPercentage.toString()])
 
-  let result = decimal.fromNumber(apyPercentage).times(decimal.fromNumber(100))
-
-  log.debug('calculateAPY result {}', [result.toString()])
-  return result
+  return decimal.fromNumber(apyPercentage).times(decimal.fromNumber(100))
 }
 
 export function handleTransfer(event: Transfer): void {
