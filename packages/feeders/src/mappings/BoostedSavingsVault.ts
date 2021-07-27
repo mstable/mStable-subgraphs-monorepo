@@ -6,8 +6,12 @@ import {
   RewardAdded,
   RewardPaid,
   Withdrawn,
-  BoostedSavingsVault as BoostedSavingsVaultContract,
+  Poked,
 } from '../../generated/templates/FeederPool/BoostedSavingsVault'
+import {
+  RewardAdded as RewardAddedDual,
+  RewardPaid as RewardPaidDual,
+} from '../../generated/templates/FeederPool/BoostedDualVault'
 import {
   BoostedSavingsVault as BoostedSavingsVaultEntity,
   BoostedSavingsVaultRewardPaidTransaction,
@@ -115,18 +119,74 @@ export function handleWithdrawn(event: Withdrawn): void {
   }
 }
 
+export function handlePoked(event: Poked): void {
+  // Update the boostedBalance of the poked user
+  handleEvent(event.address, event.block.timestamp, event.params.user)
+}
+
+export function handleRewardAddedDual(event: RewardAddedDual): void {
+  handleEvent(event.address, event.block.timestamp, null)
+
+  {
+    let baseTx = transaction.fromEvent(event)
+    let txEntity = new BoostedSavingsVaultRewardAddedTransaction(baseTx.id)
+    txEntity.hash = baseTx.hash
+    txEntity.timestamp = baseTx.timestamp
+    txEntity.block = baseTx.block
+    txEntity.sender = event.transaction.from
+    txEntity.amount = event.params.reward
+    txEntity.platformAmount = event.params.platformReward
+    txEntity.boostedSavingsVault = event.address.toHexString()
+    txEntity.save()
+  }
+}
+
+export function handleRewardPaidDual(event: RewardPaidDual): void {
+  let boostedSavingsVaultEntity = handleEvent(
+    event.address,
+    event.block.timestamp,
+    event.params.user,
+  )
+
+  {
+    let baseTx = transaction.fromEvent(event)
+    let txEntity = new BoostedSavingsVaultRewardPaidTransaction(baseTx.id)
+    txEntity.hash = baseTx.hash
+    txEntity.timestamp = baseTx.timestamp
+    txEntity.block = baseTx.block
+    txEntity.account = BoostedSavingsVaultAccount.getId(
+      boostedSavingsVaultEntity,
+      event.params.user,
+    )
+    txEntity.amount = event.params.reward
+    txEntity.platformAmount = event.params.platformReward
+    txEntity.sender = event.params.user
+    txEntity.boostedSavingsVault = event.address.toHexString()
+    txEntity.save()
+
+    let cumulativeClaimed = boostedSavingsVaultEntity.id
+      .concat('.')
+      .concat(event.params.user.toHexString())
+      .concat('.')
+      .concat('cumulativeClaimed')
+    metrics.incrementById(cumulativeClaimed, event.params.reward)
+
+    let cumulativePlatformClaimed = boostedSavingsVaultEntity.id
+      .concat('.')
+      .concat(event.params.user.toHexString())
+      .concat('.')
+      .concat('cumulativePlatformClaimed')
+    metrics.incrementById(cumulativePlatformClaimed, event.params.platformReward)
+  }
+}
+
 function handleEvent(
   boostedSavingsVaultAddress: Address,
   timestamp: BigInt,
   account: Address | null,
 ): BoostedSavingsVaultEntity {
-  let boostedSavingsVault = BoostedSavingsVaultContract.bind(boostedSavingsVaultAddress)
-
   let boostedSavingsVaultEntity = BoostedSavingsVault.getOrCreate(boostedSavingsVaultAddress)
-  boostedSavingsVaultEntity = BoostedSavingsVault.update(
-    boostedSavingsVaultEntity,
-    boostedSavingsVault,
-  )
+  boostedSavingsVaultEntity = BoostedSavingsVault.update(boostedSavingsVaultEntity)
   boostedSavingsVaultEntity.save()
 
   if (account != null) {
@@ -134,20 +194,18 @@ function handleEvent(
       boostedSavingsVaultEntity,
       account as Address,
     )
-    accountEntity = BoostedSavingsVaultAccount.update(
-      accountEntity,
-      boostedSavingsVaultEntity,
-      boostedSavingsVault,
-    )
+    accountEntity = BoostedSavingsVaultAccount.update(accountEntity, boostedSavingsVaultEntity)
     accountEntity.save()
 
-    let poolAddress = Address.fromString(boostedSavingsVaultEntity.feederPool)
-    FeederPoolAccount.updateVault(
-      poolAddress,
-      boostedSavingsVaultAddress,
-      account as Address,
-      timestamp,
-    )
+    if (boostedSavingsVaultEntity.feederPool != null) {
+      let poolAddress = Address.fromString(boostedSavingsVaultEntity.feederPool)
+      FeederPoolAccount.updateVault(
+        poolAddress,
+        boostedSavingsVaultAddress,
+        account as Address,
+        timestamp,
+      )
+    }
   }
 
   return boostedSavingsVaultEntity

@@ -8,17 +8,6 @@
     {
       "name": "mUSD",
       "Masset": {
-        "address": "0x4e1000616990d83e56f4b5fc6cc8602dcfd20459",
-        "startBlock": 8206839
-      },
-      "BasketManager": {
-        "address": "0x7AE685713D0dcccccE3D936D3E0FA382639839Df",
-        "startBlock": 8100000
-      }
-    },
-    {
-      "name": "Test",
-      "Masset": {
         "address": "0xaCb27DBd461d892420E7d5Be501BfAF86BeB0e0d",
         "startBlock": 9842660
       },
@@ -60,24 +49,29 @@
     }
   ],
   "boostDirector": {
-    "address": "0xaE077412FE8c3DF00393a63E49cAAe2658a33019",
+    "address": "0x8892d7A5e018cdDB631F4733B5C1654e9dE10aaF",
     "startBlock": 9725028
   },
-  "vaults.exclude": [
-    {
-      "name": "mUSD",
-      "address": "0x7aA0C47e286A4F0FC10953bA8F485b6fF23dB543",
-      "startBlock": 9472540
-    }
-  ],
   "vaults": [
     {
+      "name": "fp 0xfBEecBf204650e53b04C77C378401A30E1cb9E79",
       "address": "0xaE077412FE8c3DF00393a63E49cAAe2658a33019",
       "startBlock": 9725028
     },
     {
+      "name": "fp 0x81FcCF0872382b24ff3B3629B6b6C2D387ed3E34",
       "address": "0xB3114E33FC6ff5f3C452980cCbE7Cf1dE1Fc822b",
       "startBlock": 9920553
+    },
+    {
+      "name": "imBTC",
+      "address": "0x174eC81C26f811Daf9Ac9f7B9B6f9efADBc5E723",
+      "startBlock": 10032434
+    },
+    {
+      "name": "imUSD",
+      "address": "0xE239036D0080f3323aCA43fA48a70cA7462B4138",
+      "startBlock": 10032568
     }
   ]
 }

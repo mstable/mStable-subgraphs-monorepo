@@ -1,7 +1,7 @@
 import { Address } from '@graphprotocol/graph-ts'
 
 import { Token as TokenEntity } from '../generated/schema'
-import { ERC20Detailed, Transfer } from '../generated/Empty/ERC20Detailed'
+import { ERC20, Transfer } from '../generated/Empty/ERC20'
 import { address } from './dataTypes'
 import { metrics } from './metrics'
 import { counters } from './counters'
@@ -14,7 +14,7 @@ export namespace token {
     if (tokenEntity == null) {
       tokenEntity = new TokenEntity(id)
 
-      let contract = ERC20Detailed.bind(tokenAddress)
+      let contract = ERC20.bind(tokenAddress)
 
       let decimals = contract.decimals()
       tokenEntity.decimals = decimals

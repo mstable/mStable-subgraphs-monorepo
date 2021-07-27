@@ -35,8 +35,12 @@ export namespace FeederPoolAccount {
       id.concat('.').concat('cumulativeEarnedVault'),
     )
 
-    let accountEntity = new AccountEntity(account.toHexString())
-    accountEntity.save()
+    let accountEntity = AccountEntity.load(account.toHexString())
+    if (accountEntity == null) {
+      accountEntity = new AccountEntity(account.toHexString())
+      accountEntity.boostDirection = []
+      accountEntity.save()
+    }
 
     entity = new FeederPoolAccountEntity(id)
 

@@ -1,6 +1,6 @@
-import { Address, log } from '@graphprotocol/graph-ts'
+import { Address } from '@graphprotocol/graph-ts'
 import { transaction, counters, metrics, integer, token, address } from '@mstable/subgraph-utils'
-import { Transfer as ERC20Transfer } from '@mstable/subgraph-utils/generated/Empty/ERC20Detailed'
+import { Transfer as ERC20Transfer } from '@mstable/subgraph-utils/generated/Empty/ERC20'
 
 import {
   AmpData as AmpDataEntity,
@@ -14,7 +14,7 @@ import {
 
 import { getFPBassetId, getOrCreateFeederPool, updateFeederPoolBassets } from '../FeederPool'
 import {
-  FeederPoolExtended,
+  FeederPool,
   CacheSizeChanged,
   FeesChanged,
   Minted,
@@ -22,12 +22,12 @@ import {
   Redeemed,
   RedeemedMulti,
   Swapped,
-  Transfer,
   WeightLimitsChanged,
-  FeederManager_BassetsMigrated,
-  FeederManager_StartRampA,
-  FeederManager_StopRampA,
-} from '../../generated/templates/FeederPool/FeederPoolExtended'
+  BassetsMigrated,
+  StartRampA,
+  StopRampA,
+} from '../../generated/templates/FeederPool/FeederPool'
+import { Transfer } from '../../generated/templates/FeederPool/ERC20'
 import { FeederPoolAccount } from '../FeederPoolAccount'
 
 export function handleTransfer(event: Transfer): void {
@@ -232,7 +232,7 @@ export function handleRedeemed(event: Redeemed): void {
 
   txEntity.save()
 }
-export function handleStartRampA(event: FeederManager_StartRampA): void {
+export function handleStartRampA(event: StartRampA): void {
   getOrCreateFeederPool(event.address)
   updatePrice(event.address)
 
@@ -244,7 +244,7 @@ export function handleStartRampA(event: FeederManager_StartRampA): void {
   ampDataEntity.save()
 }
 
-export function handleStopRampA(event: FeederManager_StopRampA): void {
+export function handleStopRampA(event: StopRampA): void {
   getOrCreateFeederPool(event.address)
   updatePrice(event.address)
 
@@ -277,10 +277,10 @@ export function handleWeightLimitsChanged(event: WeightLimitsChanged): void {
   fpEntity.save()
 }
 
-export function handleBassetsMigrated(event: FeederManager_BassetsMigrated): void {}
+export function handleBassetsMigrated(event: BassetsMigrated): void {}
 
 function updatePrice(address: Address): void {
-  let feederPool = FeederPoolExtended.bind(address)
+  let feederPool = FeederPool.bind(address)
   let fpEntity = new FeederPoolEntity(address.toHexString())
   let price = feederPool.getPrice()
   fpEntity.price = price.value0

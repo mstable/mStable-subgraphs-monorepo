@@ -2,15 +2,8 @@ import { Address } from '@graphprotocol/graph-ts'
 import { token } from '@mstable/subgraph-utils'
 
 import { BoostDirector as BoostDirectorContract } from '../generated/BoostDirector/BoostDirector'
-import { BoostedSavingsVault as BoostedSavingsVaultContract } from '../generated/templates/FeederPool/BoostedSavingsVault'
 
-import {
-  BoostDirector as BoostDirectorEntity,
-  BoostedSavingsVault as BoostedSavingsVaultEntity,
-  BoostedSavingsVaultAccount as BoostedSavingsVaultAccountEntity,
-} from '../generated/schema'
-
-import { BoostedSavingsVaultRewardEntry } from './BoostedSavingsVaultRewardEntry'
+import { BoostDirector as BoostDirectorEntity } from '../generated/schema'
 
 export namespace BoostDirector {
   export function get(address: Address): BoostDirectorEntity | null {

@@ -47,13 +47,11 @@ export function handleRedirectedBoost(event: RedirectedBoost): void {
 
   let boostDirectionNext = new Array<string>()
   let boostDirectionPrev = accountEntity.boostDirection as Array<string>
-  for (let i = 0; i++; i < boostDirectionPrev.length) {
+  for (let i = 0; i < boostDirectionPrev.length; i++) {
     let current: string = boostDirectionPrev[i] as string
-    if (current.toString() != replaced) {
-      boostDirectionNext[i] = current
-    }
+    boostDirectionNext[i] = current.toString() == replaced ? boosted : current
   }
 
-  accountEntity.boostDirection = boostDirectionNext.concat([boosted])
+  accountEntity.boostDirection = boostDirectionNext
   accountEntity.save()
 }

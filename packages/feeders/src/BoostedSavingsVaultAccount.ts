@@ -9,6 +9,7 @@ import {
 } from '../generated/schema'
 
 import { BoostedSavingsVaultRewardEntry } from './BoostedSavingsVaultRewardEntry'
+import { BoostedDualVault } from '../generated/templates/FeederPool/BoostedDualVault'
 
 export namespace BoostedSavingsVaultAccount {
   export function getId(
@@ -63,20 +64,33 @@ export namespace BoostedSavingsVaultAccount {
   export function update(
     entity: BoostedSavingsVaultAccountEntity,
     boostedSavingsVaultEntity: BoostedSavingsVaultEntity,
-    contract: BoostedSavingsVaultContract,
   ): BoostedSavingsVaultAccountEntity {
     let account = Address.fromString(entity.account)
+    let vaultAddr = Address.fromString(boostedSavingsVaultEntity.id)
+    let contract = BoostedSavingsVaultContract.bind(vaultAddr)
 
-    let userData = contract.userData(account)
     let lastClaim = contract.userClaim(account)
 
     entity.rawBalance = contract.rawBalanceOf(account)
     entity.boostedBalance = contract.balanceOf(account)
-    entity.rewardPerTokenPaid = userData.value0
-    entity.rewards = userData.value1
-    entity.lastAction = userData.value2.toI32()
     entity.lastClaim = lastClaim.toI32()
-    entity.rewardCount = userData.value3.toI32()
+
+    if (boostedSavingsVaultEntity.platformRewardsToken) {
+      let dualContract = BoostedDualVault.bind(vaultAddr)
+      let userData = dualContract.userData(account)
+      entity.rewardPerTokenPaid = userData.value0
+      entity.rewards = userData.value1
+      entity.platformRewardPerTokenPaid = userData.value2
+      entity.platformRewards = userData.value3
+      entity.lastAction = userData.value4.toI32()
+      entity.rewardCount = userData.value5.toI32()
+    } else {
+      let userData = contract.userData(account)
+      entity.rewardPerTokenPaid = userData.value0
+      entity.rewards = userData.value1
+      entity.lastAction = userData.value2.toI32()
+      entity.rewardCount = userData.value3.toI32()
+    }
 
     let index = 0
     while (entity.rewardCount > 0 && index <= entity.rewardCount - 1) {

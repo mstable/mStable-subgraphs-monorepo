@@ -1,0 +1,10 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "InitializableModuleV1",
+  "sourceName": "contracts/z_mocks/masset/migrate2/InitializableModuleV1.sol",
+  "abi": [],
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea2646970667358221220a09b274ad3b0383f6ee9dd7c91635445f1a8571d18bb0db4003d54497c1498ec64736f6c63430008020033",
+  "deployedBytecode": "0x6080604052600080fdfea2646970667358221220a09b274ad3b0383f6ee9dd7c91635445f1a8571d18bb0db4003d54497c1498ec64736f6c63430008020033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

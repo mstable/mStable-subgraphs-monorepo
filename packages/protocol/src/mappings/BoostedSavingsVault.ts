@@ -7,7 +7,7 @@ import {
   RewardPaid,
   Withdrawn,
   BoostedSavingsVault as BoostedSavingsVaultContract,
-} from '../../generated/BoostedSavingsVault_mUSD/BoostedSavingsVault'
+} from '../../generated/BoostedSavingsVault_imUSD/BoostedSavingsVault'
 import {
   BoostedSavingsVault as BoostedSavingsVaultEntity,
   BoostedSavingsVaultRewardPaidTransaction,

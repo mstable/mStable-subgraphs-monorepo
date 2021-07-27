@@ -26,8 +26,8 @@ dataSources:
       abis:
         - name: Empty
           file: ./subgraph/Empty.json
-        - name: ERC20Detailed
-          file: ../../node_modules/@mstable/protocol/build/contracts/@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol/ERC20Detailed.json
+        - name: ERC20
+          file: ../../node_modules/@mstable/protocol/abis/ERC20.json
       eventHandlers:
         - event: Empty()
           handler: empty

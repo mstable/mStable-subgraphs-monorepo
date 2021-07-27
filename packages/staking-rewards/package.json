@@ -1,0 +1,19 @@
+{
+  "name": "@mstable/staking-rewards-subgraph",
+  "version": "0.1.0",
+  "license": "MIT",
+  "scripts": {
+    "codegen:schema": "yarn run graphql-merge --template='schema.graphql' --schema='schema.generated.graphql'",
+    "codegen:graph": "yarn run graph codegen",
+    "codegen": "yarn run codegen:schema && yarn run codegen:graph",
+    "build": "yarn graph build",
+    "prepare:polygon-mainnet": "yarn run --silent mustache ../../config/polygon-mainnet.json subgraph.template.yaml > subgraph.yaml",
+    "deploy:polygon-mainnet": "yarn graph deploy mStable/mStable-staking-rewards-polygon --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
+    "lint": "yarn run prettier './src/**/*.{ts,tsx}' --write"
+  },
+  "dependencies": {
+    "@mstable/subgraph-utils": "0.1.0"
+  },
+  "main": "index.js",
+  "author": "James Lefrere"
+}

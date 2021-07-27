@@ -4,47 +4,12 @@ repository: https://github.com/mstable/mstable-subgraphs-monorepo
 schema:
   file: ./schema.generated.graphql
 
+graft:
+  base: QmVsLwJKqdaMZ41xokLcZ6fWWSBdmBAho2S1DRCAUgkfMb
+  block: 12735611
+#  block: 12042724
+
 dataSources:
-  {{#DelayedProxyAdmin}}
-  - kind: ethereum/contract
-    name: DelayedProxyAdmin
-    network: '{{network}}'
-    source:
-      abi: DelayedProxyAdmin
-      address: '{{address}}'
-      startBlock: {{startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/mappings/DelayedProxyAdmin.ts
-      entities:
-        - Masset
-        - Basket
-        - Basset
-        - AmpData
-        - Token
-      abis:
-        - name: DelayedProxyAdmin
-          file: ../../node_modules/@mstable/protocol/build/contracts/upgradability/DelayedProxyAdmin.sol/DelayedProxyAdmin.json
-        - name: MassetExtended
-          file: ./abis/MassetExtended.json
-        - name: Masset
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/Masset.sol/Masset.json
-        - name: InvariantValidator
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/InvariantValidator.sol/InvariantValidator.json
-        - name: Manager
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/Manager.sol/Manager.json
-        - name: ERC20Detailed
-          file: ./abis/ERC20Detailed.json
-        - name: BasketManager
-          file: ./abis/BasketManager.json
-        - name: LegacyMasset
-          file: ./abis/LegacyMasset.json
-      eventHandlers:
-        - event: Upgraded(indexed address,address,address,bytes)
-          handler: handleUpgraded
-  {{/DelayedProxyAdmin}}
 
   {{#savingsManagers}}
   - kind: ethereum/contract
@@ -67,25 +32,23 @@ dataSources:
         - Masset
       abis:
         - name: MassetExtended
-          file: ./abis/MassetExtended.json
+          file: ../../abis/MassetExtended.json
         - name: LegacyMasset
-          file: ./abis/LegacyMasset.json
+          file: ../../abis/LegacyMasset.json
         - name: SavingsManager
-          file: ./abis/SavingsManager.json
+          file: ../../abis/SavingsManager.json
         - name: SavingsContractV1
-          file: ./abis/SavingsContractV1.json
+          file: ../../abis/SavingsContractV1.json
         - name: SavingsContractV2
-          file: ../../node_modules/@mstable/protocol/build/contracts/savings/SavingsContract.sol/SavingsContract.json
+          file: ../../abis/polygon-deploy/savings/SavingsContract.sol/SavingsContract.json
         - name: ERC20Detailed
-          file: ./abis/ERC20Detailed.json
+          file: ../../abis/ERC20Detailed.json
         - name: BasketManager
-          file: ./abis/BasketManager.json
+          file: ../../abis/BasketManager.json
         - name: Masset
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/Masset.sol/Masset.json
-        - name: Manager
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/Manager.sol/Manager.json
-        - name: InvariantValidator
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/InvariantValidator.sol/InvariantValidator.json
+          file: ../../abis/polygon-deploy/masset/Masset.sol/Masset.json
+        - name: MassetManager
+          file: ../../abis/polygon-deploy/masset/MassetManager.sol/MassetManager.json
       eventHandlers:
         - event: SavingsContractAdded(indexed address,address)
           handler: handleSavingsContractAdded
@@ -124,17 +87,15 @@ dataSources:
         - Token
       abis:
         - name: Masset
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/Masset.sol/Masset.json
-        - name: InvariantValidator
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/InvariantValidator.sol/InvariantValidator.json
-        - name: Manager
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/Manager.sol/Manager.json
+          file: ../../abis/polygon-deploy/masset/Masset.sol/Masset.json
+        - name: MassetManager
+          file: ../../abis/polygon-deploy/masset/MassetManager.sol/MassetManager.json
         - name: ERC20Detailed
-          file: ./abis/ERC20Detailed.json
+          file: ../../abis/ERC20Detailed.json
         - name: BasketManager
-          file: ./abis/BasketManager.json
+          file: ../../abis/BasketManager.json
         - name: LegacyMasset
-          file: ./abis/LegacyMasset.json
+          file: ../../abis/LegacyMasset.json
       eventHandlers:
         # Forging events
         - event: Minted(indexed address,address,uint256,address,uint256)
@@ -160,13 +121,14 @@ dataSources:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
 
+  {{#MassetManager}}
   - kind: ethereum/contract
-    name: 'Manager_{{name}}'
+    name: 'MassetManager_{{name}}'
     network: '{{network}}'
     source:
-      abi: Manager
-      address: '{{Masset.address}}'
-      startBlock: {{Masset.startBlock}}
+      abi: MassetManager
+      address: '{{MassetManager.address}}'
+      startBlock: {{MassetManager.startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -179,19 +141,16 @@ dataSources:
         - Token
       abis:
         - name: Masset
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/Masset.sol/Masset.json
-        - name: InvariantValidator
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/InvariantValidator.sol/InvariantValidator.json
-        - name: Manager
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/Manager.sol/Manager.json
+          file: ../../abis/polygon-deploy/masset/Masset.sol/Masset.json
+        - name: MassetManager
+          file: ../../abis/polygon-deploy/masset/MassetManager.sol/MassetManager.json
         - name: ERC20Detailed
-          file: ./abis/ERC20Detailed.json
+          file: ../../abis/ERC20Detailed.json
         - name: BasketManager
-          file: ./abis/BasketManager.json
+          file: ../../abis/BasketManager.json
         - name: LegacyMasset
-          file: ./abis/LegacyMasset.json
+          file: ../../abis/LegacyMasset.json
       eventHandlers:
-        # Manager events
         - event: BassetAdded(indexed address,address)
           handler: handleManager_BassetAdded
         - event: BassetStatusChanged(indexed address,uint8)
@@ -202,96 +161,11 @@ dataSources:
           handler: handleManager_StartRampA
         - event: StopRampA(uint256,uint256)
           handler: handleManager_StopRampA
-
-  - kind: ethereum/contract
-    name: 'LegacyMasset_{{name}}'
-    network: '{{network}}'
-    source:
-      abi: LegacyMasset
-      address: '{{Masset.address}}'
-      startBlock: {{Masset.startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/mappings/Masset.ts
-      entities:
-        - Masset
-        - Basket
-        - Basset
-        - Token
-      abis:
-        - name: Masset
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/Masset.sol/Masset.json
-        - name: InvariantValidator
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/InvariantValidator.sol/InvariantValidator.json
-        - name: Manager
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/Manager.sol/Manager.json
-        - name: ERC20Detailed
-          file: ./abis/ERC20Detailed.json
-        - name: BasketManager
-          file: ./abis/BasketManager.json
-        - name: LegacyMasset
-          file: ./abis/LegacyMasset.json
-      eventHandlers:
-        # Legacy events
-        - event: SwapFeeChanged(uint256)
-          handler: handleLegacyMasset_SwapFeeChanged
-        - event: PaidFee(indexed address,address,uint256)
-          handler: handleLegacyMasset_PaidFee
-        - event: Swapped(indexed address,address,address,uint256,address)
-          handler: handleLegacyMasset_Swapped
-        - event: Redeemed(indexed address,address,uint256,address[],uint256[])
-          handler: handleLegacyMasset_Redeemed
-        - event: RedeemedMasset(indexed address,address,uint256)
-          handler: handleLegacyMasset_RedeemedMasset
-        - event: RedemptionFeeChanged(uint256)
-          handler: handleLegacyMasset_RedemptionFeeChanged
-
-  {{#BasketManager}}
-  - kind: ethereum/contract
-    name: 'BasketManager_{{name}}'
-    network: '{{network}}'
-    source:
-      abi: BasketManager
-      address: '{{address}}'
-      startBlock: {{startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/mappings/BasketManager.ts
-      entities:
-        - Basket
-        - Basset
-        - Token
-      abis:
-        - name: MassetExtended
-          file: ./abis/MassetExtended.json
-        - name: Masset
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/Masset.sol/Masset.json
-        - name: BasketManager
-          file: ./abis/BasketManager.json
-        - name: ERC20Detailed
-          file: ./abis/ERC20Detailed.json
-        - name: LegacyMasset
-          file: ./abis/LegacyMasset.json
-      eventHandlers:
-        - event: BassetAdded(indexed address,address)
-          handler: handleBassetAdded
-        - event: BassetRemoved(indexed address)
-          handler: handleBassetRemoved
-        - event: BasketWeightsUpdated(address[],uint256[])
-          handler: handleBasketWeightsUpdated
-        - event: BassetStatusChanged(indexed address,uint8)
-          handler: handleBassetStatusChanged
-        - event: BasketStatusChanged()
-          handler: handleBasketStatusChanged
-  {{/BasketManager}}
+  {{/MassetManager}}
 
   {{/massets}}
 
-  {{#boostedSavingsVaults}}
+  {{#vaults}}
   - kind: ethereum/contract
     name: 'BoostedSavingsVault_{{name}}'
     network: '{{network}}'
@@ -311,7 +185,6 @@ dataSources:
         - BoostedSavingsVaultAccountRewardEntry
         - RewardsDistributor
         - SavingsContract
-        - FeederPool
         - Token
         - BoostedSavingsVaultStakeTransaction
         - BoostedSavingsVaultRewardAddedTransaction
@@ -319,9 +192,9 @@ dataSources:
         - BoostedSavingsVaultWithdrawTransaction
       abis:
         - name: BoostedSavingsVault
-          file: ../../node_modules/@mstable/protocol/build/contracts/savings/BoostedSavingsVault.sol/BoostedSavingsVault.json
+          file: ../../abis/polygon-deploy/savings/BoostedSavingsVault.sol/BoostedSavingsVault.json
         - name: ERC20Detailed
-          file: ./abis/ERC20Detailed.json
+          file: ../../abis/ERC20Detailed.json
       eventHandlers:
         - event: Staked(indexed address,uint256,address)
           handler: handleStaked
@@ -331,139 +204,9 @@ dataSources:
           handler: handleRewardPaid
         - event: Withdrawn(indexed address,uint256)
           handler: handleWithdrawn
-  {{/boostedSavingsVaults}}
-
-  {{#feederPools}}
-  # Pool
-  - kind: ethereum/contract
-    name: 'FeederPool_{{pool.address}}'
-    network: '{{network}}'
-    source:
-      abi: FeederPoolExtended
-      address: '{{pool.address}}'
-      startBlock: {{pool.startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/mappings/FeederPool.ts
-      entities:
-        - FeederPool
-        - FPBasset
-        - Basket
-        - Masset
-        - Token
-      abis:
-        - name: FeederPoolExtended
-          file: ./abis/FeederPoolExtended.json
-        - name: FeederPool
-          file: ../../node_modules/@mstable/protocol/build/contracts/feeders/FeederPool.sol/FeederPool.json
-        #        - name: FeederValidator
-        #          file: ../../node_modules/@mstable/protocol/build/contracts/feeders/FeederValidator.sol/FeederValidator.json
-        - name: FeederManager
-          file: ../../node_modules/@mstable/protocol/build/contracts/feeders/FeederManager.sol/FeederManager.json
-        - name: FeederRouter
-          file: ../../node_modules/@mstable/protocol/build/contracts/feeders/peripheral/FeederRouter.sol/FeederRouter.json
-        - name: InterestValidator
-          file: ../../node_modules/@mstable/protocol/build/contracts/feeders/InterestValidator.sol/InterestValidator.json
-        - name: Masset
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/Masset.sol/Masset.json
-        - name: InvariantValidator
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/InvariantValidator.sol/InvariantValidator.json
-        - name: ERC20Detailed
-          file: ./abis/ERC20Detailed.json
-      eventHandlers:
-        # Forging events
-        - event: Minted(indexed address,address,uint256,address,uint256)
-          handler: handleMinted
-        - event: MintedMulti(indexed address,address,uint256,address[],uint256[])
-          handler: handleMintedMulti
-        - event: Swapped(indexed address,address,address,uint256,uint256,address)
-          handler: handleSwapped
-        - event: Redeemed(indexed address,address,uint256,address,uint256,uint256)
-          handler: handleRedeemed
-        - event: RedeemedMulti(indexed address,address,uint256,address[],uint256[],uint256)
-          handler: handleRedeemedMulti
-
-        # InterestValidator events
-        - event: InterestValidator_InterestCollected(indexed address,uint256,uint256,uint256)
-          handler: handleInterestCollected
-
-        # State events
-        - event: CacheSizeChanged(uint256)
-          handler: handleCacheSizeChanged
-        - event: FeesChanged(uint256,uint256)
-          handler: handleFeesChanged
-        - event: WeightLimitsChanged(uint128,uint128)
-          handler: handleWeightLimitsChanged
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
-
-        # FeederManager events
-        - event: FeederManager_BassetsMigrated(address[],address)
-          handler: handleBassetsMigrated
-        - event: FeederManager_StartRampA(uint256,uint256,uint256,uint256)
-          handler: handleStartRampA
-        - event: FeederManager_StopRampA(uint256,uint256)
-          handler: handleStopRampA
-
-  # Vault
-  - kind: ethereum/contract
-    name: 'BoostedSavingsVault_{{vault.address}}'
-    network: '{{network}}'
-    source:
-      abi: BoostedSavingsVault
-      address: '{{vault.address}}'
-      startBlock: {{vault.startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/mappings/BoostedSavingsVault.ts
-      entities:
-        - Account
-        - BoostedSavingsVault
-        - BoostedSavingsVaultAccountData
-        - BoostedSavingsVaultAccountRewardEntry
-        - RewardsDistributor
-        - FeederPool
-        - Token
-        - BoostedSavingsVaultStakeTransaction
-        - BoostedSavingsVaultRewardAddedTransaction
-        - BoostedSavingsVaultRewardPaidTransaction
-        - BoostedSavingsVaultWithdrawTransaction
-      abis:
-        - name: BoostedSavingsVault
-          file: ../../node_modules/@mstable/protocol/build/contracts/savings/BoostedSavingsVault.sol/BoostedSavingsVault.json
-        - name: ERC20Detailed
-          file: ./abis/ERC20Detailed.json
-      eventHandlers:
-        - event: Staked(indexed address,uint256,address)
-          handler: handleStaked
-        - event: RewardAdded(uint256)
-          handler: handleRewardAdded
-        - event: RewardPaid(indexed address,uint256)
-          handler: handleRewardPaid
-        - event: Withdrawn(indexed address,uint256)
-          handler: handleWithdrawn
-  {{/feederPools}}
+  {{/vaults}}
 
 templates:
-  - kind: ethereum/contract
-    name: FeederPool
-    network: '{{network}}'
-    source:
-      abi: FeederPoolExtended
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/mappings/SavingsContract.ts
-      entities:
-        - FeederPool
-      abis:
-        - name: FeederPoolExtended
-          file: ./abis/FeederPoolExtended.json
   - kind: ethereum/contract
     name: SavingsContract
     network: '{{network}}'
@@ -478,11 +221,11 @@ templates:
         - Token
       abis:
         - name: SavingsContractV1
-          file: ./abis/SavingsContractV1.json
+          file: ../../abis/SavingsContractV1.json
         - name: SavingsContractV2
-          file: ../../node_modules/@mstable/protocol/build/contracts/savings/SavingsContract.sol/SavingsContract.json
+          file: ../../abis/polygon-deploy/savings/SavingsContract.sol/SavingsContract.json
         - name: ERC20Detailed
-          file: ./abis/ERC20Detailed.json
+          file: ../../abis/ERC20Detailed.json
       eventHandlers:
         - event: AutomaticInterestCollectionSwitched(bool)
           handler: handleAutomaticInterestCollectionSwitched

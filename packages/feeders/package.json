@@ -14,12 +14,27 @@
     "prepare-codegen": "func() { yarn run --silent mustache \"../../config/$1.json\" subgraph.template.yaml > subgraph.yaml && yarn run codegen; }; func",
     "prepare:ropsten": "yarn run prepare-codegen ropsten",
     "prepare:mainnet": "yarn run prepare-codegen mainnet",
-    "deploy:ropsten": "yarn graph deploy mStable/mStable-feeders-ropsten --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
-    "deploy:staging": "yarn graph deploy mStable/mStable-feeders-staging --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
-    "deploy:mainnet": "yarn graph deploy mStable/mStable-feeders --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
-    "lint": "yarn run prettier './src/**/*.{ts,tsx}' --write"
+    "prepare:polygon-mumbai": "yarn run prepare-codegen polygon-mumbai",
+    "prepare:polygon-mainnet": "yarn run prepare-codegen polygon-mainnet",
+    "deploy:ropsten": "yarn graph deploy mstable/mstable-feeders-ropsten --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
+    "deploy:staging": "yarn graph deploy mstable/mstable-feeder-pools-staging --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
+    "deploy:mainnet": "yarn graph deploy mstable/mstable-feeder-pools --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
+    "deploy:polygon-mumbai": "yarn graph deploy mstable/mstable-feeder-pools-mumbai --network mumbai --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
+    "deploy:polygon-mainnet": "yarn graph deploy mstable/mstable-feeder-pools-polygon --network matic --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
+    "lint": "yarn run prettier './src/**/*.{ts,tsx}' --write",
+    "test": "jest"
   },
   "dependencies": {
     "@mstable/subgraph-utils": "0.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.14.3",
+    "@babel/plugin-transform-modules-commonjs": "^7.14.0",
+    "@babel/preset-env": "^7.14.2",
+    "@babel/preset-typescript": "^7.13.0",
+    "@types/jest": "^26.0.23",
+    "babel-jest": "^27.0.1",
+    "jest": "^27.0.1",
+    "ts-jest": "^26.5.6"
   }
 }

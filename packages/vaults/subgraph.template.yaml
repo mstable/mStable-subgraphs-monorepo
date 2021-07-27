@@ -1,0 +1,65 @@
+specVersion: 0.0.2
+description: mStable Vaults
+repository: https://github.com/mstable/mstable-subgraphs-monorepo
+schema:
+  file: ./schema.generated.graphql
+
+dataSources:
+  {{#vaults}}
+  - kind: ethereum/contract
+    name: 'BoostedSavingsVault_{{address}}'
+    network: '{{network}}'
+    source:
+      abi: BoostedSavingsVault
+      address: '{{address}}'
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/BoostedSavingsVault.ts
+      entities:
+        - Account
+        - BoostedSavingsVault
+        - BoostedSavingsVaultAccountData
+        - BoostedSavingsVaultAccountRewardEntry
+        - RewardsDistributor
+        - Token
+        - BoostedSavingsVaultStakeTransaction
+        - BoostedSavingsVaultRewardAddedTransaction
+        - BoostedSavingsVaultRewardPaidTransaction
+        - BoostedSavingsVaultWithdrawTransaction
+      abis:
+        - name: BoostedSavingsVault
+          file: ../../node_modules/@mstable/protocol/build/contracts/savings/BoostedSavingsVault.sol/BoostedSavingsVault.json
+        - name: ERC20Detailed
+          file: ../../abis/ERC20Detailed.json
+      eventHandlers:
+        - event: Staked(indexed address,uint256,address)
+          handler: handleStaked
+        - event: RewardAdded(uint256)
+          handler: handleRewardAdded
+        - event: RewardPaid(indexed address,uint256)
+          handler: handleRewardPaid
+        - event: Withdrawn(indexed address,uint256)
+          handler: handleWithdrawn
+  {{/vaults}}
+
+templates:
+  - kind: ethereum/contract
+    name: BoostedSavingsVault
+    network: '{{network}}'
+    source:
+      abi: BoostedSavingsVault
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/BoostedSavingsVault.ts
+      entities:
+        - BoostedSavingsVault
+      abis:
+        - name: BoostedSavingsVault
+          file: ../../node_modules/@mstable/protocol/build/contracts/savings/BoostedSavingsVault.sol/BoostedSavingsVault.json
+        - name: ERC20Detailed
+          file: ../../abis/ERC20Detailed.json
