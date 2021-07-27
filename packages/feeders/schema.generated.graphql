@@ -610,6 +610,33 @@ type FeederPool @entity {
   vault: BoostedSavingsVault! @derivedFrom(field: "feederPool")
 
   accounts: [FeederPoolAccount!]! @derivedFrom(field: "feederPool")
+
+  lastPrice: FeederPoolPrice
+  price24hAgo: FeederPoolPrice
+}
+
+type FeederPoolPrice @entity {
+  id: ID!
+
+  """
+  The feeder pool this price refers to.
+  """
+  feederPool: FeederPool!
+
+  """
+  The price of one feeder pool token in mAsset terms.
+  """
+  price: BigDecimal!
+
+  """
+  The timestamp at which the price was created.
+  """
+  timestamp: Int!
+
+  """
+  The next price for the pool (by timestamp); used for calculating APY.
+  """
+  next: FeederPoolPrice
 }
 
 type FeederPoolAccount @entity {

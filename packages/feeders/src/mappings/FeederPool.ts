@@ -1,11 +1,20 @@
-import { Address } from '@graphprotocol/graph-ts'
-import { transaction, counters, metrics, integer, token, address } from '@mstable/subgraph-utils'
+import { BigDecimal, ethereum, log } from '@graphprotocol/graph-ts'
+import {
+  transaction,
+  counters,
+  metrics,
+  integer,
+  token,
+  address,
+  decimal,
+  events,
+} from '@mstable/subgraph-utils'
 import { Transfer as ERC20Transfer } from '@mstable/subgraph-utils/generated/Empty/ERC20'
 
 import {
   AmpData as AmpDataEntity,
   Basset as BassetEntity,
-  FeederPool as FeederPoolEntity,
+  FeederPoolPrice as FeederPoolPriceEntity,
   FPMintMultiTransaction as FPMintMultiTransactionEntity,
   FPMintSingleTransaction as FPMintSingleTransactionEntity,
   FPRedeemTransaction as FPRedeemTransactionEntity,
@@ -30,6 +39,42 @@ import {
 import { Transfer } from '../../generated/templates/FeederPool/ERC20'
 import { FeederPoolAccount } from '../FeederPoolAccount'
 
+const SECONDS_IN_DAY = 86400
+const SECONDS_IN_YEAR = 86400 * 365
+
+// Calculation: (1 + 0.001) ^ 365 - 1
+function calculateAPY(start: FeederPoolPriceEntity, end: FeederPoolPriceEntity): BigDecimal {
+  log.debug('calculateAPY start {} end {}', [start.id.toString(), end.id.toString()])
+  let timeDiff = integer.fromNumber(end.timestamp - start.timestamp)
+  let rateDiff = end.price.div(start.price)
+
+  log.debug('calculateAPY timeDiff {} rateDiff {}', [timeDiff.toString(), rateDiff.toString()])
+  let portionOfYear = timeDiff.times(integer.SCALE).div(integer.fromNumber(SECONDS_IN_YEAR))
+
+  log.debug('calculateAPY portionOfYear {}', [portionOfYear.toString()])
+  if (portionOfYear.equals(integer.ZERO)) {
+    return decimal.ZERO
+  }
+
+  let portionsInYear = integer.SCALE.div(portionOfYear)
+  log.debug('calculateAPY portionsInYear {}', [portionsInYear.toString()])
+
+  // Use primitives because BigInt will overflow
+  let portionsInYearI32 = portionsInYear.toI32()
+  let rateF64 = parseFloat(rateDiff.toString())
+  log.debug('calculateAPY rateF64 {}', [rateF64.toString()])
+
+  let apyF64 = rateF64 ** portionsInYearI32
+  log.debug('calculateAPY apyF64 {}', [apyF64.toString()])
+  let apyPercentage = apyF64 - 1
+  log.debug('calculateAPY apyPercentage {}', [apyPercentage.toString()])
+
+  let result = decimal.fromNumber(apyPercentage).times(decimal.fromNumber(100))
+
+  log.debug('calculateAPY result {}', [result.toString()])
+  return result
+}
+
 export function handleTransfer(event: Transfer): void {
   token.handleTransfer(event as ERC20Transfer)
 
@@ -46,7 +91,7 @@ export function handleMinted(event: Minted): void {
 
   getOrCreateFeederPool(feederPool)
   updateFeederPoolBassets(feederPool)
-  updatePrice(event.address)
+  updatePrice(event)
 
   let output = event.params.output
   let inputQuantity = event.params.inputQuantity
@@ -78,7 +123,7 @@ export function handleMintedMulti(event: MintedMulti): void {
 
   getOrCreateFeederPool(feederPool)
   updateFeederPoolBassets(feederPool)
-  updatePrice(feederPool)
+  updatePrice(event)
 
   let fpTokenUnits = event.params.output
   let bassetsUnits = event.params.inputQuantities
@@ -115,7 +160,7 @@ export function handleSwapped(event: Swapped): void {
 
   getOrCreateFeederPool(feederPool)
   updateFeederPoolBassets(feederPool)
-  updatePrice(event.address)
+  updatePrice(event)
 
   // Determine whether they are mpAssets or fpAssets
   let inputMPAsset = BassetEntity.load(event.params.input.toHexString())
@@ -156,7 +201,7 @@ export function handleRedeemedMulti(event: RedeemedMulti): void {
   let feederPool = event.address
 
   updateFeederPoolBassets(feederPool)
-  updatePrice(event.address)
+  updatePrice(event)
 
   let massetUnits = event.params.mAssetQuantity
   let bassets = event.params.outputs
@@ -194,7 +239,7 @@ export function handleRedeemed(event: Redeemed): void {
   let feederPool = event.address
 
   updateFeederPoolBassets(feederPool)
-  updatePrice(event.address)
+  updatePrice(event)
 
   let massetUnits = event.params.mAssetQuantity
   let scaledFee = event.params.scaledFee
@@ -234,7 +279,7 @@ export function handleRedeemed(event: Redeemed): void {
 }
 export function handleStartRampA(event: StartRampA): void {
   getOrCreateFeederPool(event.address)
-  updatePrice(event.address)
+  updatePrice(event)
 
   let ampDataEntity = new AmpDataEntity(event.address.toHexString())
   ampDataEntity.currentA = event.params.currentA
@@ -246,7 +291,7 @@ export function handleStartRampA(event: StartRampA): void {
 
 export function handleStopRampA(event: StopRampA): void {
   getOrCreateFeederPool(event.address)
-  updatePrice(event.address)
+  updatePrice(event)
 
   let ampDataEntity = new AmpDataEntity(event.address.toHexString())
   ampDataEntity.currentA = event.params.currentA
@@ -279,11 +324,62 @@ export function handleWeightLimitsChanged(event: WeightLimitsChanged): void {
 
 export function handleBassetsMigrated(event: BassetsMigrated): void {}
 
-function updatePrice(address: Address): void {
-  let feederPool = FeederPool.bind(address)
-  let fpEntity = new FeederPoolEntity(address.toHexString())
+function updatePrice(event: ethereum.Event): void {
+  let feederPool = FeederPool.bind(event.address)
+  let fpEntity = getOrCreateFeederPool(event.address)
+
   let price = feederPool.getPrice()
   fpEntity.price = price.value0
   fpEntity.invariantK = price.value1
+
+  // Get the current latest price before adding this one (i.e. previous)
+  let lastPricePrevious: FeederPoolPriceEntity | null = fpEntity.lastPrice
+    ? FeederPoolPriceEntity.load(fpEntity.lastPrice)
+    : null
+
+  // Get the previous day price
+  let price24hAgo: FeederPoolPriceEntity | null = fpEntity.price24hAgo
+    ? FeederPoolPriceEntity.load(fpEntity.price24hAgo)
+    : null
+
+  // This is the only instance in which a FeederPoolPriceEntity gets created
+  let lastPrice = new FeederPoolPriceEntity(events.getId(event))
+  lastPrice.price = decimal.convert(fpEntity.price)
+  lastPrice.feederPool = fpEntity.id
+  lastPrice.timestamp = event.block.timestamp.toI32()
+  lastPrice.save()
+
+  // The last price is now the one we just created
+  fpEntity.lastPrice = lastPrice.id
+  fpEntity.save()
+
+  // The next price of the previous price is this latest one
+  if (lastPricePrevious != null) {
+    lastPricePrevious.next = lastPrice.id
+    lastPricePrevious.save()
+  }
+
+  if (price24hAgo == null) {
+    // Set the first 24h ago value (should only happen once)
+    fpEntity.price24hAgo = lastPrice.id
+  } else if (lastPrice.timestamp - price24hAgo.timestamp > SECONDS_IN_DAY) {
+    // The '24hAgo' rate should be _at least_ 24h ago; iterate through the 'next' rates
+    // in order to push this rate forward.
+    while (price24hAgo.next != null) {
+      let priceNext = FeederPoolPriceEntity.load(price24hAgo.next) as FeederPoolPriceEntity
+      if (lastPrice.timestamp - priceNext.timestamp > SECONDS_IN_DAY) {
+        price24hAgo = priceNext
+      } else {
+        break
+      }
+    }
+
+    fpEntity.price24hAgo = price24hAgo.id
+  }
+
+  if (price24hAgo != null) {
+    fpEntity.dailyAPY = calculateAPY(price24hAgo as FeederPoolPriceEntity, lastPrice)
+  }
+
   fpEntity.save()
 }
