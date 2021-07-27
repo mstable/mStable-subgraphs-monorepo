@@ -24,13 +24,6 @@
       }
     }
   ],
-  "boostedSavingsVaults": [
-    {
-      "name": "mUSD",
-      "address": "0x78BefCa7de27d07DC6e71da295Cc2946681A6c7B",
-      "startBlock": 11678260
-    }
-  ],
   "savingsManagers": [
     {
       "address": "0xcEfCBb45BE41331337d49a131faF424D1e50234f",
@@ -56,5 +49,81 @@
   "IncentivisedVotingLockup": {
     "address": "0xae8bc96da4f9a9613c323478be181fdb2aa0e1bf",
     "startBlock": 10932373
+  },
+  "vaults": [
+    {
+      "name": "mBTC/hBTC",
+      "address": "0xF65D53AA6e2E4A5f4F026e73cb3e22C22D75E35C",
+      "startBlock": 12146658,
+      "abi": "BoostedSavingsVault"
+    },
+    {
+      "name": "mBTC/tBTC",
+      "address": "0x760ea8CfDcC4e78d8b9cA3088ECD460246DC0731",
+      "startBlock": 12146682,
+      "abi": "BoostedSavingsVault"
+    },
+    {
+      "name": "mUSD/bUSD",
+      "address": "0xD124B55f70D374F58455c8AEdf308E52Cf2A6207",
+      "startBlock": 12146737,
+      "abi": "BoostedSavingsVault"
+    },
+    {
+      "name": "mUSD/GUSD",
+      "address": "0xAdeeDD3e5768F7882572Ad91065f93BA88343C99",
+      "startBlock": 12146796,
+      "abi": "BoostedSavingsVault"
+    },
+    {
+      "name": "imUSD",
+      "address": "0x78BefCa7de27d07DC6e71da295Cc2946681A6c7B",
+      "startBlock": 11678260,
+      "abi": "BoostedSavingsVault"
+    },
+    {
+      "name": "imBTC",
+      "address": "0xF38522f63f40f9Dd81aBAfD2B8EFc2EC958a3016",
+      "startBlock": 12146634,
+      "abi": "BoostedSavingsVault"
+    },
+    {
+      "name": "mUSD/alUSD",
+      "address": "0x0997dDdc038c8A958a3A3d00425C16f8ECa87deb",
+      "startBlock": 12813175,
+      "abi": "BoostedDualVault",
+      "isDual": true
+    }
+  ],
+  "feederPools": [
+    {
+      "name": "mBTC/hBTC",
+      "address": "0x48c59199Da51B7E30Ea200a74Ea07974e62C4bA7",
+      "startBlock": 12146645
+    },
+    {
+      "name": "mBTC/tBTC",
+      "address": "0xb61A6F928B3f069A68469DDb670F20eEeB4921e0",
+      "startBlock": 12146670
+    },
+    {
+      "name": "mUSD/bUSD",
+      "address": "0xfE842e95f8911dcc21c943a1dAA4bd641a1381c6",
+      "startBlock": 12146634
+    },
+    {
+      "name": "mUSD/GUSD",
+      "address": "0x4fB30C5A3aC8e85bC32785518633303C4590752d",
+      "startBlock": 12146634
+    },
+    {
+      "name": "mUSD/alUSD",
+      "address": "0x4eaa01974B6594C0Ee62fFd7FEE56CF11E6af936",
+      "startBlock": 12806795
+    }
+  ],
+  "boostDirector": {
+    "address": "0x8892d7A5e018cdDB631F4733B5C1654e9dE10aaF",
+    "startBlock": 12146617
   }
 }

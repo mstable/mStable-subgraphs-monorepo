@@ -1,7 +1,7 @@
 import { Address } from '@graphprotocol/graph-ts'
 import { integer } from '@mstable/subgraph-utils'
 
-import { BoostedSavingsVault as BoostedSavingsVaultContract } from '../generated/BoostedSavingsVault_mUSD/BoostedSavingsVault'
+import { BoostedSavingsVault as BoostedSavingsVaultContract } from '../generated/BoostedSavingsVault_imUSD/BoostedSavingsVault'
 
 import {
   BoostedSavingsVault as BoostedSavingsVaultEntity,

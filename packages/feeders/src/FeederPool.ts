@@ -1,7 +1,7 @@
 import { Address } from '@graphprotocol/graph-ts'
 import { counters, decimal, integer, metrics, token } from '@mstable/subgraph-utils'
 
-import { FeederPoolExtended } from '../generated/templates/FeederPool/FeederPoolExtended'
+import { FeederPool } from '../generated/templates/FeederPool/FeederPool'
 
 import {
   AmpData as AmpDataEntity,
@@ -9,12 +9,11 @@ import {
   Basset as BassetEntity,
   FeederPool as FeederPoolEntity,
 } from '../generated/schema'
-import { FeederPool } from '../generated/templates/FeederPool/FeederPool'
 
 export function getOrCreateFeederPool(address: Address): FeederPoolEntity {
   let id = address.toHexString()
 
-  let feederPool = FeederPoolExtended.bind(address)
+  let feederPool = FeederPool.bind(address)
 
   let fpEntity = FeederPoolEntity.load(id)
 

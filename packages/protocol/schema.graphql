@@ -117,7 +117,7 @@ type Basket @entity {
   """
   Max number of Bassets that can be present in the Basket
   """
-  maxBassets: Int!
+  maxBassets: Int
 
   """
   Flag for whether the Basket has failed
@@ -173,7 +173,7 @@ type Masset @entity {
   """
   The address of the `ForgeValidator` or `InvariantValidator` contract
   """
-  forgeValidator: Bytes!
+  forgeValidator: Bytes
 
   """
   Amplification data
@@ -214,6 +214,8 @@ type Masset @entity {
   The swap fee rate
   """
   feeRate: BigInt!
+
+  surplus: BigInt
 
   """
   The redemption fee rate
@@ -445,6 +447,8 @@ type SavingsContract @entity {
   `ExchangeRate`, and will change whenever a new `ExchangeRate` is created.
   """
   dailyAPY: BigDecimal!
+
+  provisionalAPY: BigDecimal
 
   """
   The share of the Masset that is deposited in the Savings Contract; a rate of 100% would mean all of the

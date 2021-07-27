@@ -2,7 +2,7 @@ import { Address } from '@graphprotocol/graph-ts'
 import { address, counters, decimal, metrics, token } from '@mstable/subgraph-utils'
 
 import { SavingsContract as SavingsContractEntity } from '../generated/schema'
-import { SavingsContractV2 } from '../generated/SavingsManager/SavingsContractV2'
+import { SavingsContractV2 } from '../generated/SavingsManager.0x86818a2EACcDC6e1C2d7A301E4Ebb394a3c61b85/SavingsContractV2'
 
 export function getOrCreateSavingsContract(
   addr: Address,
@@ -33,6 +33,12 @@ export function getOrCreateSavingsContract(
   if (version == 2) {
     let tokenEntity = token.getOrCreate(addr)
     savingsContractEntity.token = tokenEntity.id
+
+    // Ropsten issue
+    if (tokenEntity.id == '0xfd54148380756b2828e38a1f60e545ea11f4dee9') {
+      tokenEntity.symbol = 'imUSD'
+      tokenEntity.save()
+    }
   }
 
   if (massetAddress != null) {
@@ -53,6 +59,7 @@ export function getOrCreateSavingsContract(
   savingsContractEntity.totalSavings = metrics.getOrCreate(addr, 'totalSavings').id
   savingsContractEntity.utilisationRate = metrics.getOrCreate(addr, 'utilisationRate').id
   savingsContractEntity.dailyAPY = decimal.ZERO
+  savingsContractEntity.provisionalAPY = decimal.ZERO
 
   savingsContractEntity.totalDeposits = counters.getOrCreate(addr, 'totalDeposits').id
   savingsContractEntity.totalWithdrawals = counters.getOrCreate(addr, 'totalWithdrawals').id

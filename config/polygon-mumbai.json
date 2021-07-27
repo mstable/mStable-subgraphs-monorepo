@@ -1,0 +1,22 @@
+{
+  "network": "mumbai",
+  "massets": [
+    {
+      "name": "mUSD",
+      "Masset": {
+        "address": "0x0f7a5734f208A356AB2e5Cf3d02129c17028F3cf",
+        "startBlock": 12930593
+      },
+      "MassetManager": {
+        "address": "0x274b0a78B2D193B6093BEceb61CfC3EC21956b87",
+        "startBlock": 12930593
+      }
+    }
+  ],
+  "savingsManagers": [
+    {
+      "address": "0x86818a2EACcDC6e1C2d7A301E4Ebb394a3c61b85",
+      "startBlock": 12930608
+    }
+  ]
+}

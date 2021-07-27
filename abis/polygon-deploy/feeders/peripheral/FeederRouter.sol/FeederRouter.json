@@ -1,0 +1,10 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "FeederRouter",
+  "sourceName": "contracts/feeders/peripheral/FeederRouter.sol",
+  "abi": [],
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea2646970667358221220dae73c338dedaac9ce624b7f6d853bc4b194a0dd41720eeab99fc39fe1edc02764736f6c63430008020033",
+  "deployedBytecode": "0x6080604052600080fdfea2646970667358221220dae73c338dedaac9ce624b7f6d853bc4b194a0dd41720eeab99fc39fe1edc02764736f6c63430008020033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

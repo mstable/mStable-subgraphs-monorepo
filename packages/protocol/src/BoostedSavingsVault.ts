@@ -1,7 +1,7 @@
 import { Address } from '@graphprotocol/graph-ts'
 import { integer, token } from '@mstable/subgraph-utils'
 
-import { BoostedSavingsVault as BoostedSavingsVaultContract } from '../generated/BoostedSavingsVault_mUSD/BoostedSavingsVault'
+import { BoostedSavingsVault as BoostedSavingsVaultContract } from '../generated/BoostedSavingsVault_imUSD/BoostedSavingsVault'
 
 import {
   BoostedSavingsVault as BoostedSavingsVaultEntity,
@@ -24,7 +24,7 @@ export namespace BoostedSavingsVault {
     entity.lockupDuration = contract.LOCKUP().toI32()
     entity.unlockPercentage = contract.UNLOCK()
 
-    entity.stakingContract = contract.stakingContract()
+    entity.stakingContract = contract.stakingToken()
     token.getOrCreate(entity.stakingContract as Address)
 
     entity.rewardsDistributor = contract.rewardsDistributor()

@@ -1,0 +1,10 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "ModuleKeys",
+  "sourceName": "contracts/shared/ModuleKeys.sol",
+  "abi": [],
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea26469706673582212200d5b25226ad24bb5cb83a355a00392992763d66425b6b7cab2ffd36a02d195e164736f6c63430008020033",
+  "deployedBytecode": "0x6080604052600080fdfea26469706673582212200d5b25226ad24bb5cb83a355a00392992763d66425b6b7cab2ffd36a02d195e164736f6c63430008020033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

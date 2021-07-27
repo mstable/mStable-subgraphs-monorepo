@@ -156,9 +156,24 @@ type BoostedSavingsVault @entity {
   id: ID!
 
   """
-  The Feeder Pool associated with this vault
+  ID of the vault on the BoostDirector contract
   """
-  feederPool: FeederPool!
+  directorVaultId: Int
+
+  """
+  The boost coefficient
+  """
+  boostCoeff: BigInt
+
+  """
+  The price coefficient
+  """
+  priceCoeff: BigInt
+
+  """
+  The Feeder Pool associated with this vault (optional)
+  """
+  feederPool: FeederPool
 
   accounts: [BoostedSavingsVaultAccount!]! @derivedFrom(field: "boostedSavingsVault")
 
@@ -229,6 +244,27 @@ type BoostedSavingsVault @entity {
   """
   totalStakingRewards: BigInt!
 
+
+  """
+  The platform reward per token stored (optional)
+  """
+  platformRewardPerTokenStored: BigInt
+
+  """
+  The platform reward rate for the rest of the rewards period (optional)
+  """
+  platformRewardRate: BigInt
+
+  """
+  Total raw balance
+  """
+  totalRaw: BigInt
+
+  """
+  The platform rewards token, e.g. WMATIC (optional)
+  """
+  platformRewardsToken: Token
+
   stakeTransactions: [BoostedSavingsVaultStakeTransaction!]!
     @derivedFrom(field: "boostedSavingsVault")
 
@@ -248,6 +284,8 @@ type Account @entity {
   boostedSavingsVaultAccounts: [BoostedSavingsVaultAccount!]! @derivedFrom(field: "account")
 
   feederPoolAccounts: [FeederPoolAccount!]! @derivedFrom(field: "account")
+
+  boostDirection: [BoostedSavingsVault!]!
 }
 
 type BoostedSavingsVaultAccount @entity {
@@ -265,6 +303,10 @@ type BoostedSavingsVaultAccount @entity {
   rewardPerTokenPaid: BigInt!
 
   rewards: BigInt!
+
+  platformRewardPerTokenPaid: BigInt
+
+  platformRewards: BigInt
 
   lastAction: Int!
 
@@ -348,6 +390,11 @@ type BoostedSavingsVaultRewardAddedTransaction implements Transaction @entity {
   The amount of rewards added.
   """
   amount: BigInt!
+
+  """
+  The amount of platform rewards added (optional).
+  """
+  platformAmount: BigInt
 }
 
 type BoostedSavingsVaultRewardPaidTransaction implements Transaction @entity {
@@ -370,6 +417,11 @@ type BoostedSavingsVaultRewardPaidTransaction implements Transaction @entity {
   The amount of the reward paid.
   """
   amount: BigInt!
+
+  """
+  The amount of platform reward paid (optional).
+  """
+  platformAmount: BigInt
 
   """
   The account receiving the rewarded amount.
@@ -636,4 +688,12 @@ type FPRedeemTransaction implements Transaction @entity {
   The respective units of each Basset selected to redeem.
   """
   bassetsUnits: [BigInt!]!
+}
+
+type BoostDirector @entity {
+  id: ID!
+
+  stakingContract: Token!
+
+  whitelisted: [BoostedSavingsVault!]!
 }

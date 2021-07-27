@@ -1,0 +1,34 @@
+{
+  "network": "matic",
+  "massets": [
+    {
+      "name": "mUSD",
+      "Masset": {
+        "address": "0xE840B73E5287865EEc17d250bFb1536704B43B21",
+        "startBlock": 13630648
+      },
+      "MassetManager": {
+        "address": "0xB9E0408bE53a91A31828b3A175230f0dCd8c117e",
+        "startBlock": 13630640
+      }
+    }
+  ],
+  "savingsManagers": [
+    {
+      "address": "0x10bFcCae079f31c451033798a4Fd9D2c33Ea5487",
+      "startBlock": 13630695
+    }
+  ],
+  "RewardsDistributor": {
+    "address": "0x3e9d19ee1893B07e22165C54c205702C90C70847",
+    "startBlock": 16513232
+  },
+  "stakingRewards": [
+    {
+      "name": "v-imUSD MTA/MATIC",
+      "hasPlatformRewards": true,
+      "address": "0x32aba856dc5ffd5a56bcd182b13380e5c855aa29",
+      "startBlock": 16513242
+    }
+  ]
+}

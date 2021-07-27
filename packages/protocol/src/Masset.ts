@@ -1,10 +1,8 @@
 import { Address } from '@graphprotocol/graph-ts'
 import { integer, counters, metrics, token } from '@mstable/subgraph-utils'
 
-import { Masset } from '../generated/Masset/Masset'
-import { LegacyMasset } from '../generated/Masset/LegacyMasset'
+import { Masset } from '../generated/Masset_mUSD/Masset'
 
-import { InvariantValidator } from '../generated/Masset/InvariantValidator'
 import { AmpData as AmpDataEntity, Masset as MassetEntity } from '../generated/schema'
 import { updateBasket } from './Basket'
 
@@ -20,55 +18,34 @@ export function getOrCreateMasset(address: Address): MassetEntity {
   massetEntity = new MassetEntity(id)
 
   let masset = Masset.bind(address)
-  let legacyMasset = LegacyMasset.bind(address)
 
-  /**
-   * @deprecated
-   */
-  let feeRate = legacyMasset.try_swapFee()
-  if (!feeRate.reverted) {
-    massetEntity.feeRate = feeRate.value
+  let massetData = masset.try_data()
+  if (!massetData.reverted) {
+    massetEntity.feeRate = massetData.value.value0
+    massetEntity.redemptionFeeRate = massetData.value.value1
+    massetEntity.cacheSize = massetData.value.value2
+    massetEntity.surplus = massetData.value.value3
+
+    let ampData = massetData.value.value5
+    let ampDataEntity = new AmpDataEntity(id)
+    ampDataEntity.currentA = ampData.initialA
+    ampDataEntity.targetA = ampData.targetA
+    ampDataEntity.startTime = ampData.rampStartTime
+    ampDataEntity.rampEndTime = ampData.rampEndTime
+    ampDataEntity.save()
+    massetEntity.ampData = ampDataEntity.id
+
+    let weightLimits = massetData.value.value6
+    massetEntity.hardMin = weightLimits.min
+    massetEntity.hardMax = weightLimits.max
   }
-
-  /**
-   * @deprecated
-   */
-  let basketManager = legacyMasset.try_getBasketManager()
-  if (!basketManager.reverted) {
-    massetEntity.basketManager = basketManager.value
-  }
-
-  massetEntity.forgeValidator = masset.forgeValidator()
 
   massetEntity.basket = id
   massetEntity.token = token.getOrCreate(address).id
 
-  let weightLimits = masset.try_weightLimits()
+  updateBasket(address)
 
-  // If this didn't revert, then we're dealing with a new Masset
-  if (!weightLimits.reverted) {
-    massetEntity.hardMin = weightLimits.value.value0
-    massetEntity.hardMax = weightLimits.value.value1
-
-    let invariantValidator = InvariantValidator.bind(massetEntity.forgeValidator as Address)
-    massetEntity.invariantStartTime = invariantValidator.startTime().toI32()
-    massetEntity.invariantStartingCap = invariantValidator.startingCap()
-    massetEntity.invariantCapFactor = invariantValidator.capFactor()
-
-    let ampData = masset.ampData()
-    let ampDataEntity = new AmpDataEntity(id)
-    ampDataEntity.currentA = ampData.value0
-    ampDataEntity.targetA = ampData.value1
-    ampDataEntity.startTime = ampData.value2
-    ampDataEntity.rampEndTime = ampData.value3
-    ampDataEntity.save()
-    massetEntity.ampData = ampDataEntity.id
-
-    updateBasket(address)
-  }
-
-  let redemptionFee = masset.try_redemptionFee()
-  massetEntity.redemptionFeeRate = redemptionFee.reverted ? integer.ZERO : redemptionFee.value
+  massetEntity.redemptionFeeRate = massetEntity.redemptionFeeRate || integer.ZERO
 
   massetEntity.totalSupply = metrics.getOrCreate(address, 'token.totalSupply').id
   massetEntity.cumulativeMinted = metrics.getOrCreate(address, 'cumulativeMinted').id

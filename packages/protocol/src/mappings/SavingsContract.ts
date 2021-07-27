@@ -7,8 +7,8 @@ import {
   CreditsRedeemed,
   ExchangeRateUpdated,
   SavingsDeposited,
-} from '../../generated/SavingsManager/SavingsContractV1'
-import { SavingsContractV2 } from '../../generated/SavingsManager/SavingsContractV2'
+} from '../../generated/SavingsManager.0x86818a2EACcDC6e1C2d7A301E4Ebb394a3c61b85/SavingsContractV1'
+import { SavingsContractV2 } from '../../generated/SavingsManager.0x86818a2EACcDC6e1C2d7A301E4Ebb394a3c61b85/SavingsContractV2'
 
 import {
   Account as AccountEntity,
@@ -90,7 +90,6 @@ export function handleExchangeRateUpdated(event: ExchangeRateUpdated): void {
   if (exchangeRate24hAgo == null) {
     // Set the first 24h ago value (should only happen once)
     savingsContractEntity.exchangeRate24hAgo = exchangeRateLatest.id
-    savingsContractEntity.save()
   } else if (exchangeRateLatest.timestamp - exchangeRate24hAgo.timestamp > SECONDS_IN_DAY) {
     // The '24hAgo' rate should be _at least_ 24h ago; iterate through the 'next' rates
     // in order to push this rate forward.
@@ -109,9 +108,13 @@ export function handleExchangeRateUpdated(event: ExchangeRateUpdated): void {
       exchangeRate24hAgo as ExchangeRateEntity,
       exchangeRateLatest,
     )
-
-    savingsContractEntity.save()
+  } else {
+    savingsContractEntity.provisionalAPY = calculateAPY(
+      exchangeRate24hAgo as ExchangeRateEntity,
+      exchangeRateLatest,
+    )
   }
+  savingsContractEntity.save()
 }
 
 /**

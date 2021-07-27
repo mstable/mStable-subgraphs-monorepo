@@ -1,19 +1,56 @@
 specVersion: 0.0.2
-description: mStable Protocol
+description: mStable Feeder Pools
 repository: https://github.com/mstable/mstable-subgraphs-monorepo
 schema:
   file: ./schema.generated.graphql
 
 dataSources:
-  {{#feederPools}}
-  # Pool
+  # BoostDirector
+  # TODO this can be used for templates for tracked vaults
+  {{#boostDirector}}
   - kind: ethereum/contract
-    name: 'FeederPool_{{pool.address}}'
+    name: BoostDirector
     network: '{{network}}'
     source:
-      abi: FeederPoolExtended
-      address: '{{pool.address}}'
-      startBlock: {{pool.startBlock}}
+      abi: BoostDirector
+      address: '{{address}}'
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/BoostDirector.ts
+      entities:
+        - BoostDirector
+        - BoostedSavingsVault
+        - Token
+        - Account
+      abis:
+        - name: BoostDirector
+          file: ../../node_modules/@mstable/protocol/abis/BoostDirector.json
+        - name: BoostedSavingsVault
+          file: ../../node_modules/@mstable/protocol/abis/BoostedSavingsVault.json
+        - name: BoostedTokenWrapper
+          file: ../../node_modules/@mstable/protocol/abis/BoostedTokenWrapper.json
+        - name: ERC20
+          file: ../../node_modules/@mstable/protocol/abis/ERC20.json
+      eventHandlers:
+        - event: Directed(address,address)
+          handler: handleDirected
+        - event: RedirectedBoost(address,address,address)
+          handler: handleRedirectedBoost
+        - event: Whitelisted(address,uint8)
+          handler: handleWhitelisted
+  {{/boostDirector}}
+
+  {{#feederPools}}
+  - kind: ethereum/contract
+    name: 'FeederPool_{{address}}'
+    network: '{{network}}'
+    source:
+      abi: FeederPool
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -24,24 +61,18 @@ dataSources:
         - FPBasset
         - Token
       abis:
-        - name: FeederPoolExtended
-          file: ./abis/FeederPoolExtended.json
         - name: FeederPool
-          file: ../../node_modules/@mstable/protocol/build/contracts/feeders/FeederPool.sol/FeederPool.json
-        #        - name: FeederValidator
-        #          file: ../../node_modules/@mstable/protocol/build/contracts/feeders/FeederValidator.sol/FeederValidator.json
+          file: ../../node_modules/@mstable/protocol/abis/FeederPool.json
         - name: FeederManager
-          file: ../../node_modules/@mstable/protocol/build/contracts/feeders/FeederManager.sol/FeederManager.json
-        - name: FeederRouter
-          file: ../../node_modules/@mstable/protocol/build/contracts/feeders/peripheral/FeederRouter.sol/FeederRouter.json
+          file: ../../node_modules/@mstable/protocol/abis/FeederManager.json
         - name: InterestValidator
-          file: ../../node_modules/@mstable/protocol/build/contracts/feeders/InterestValidator.sol/InterestValidator.json
+          file: ../../node_modules/@mstable/protocol/abis/InterestValidator.json
         - name: Masset
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/Masset.sol/Masset.json
-        - name: InvariantValidator
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/InvariantValidator.sol/InvariantValidator.json
-        - name: ERC20Detailed
-          file: ./abis/ERC20Detailed.json
+          file: ../../node_modules/@mstable/protocol/abis/Masset.json
+        - name: ERC20
+          file: ../../node_modules/@mstable/protocol/abis/ERC20.json
+        - name: BoostedTokenWrapper
+          file: ../../node_modules/@mstable/protocol/abis/BoostedTokenWrapper.json
       eventHandlers:
         # Forging events
         - event: Minted(indexed address,address,uint256,address,uint256)
@@ -56,8 +87,8 @@ dataSources:
           handler: handleRedeemedMulti
 
         # InterestValidator events
-        - event: InterestValidator_InterestCollected(indexed address,uint256,uint256,uint256)
-          handler: handleInterestCollected
+#        - event: InterestCollected(indexed address,uint256,uint256,uint256)
+#          handler: handleInterestCollected
 
         # State events
         - event: CacheSizeChanged(uint256)
@@ -70,21 +101,22 @@ dataSources:
           handler: handleTransfer
 
         # FeederManager events
-        - event: FeederManager_BassetsMigrated(address[],address)
+        - event: BassetsMigrated(address[],address)
           handler: handleBassetsMigrated
-        - event: FeederManager_StartRampA(uint256,uint256,uint256,uint256)
+        - event: StartRampA(uint256,uint256,uint256,uint256)
           handler: handleStartRampA
-        - event: FeederManager_StopRampA(uint256,uint256)
+        - event: StopRampA(uint256,uint256)
           handler: handleStopRampA
+  {{/feederPools}}
 
-  # Vault
+  {{#vaults}}
   - kind: ethereum/contract
-    name: 'BoostedSavingsVault_{{vault.address}}'
+    name: 'BoostedSavingsVault_{{address}}'
     network: '{{network}}'
     source:
-      abi: BoostedSavingsVault
-      address: '{{vault.address}}'
-      startBlock: {{vault.startBlock}}
+      abi: '{{abi}}'
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -104,22 +136,35 @@ dataSources:
         - BoostedSavingsVaultWithdrawTransaction
       abis:
         - name: BoostedSavingsVault
-          file: ../../node_modules/@mstable/protocol/build/contracts/savings/BoostedSavingsVault.sol/BoostedSavingsVault.json
+          file: ../../node_modules/@mstable/protocol/abis/BoostedSavingsVault.json
+        - name: BoostedDualVault
+          file: ../../abis/BoostedDualVault.json
         - name: FeederPool
-          file: ../../node_modules/@mstable/protocol/build/contracts/feeders/FeederPool.sol/FeederPool.json
-        - name: ERC20Detailed
-          file: ./abis/ERC20Detailed.json
+          file: ../../node_modules/@mstable/protocol/abis/FeederPool.json
+        - name: ERC20
+          file: ../../node_modules/@mstable/protocol/abis/ERC20.json
+        - name: BoostedTokenWrapper
+          file: ../../node_modules/@mstable/protocol/abis/BoostedTokenWrapper.json
       eventHandlers:
         - event: Staked(indexed address,uint256,address)
           handler: handleStaked
+        - event: Withdrawn(indexed address,uint256)
+          handler: handleWithdrawn
+        - event: Poked(indexed address)
+          handler: handlePoked
+        {{#isDual}}
+        - event: RewardAdded(uint256,uint256)
+          handler: handleRewardAddedDual
+        - event: RewardPaid(indexed address,uint256,uint256)
+          handler: handleRewardPaidDual
+        {{#else}}
         - event: RewardAdded(uint256)
           handler: handleRewardAdded
         - event: RewardPaid(indexed address,uint256)
           handler: handleRewardPaid
-        - event: Withdrawn(indexed address,uint256)
-          handler: handleWithdrawn
-  {{/feederPools}}
-
+        {{/else}}
+        {{/isDual}}
+  {{/vaults}}
 
 templates:
   - kind: ethereum/contract
@@ -136,8 +181,14 @@ templates:
         - FeederPool
       abis:
         - name: FeederPool
-          file: ../../node_modules/@mstable/protocol/build/contracts/feeders/FeederPool.sol/FeederPool.json
+          file: ../../node_modules/@mstable/protocol/abis/FeederPool.json
         - name: Masset
-          file: ../../node_modules/@mstable/protocol/build/contracts/masset/Masset.sol/Masset.json
+          file: ../../node_modules/@mstable/protocol/abis/Masset.json
         - name: BoostedSavingsVault
-          file: ../../node_modules/@mstable/protocol/build/contracts/savings/BoostedSavingsVault.sol/BoostedSavingsVault.json
+          file: ../../node_modules/@mstable/protocol/abis/BoostedSavingsVault.json
+        - name: BoostedDualVault
+          file: ../../abis/BoostedDualVault.json
+        - name: BoostedTokenWrapper
+          file: ../../node_modules/@mstable/protocol/abis/BoostedTokenWrapper.json
+        - name: ERC20
+          file: ../../node_modules/@mstable/protocol/abis/ERC20.json
