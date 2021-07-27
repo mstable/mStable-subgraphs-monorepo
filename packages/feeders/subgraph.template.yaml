@@ -157,12 +157,12 @@ dataSources:
           handler: handleRewardAddedDual
         - event: RewardPaid(indexed address,uint256,uint256)
           handler: handleRewardPaidDual
-        {{#else}}
+        {{/isDual}}
+        {{^isDual}}
         - event: RewardAdded(uint256)
           handler: handleRewardAdded
         - event: RewardPaid(indexed address,uint256)
           handler: handleRewardPaid
-        {{/else}}
         {{/isDual}}
   {{/vaults}}
 
