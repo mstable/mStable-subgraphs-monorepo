@@ -18,7 +18,7 @@
     "prepare:polygon-mainnet": "yarn run prepare-codegen polygon-mainnet",
     "deploy:ropsten": "yarn graph deploy mstable/mstable-feeders-ropsten --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
     "deploy:staging": "yarn graph deploy mstable/mstable-feeder-pools-staging --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
-    "deploy:mainnet": "yarn graph deploy mstable/mstable-feeder-pools --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
+    "deploy:mainnet": "yarn graph deploy --studio mstable-feeder-pools-and-vaults --debug --access-token ",
     "deploy:polygon-mumbai": "yarn graph deploy mstable/mstable-feeder-pools-mumbai --network mumbai --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
     "deploy:polygon-mainnet": "yarn graph deploy mstable/mstable-feeder-pools-polygon --network matic --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
     "lint": "yarn run prettier './src/**/*.{ts,tsx}' --write",
