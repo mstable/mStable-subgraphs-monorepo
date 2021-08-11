@@ -30,5 +30,12 @@
       "address": "0x32aba856dc5ffd5a56bcd182b13380e5c855aa29",
       "startBlock": 16513242
     }
+  ],
+  "feederPools": [
+    {
+      "name": "mUSD/FRAX",
+      "address": "0xB30a907084AC8a0d25dDDAB4E364827406Fd09f0",
+      "startBlock": 16099014
+    }
   ]
 }
