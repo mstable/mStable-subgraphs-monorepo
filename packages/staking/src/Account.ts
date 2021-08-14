@@ -30,10 +30,11 @@ export namespace Account {
     let delegatee = stakedToken.delegates(addr)
     Balance.updateByAddress(addr)
 
-    // Also update the delegatee (if any)
-    if (delegatee) Account.updateByAddress(delegatee)
-
-    entity.delegatee = delegatee ? delegatee.toHexString() : null
+    if (delegatee) {
+      if (delegatee.notEqual(addr)) {
+        entity.delegatee = delegatee.toHexString()
+      }
+    }
 
     let stakerCooldown = stakedToken.stakersCooldowns(addr)
 
