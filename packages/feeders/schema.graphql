@@ -492,7 +492,7 @@ type FeederPool @entity {
   redeemTransactions: [FPRedeemTransaction!]! @derivedFrom(field: "feederPool")
   swapTransactions: [FPSwapTransaction!]! @derivedFrom(field: "feederPool")
 
-  vault: BoostedSavingsVault! @derivedFrom(field: "feederPool")
+  vault: BoostedSavingsVault @derivedFrom(field: "feederPool")
 
   accounts: [FeederPoolAccount!]! @derivedFrom(field: "feederPool")
 
