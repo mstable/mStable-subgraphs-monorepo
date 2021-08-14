@@ -1,0 +1,77 @@
+specVersion: 0.0.2
+description: mStable Staking Rewards
+repository: https://github.com/mstable/mstable-subgraphs-monorepo
+schema:
+  file: ./schema.generated.graphql
+
+dataSources:
+  {{#staking}}
+  - kind: ethereum/contract
+    name: StakedToken
+    network: '{{network}}'
+    source:
+      abi: StakedToken
+      address: '{{StakedToken.address}}'
+      startBlock: {{StakedToken.startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/StakedToken.ts
+      entities:
+        - StakedToken
+      abis:
+        - name: ERC20
+          file: ../../node_modules/@mstable/protocol/abis/ERC20.json
+        - name: StakedToken
+          file: ../../abis/StakedToken.json
+        - name: GamifiedManager
+          file: ../../abis/GamifiedManager.json
+        - name: GamifiedToken
+          file: ../../abis/GamifiedToken.json
+        - name: GamifiedVotingToken
+          file: ../../abis/GamifiedVotingToken.json
+        - name: HeadlessStakingRewards
+          file: ../../abis/HeadlessStakingRewards.json
+      eventHandlers:
+        - event: Staked(indexed address,uint256,address)
+          handler: handleStaked
+        - event: Withdraw(indexed address,indexed address,uint256)
+          handler: handleWithdraw
+        - event: Cooldown(indexed address,uint256)
+          handler: handleCooldown
+        - event: CooldownExited(indexed address)
+          handler: handleCooldownExited
+        - event: SlashRateChanged(uint256)
+          handler: handleSlashRateChanged
+        - event: Recollateralised()
+          handler: handleRecollateralised
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+  - kind: ethereum/contract
+    name: GamifiedManager
+    network: '{{network}}'
+    source:
+      abi: GamifiedManager
+      address: '{{GamifiedManager.address}}'
+      startBlock: {{GamifiedManager.startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/GamifiedManager.ts
+      entities:
+        - GamifiedManager
+      abis:
+        - name: GamifiedManager
+          file: ../../abis/GamifiedManager.json
+      eventHandlers:
+        - event: QuestAdded(address,uint256,uint8,uint16,uint8,uint32)
+          handler: handleQuestAdded
+        - event: QuestComplete(indexed address,indexed uint256)
+          handler: handleQuestComplete
+        - event: QuestExpired(indexed uint16)
+          handler: handleQuestExpired
+        - event: QuestSeasonEnded()
+          handler: handleQuestSeasonEnded
+  {{/staking}}
