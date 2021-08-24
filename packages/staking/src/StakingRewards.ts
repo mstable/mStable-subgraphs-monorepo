@@ -1,35 +1,35 @@
 import { token } from '@mstable/subgraph-utils'
 import { Address } from '@graphprotocol/graph-ts'
 
-import { HeadlessStakingRewards } from '../generated/StakedToken/HeadlessStakingRewards'
-import { StakingRewards as StakingRewardsEntity } from '../generated/schema'
+import { HeadlessStakingRewards } from '../generated/StakedTokenMTA/HeadlessStakingRewards'
+import { StakingRewards as Entity } from '../generated/schema'
 
 export namespace StakingRewards {
   export function getContract(addr: Address): HeadlessStakingRewards {
     return HeadlessStakingRewards.bind(addr)
   }
 
-  export function getOrCreate(addr: Address): StakingRewardsEntity {
+  export function getOrCreate(addr: Address): Entity {
     let id = addr.toHexString()
 
-    let entity = StakingRewardsEntity.load(id)
+    let entity = Entity.load(id)
     if (entity != null) {
-      return entity as StakingRewardsEntity
+      return entity as Entity
     }
 
     let contract = getContract(addr)
 
-    entity = new StakingRewardsEntity(id)
+    entity = new Entity(id)
     entity.DURATION = contract.DURATION().toI32()
     entity.rewardsToken = token.getOrCreate(contract.REWARDS_TOKEN()).id
     entity.rewardsTokenVendor = contract.rewardTokenVendor()
-    entity = update(entity as StakingRewardsEntity, addr)
+    entity = updateEntity(entity as Entity, addr)
     entity.save()
 
-    return entity as StakingRewardsEntity
+    return entity as Entity
   }
 
-  export function update(entity: StakingRewardsEntity, addr: Address): StakingRewardsEntity {
+  export function updateEntity(entity: Entity, addr: Address): Entity {
     let contract = getContract(addr)
 
     entity.pendingAdditionalReward = contract.pendingAdditionalReward()
@@ -44,9 +44,9 @@ export namespace StakingRewards {
     return entity
   }
 
-  export function updateByAddress(addr: Address): StakingRewardsEntity {
+  export function update(addr: Address): Entity {
     let entity = getOrCreate(addr)
-    entity = update(entity, addr)
+    entity = updateEntity(entity, addr)
     entity.save()
     return entity
   }

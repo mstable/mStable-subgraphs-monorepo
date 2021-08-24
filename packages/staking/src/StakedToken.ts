@@ -1,40 +1,31 @@
-import { Address, log } from '@graphprotocol/graph-ts'
+import { Address } from '@graphprotocol/graph-ts'
 import { integer, token } from '@mstable/subgraph-utils'
 
-import { StakedToken as StakedTokenContract } from '../generated/StakedToken/StakedToken'
-import { StakedToken as StakedTokenEntity } from '../generated/schema'
+import { StakedToken as StakedTokenContract } from '../generated/StakedTokenMTA/StakedToken'
+import { StakedToken as Entity } from '../generated/schema'
 
 import { Season } from './Season'
 import { StakingRewards } from './StakingRewards'
 
 export namespace StakedToken {
-  let ID = 'StakedToken'
-
-  export function getEntity(): StakedTokenEntity {
-    return StakedTokenEntity.load(ID) as StakedTokenEntity
+  export function getContract(addr: Address): StakedTokenContract {
+    return StakedTokenContract.bind(addr)
   }
 
-  export function getContract(): StakedTokenContract {
-    let entity = getEntity()
-    return StakedTokenContract.bind(entity.address as Address)
-  }
-
-  export function getOrCreate(addr: Address): StakedTokenEntity {
-    let entity = StakedTokenEntity.load(ID)
+  export function getOrCreate(addr: Address): Entity {
+    let id = addr.toHexString()
+    let entity = Entity.load(id)
     if (entity != null) {
-      return entity as StakedTokenEntity
+      return entity as Entity
     }
 
-    entity = new StakedTokenEntity(ID)
+    entity = new Entity(id)
     let contract = StakedTokenContract.bind(addr)
-    log.debug('StakedToken.getOrCreate', [])
 
     // Set immutable fields
-    entity.address = addr
-    entity.COOLDOWN_PERCENTAGE_SCALE = contract.COOLDOWN_PERCENTAGE_SCALE()
     entity.COOLDOWN_SECONDS = contract.COOLDOWN_SECONDS()
     entity.UNSTAKE_WINDOW = contract.UNSTAKE_WINDOW()
-    entity.questSigner = contract._signer()
+    entity.questMaster = contract.questMaster()
 
     // Create sub-entities
     entity.token = token.getOrCreate(addr).id
@@ -44,23 +35,24 @@ export namespace StakedToken {
     let seasonEntity = Season.getOrCreate(integer.ZERO, contract.seasonEpoch())
     entity.season = seasonEntity.id
 
-    entity = update(entity as StakedTokenEntity)
+    entity = update(entity as Entity)
     entity.save()
 
-    return entity as StakedTokenEntity
+    return entity as Entity
   }
 
-  export function updateEntity(): StakedTokenEntity {
-    let entity = getEntity()
+  export function updateByAddress(addr: Address): Entity {
+    let entity = getOrCreate(addr)
     entity = update(entity)
     entity.save()
     return entity
   }
 
-  export function update(entity: StakedTokenEntity): StakedTokenEntity {
-    let contract = StakedTokenContract.bind(entity.address as Address)
+  export function update(entity: Entity): Entity {
+    let address = Address.fromString(entity.id)
+    let contract = StakedTokenContract.bind(address)
 
-    StakingRewards.updateByAddress(entity.address as Address)
+    StakingRewards.update(address)
 
     let safetyData = contract.safetyData()
 
@@ -78,13 +70,6 @@ export namespace StakedToken {
       }
     }
 
-    return entity
-  }
-
-  export function updateByAddress(addr: Address): StakedTokenEntity {
-    let entity = getOrCreate(addr)
-    entity = update(entity)
-    entity.save()
     return entity
   }
 }

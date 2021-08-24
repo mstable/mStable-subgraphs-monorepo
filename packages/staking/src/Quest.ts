@@ -1,12 +1,12 @@
+import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { integer } from '@mstable/subgraph-utils'
 
 import { Quest as QuestEntity } from '../generated/schema'
 
 import { StakedToken } from './StakedToken'
-import { BigInt } from '@graphprotocol/graph-ts'
 
 export namespace Quest {
-  export function getOrCreate(numericId: BigInt): QuestEntity {
+  export function getOrCreate(numericId: BigInt, stakedTokenAddress: Address): QuestEntity {
     let id = numericId.toString()
 
     let entity = QuestEntity.load(id)
@@ -14,19 +14,19 @@ export namespace Quest {
       return entity as QuestEntity
     }
 
-    let stakedTokenEntity = StakedToken.getEntity()
+    let stakedTokenEntity = StakedToken.getOrCreate(stakedTokenAddress)
 
     entity = new QuestEntity(id)
     entity.season = stakedTokenEntity.season
-    entity = update(entity as QuestEntity)
+    entity = update(entity as QuestEntity, stakedTokenAddress)
     entity.save()
 
     return entity as QuestEntity
   }
 
-  export function update(entity: QuestEntity): QuestEntity {
-    let stakedToken = StakedToken.getContract()
-    let stakedTokenEntity = StakedToken.getEntity()
+  export function update(entity: QuestEntity, stakedTokenAddress: Address): QuestEntity {
+    let stakedToken = StakedToken.getContract(stakedTokenAddress)
+    let stakedTokenEntity = StakedToken.getOrCreate(stakedTokenAddress)
 
     let questData = stakedToken.getQuest(integer.fromString(entity.id))
 
@@ -41,9 +41,9 @@ export namespace Quest {
     return entity
   }
 
-  export function updateById(numericId: BigInt): QuestEntity {
-    let entity = getOrCreate(numericId)
-    entity = update(entity)
+  export function updateById(numericId: BigInt, stakedTokenAddress: Address): QuestEntity {
+    let entity = getOrCreate(numericId, stakedTokenAddress)
+    entity = update(entity, stakedTokenAddress)
     entity.save()
     return entity
   }
