@@ -75,24 +75,17 @@
     }
   ],
   "staking": {
-    "MTA": {
-      "address": "0x273bc479E5C21CAA15aA8538DecBF310981d14C0"
-    },
-    "StakedToken": {
-      "address": "0x4d8E465ba7FACa907E8A5F39649e056bB14802D1",
-      "startBlock": 10821278
-    },
-    "GamifiedManager": {
-      "address": "0xcD55Eb0Ce6Ee8eEf7b1f828a4f6F6538a3DEAB80",
-      "startBlock": 10821250
-    },
-    "SignatureVerifier": {
-      "address": "0x5Ff8F862092AE846875e745126177fDc03D7234e",
-      "startBlock": 10821247
-    },
-    "PlatformTokenVendorFactory": {
-      "address": "0xB1dd91A2ceac170122971fdA0Bb8Db9F5f9f03d1",
-      "startBlock": 10821253
-    }
+    "stakedTokens": [
+      {
+        "name": "StakedTokenMTA",
+        "address": "0xE32436dFfAA95fB2329479E516A6443d753c032F",
+        "startBlock": 10900042
+      },
+      {
+        "name": "StakedTokenBPT",
+        "address": "0xb7D172ad2D053ed847642B7C532Bf64791AD8426",
+        "startBlock": 10900042
+      }
+    ]
   }
 }

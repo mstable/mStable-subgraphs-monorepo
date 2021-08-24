@@ -1,18 +1,19 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { BigInt } from '@graphprotocol/graph-ts'
 
 import { CompletedQuest as CompletedQuestEntity } from '../generated/schema'
+import { StakedTokenAccount as StakedTokenAccountEntity } from '../generated/schema'
 
 export namespace CompletedQuest {
-  function getId(account: Address, numericId: BigInt): string {
-    return account.toHexString() + '.' + numericId.toString()
+  function getId(accountId: string, numericId: BigInt): string {
+    return accountId + '.' + numericId.toString()
   }
 
   export function complete(
-    account: Address,
+    accountEntity: StakedTokenAccountEntity,
     numericId: BigInt,
     timestamp: BigInt,
   ): CompletedQuestEntity {
-    let id = getId(account, numericId)
+    let id = getId(accountEntity.id, numericId)
 
     let entity = CompletedQuestEntity.load(id)
     if (entity != null) {
@@ -20,7 +21,7 @@ export namespace CompletedQuest {
     }
 
     entity = new CompletedQuestEntity(id)
-    entity.account = account.toHexString()
+    entity.account = accountEntity.id
     entity.quest = numericId.toString()
     entity.completedAt = timestamp.toI32()
     entity.save()

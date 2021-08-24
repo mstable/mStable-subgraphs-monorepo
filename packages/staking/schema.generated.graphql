@@ -118,10 +118,12 @@ type Counter @entity {
 
 
 
-type Balance @entity {
+type StakedTokenBalance @entity {
     id: ID!
 
-    account: Account!
+    account: StakedTokenAccount!
+
+    stakedToken: StakedToken!
 
     # Units of staking token that has been deposited and consequently wrapped
     raw: BigInt!
@@ -141,9 +143,6 @@ type Balance @entity {
 
     # Multiplier awarded for staking for a long time
     timeMultiplier: Int!
-
-    # Shows if a user has entered their cooldown ready for a withdrawal. Can be used to slash voting balance
-    cooldownMultiplier: Int!
 
     # Current votes balance
     votes: BigInt!
@@ -198,7 +197,7 @@ type Season @entity {
 type CompletedQuest @entity {
     id: ID!
 
-    account: Account!
+    account: StakedTokenAccount!
 
     quest: Quest!
 
@@ -206,11 +205,8 @@ type CompletedQuest @entity {
 }
 
 type StakedToken @entity {
-    # Singleton ID: "StakedToken"
-    id: ID!
-
     # StakedToken contract address
-    address: Bytes!
+    id: ID!
 
     # The non-transferrable StakedToken
     token: Token!
@@ -225,7 +221,7 @@ type StakedToken @entity {
     stakingRewards: StakingRewards!
 
     # Address that signs user quests have been completed
-    questSigner: Bytes!
+    questMaster: Bytes!
 
     # Seconds a user must wait after she initiates her cooldown before withdrawal is possible
     COOLDOWN_SECONDS: BigInt!
@@ -233,14 +229,13 @@ type StakedToken @entity {
     # Window in which it is possible to withdraw, following the cooldown period
     UNSTAKE_WINDOW: BigInt!
 
-    # Cooldown percentage scale where 100% = 1e18. 1% = 1e16
-    COOLDOWN_PERCENTAGE_SCALE: BigInt!
-
     # Percentage of collateralisation where 100% = 1e18
     collateralisationRatio: BigInt!
 
     # Slash % where 100% = 1e18
     slashingPercentage: BigInt!
+
+    accounts: [StakedTokenAccount!]! @derivedFrom(field: "stakedToken")
 }
 
 type StakingRewards @entity {
@@ -274,18 +269,23 @@ type StakingRewards @entity {
     DURATION: Int
 }
 
-type Account @entity {
+type StakedTokenAccount @entity {
+    # ${address}.${stakedTokenAddress}
     id: ID!
 
-    balance: Balance!
+    address: Bytes!
 
-    delegatee: Account
+    stakedToken: StakedToken!
+
+    balance: StakedTokenBalance!
+
+    delegatee: StakedTokenAccount
 
     rewardPerTokenPaid: BigInt
 
     rewards: BigInt
 
-    delegators: [Account!]! @derivedFrom(field: "delegatee")
+    delegators: [StakedTokenAccount!]! @derivedFrom(field: "delegatee")
 
     # Time at which the relative cooldown began
     cooldownTimestamp: BigInt

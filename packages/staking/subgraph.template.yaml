@@ -6,13 +6,14 @@ schema:
 
 dataSources:
   {{#staking}}
+  {{#stakedTokens}}
   - kind: ethereum/contract
-    name: StakedToken
+    name: '{{name}}'
     network: '{{network}}'
     source:
       abi: StakedToken
-      address: '{{StakedToken.address}}'
-      startBlock: {{StakedToken.startBlock}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -25,12 +26,6 @@ dataSources:
           file: ../../node_modules/@mstable/protocol/abis/ERC20.json
         - name: StakedToken
           file: ../../abis/StakedToken.json
-        - name: GamifiedManager
-          file: ../../abis/GamifiedManager.json
-        - name: GamifiedToken
-          file: ../../abis/GamifiedToken.json
-        - name: GamifiedVotingToken
-          file: ../../abis/GamifiedVotingToken.json
         - name: HeadlessStakingRewards
           file: ../../abis/HeadlessStakingRewards.json
       eventHandlers:
@@ -48,24 +43,6 @@ dataSources:
           handler: handleRecollateralised
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
-  - kind: ethereum/contract
-    name: GamifiedManager
-    network: '{{network}}'
-    source:
-      abi: GamifiedManager
-      address: '{{GamifiedManager.address}}'
-      startBlock: {{GamifiedManager.startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/mappings/GamifiedManager.ts
-      entities:
-        - GamifiedManager
-      abis:
-        - name: GamifiedManager
-          file: ../../abis/GamifiedManager.json
-      eventHandlers:
         - event: QuestAdded(address,uint256,uint8,uint16,uint8,uint32)
           handler: handleQuestAdded
         - event: QuestComplete(indexed address,indexed uint256)
@@ -74,4 +51,5 @@ dataSources:
           handler: handleQuestExpired
         - event: QuestSeasonEnded()
           handler: handleQuestSeasonEnded
+  {{/stakedTokens}}
   {{/staking}}
