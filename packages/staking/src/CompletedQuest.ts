@@ -1,7 +1,7 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 
 import { CompletedQuest as CompletedQuestEntity } from '../generated/schema'
-import { StakedTokenAccount as StakedTokenAccountEntity } from '../generated/schema'
+import { Account as AccountEntity } from '../generated/schema'
 
 export namespace CompletedQuest {
   function getId(accountId: string, numericId: BigInt): string {
@@ -9,7 +9,7 @@ export namespace CompletedQuest {
   }
 
   export function complete(
-    accountEntity: StakedTokenAccountEntity,
+    accountEntity: AccountEntity,
     numericId: BigInt,
     timestamp: BigInt,
   ): CompletedQuestEntity {

@@ -21,9 +21,24 @@ export namespace Account {
 
     entity = new Entity(id)
     entity.totalVotes = integer.ZERO
+    entity.lastAction = 0
+    entity.permMultiplier = 0
+    entity.seasonMultiplier = 0
     entity.save()
 
     return entity as Entity
+  }
+
+  export function updateQuestBalance(account: Address, questManagerAddress: Address): Entity {
+    let entity = getOrCreate(account)
+
+    let questManager = QuestManager.bind(questManagerAddress)
+    let questBalance = questManager.balanceData(account)
+    entity.lastAction = questBalance.lastAction.toI32()
+    entity.permMultiplier = questBalance.permMultiplier
+    entity.seasonMultiplier = questBalance.seasonMultiplier
+    entity.save()
+    return entity
   }
 
   export function update(account: Address, stakedTokenAddress: Address): Entity {
@@ -38,11 +53,12 @@ export namespace Account {
     // Assumes stakedTokenBalance has not been updated yet
     entity.totalVotes = entity.totalVotes.minus(votesPrev).plus(votes)
 
-    let questManager = QuestManager.bind(Address.fromString(stakedTokenEntity.questManager))
-    let questBalance = questManager.balanceData(account)
-    entity.lastAction = questBalance.lastAction.toI32()
-    entity.permMultiplier = questBalance.permMultiplier
-    entity.seasonMultiplier = questBalance.seasonMultiplier
+    // let questManagerAddress = Address.fromString(stakedTokenEntity.questManager)
+    // let questManager = QuestManager.bind(questManagerAddress)
+    // let questBalance = questManager.balanceData(account)
+    // entity.lastAction = questBalance.lastAction.toI32()
+    // entity.permMultiplier = questBalance.permMultiplier
+    // entity.seasonMultiplier = questBalance.seasonMultiplier
 
     entity.save()
     return entity

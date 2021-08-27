@@ -285,6 +285,8 @@ type Account @entity {
     completedQuests: [CompletedQuest!]! @derivedFrom(field: "account")
 
     stakedTokenAccounts: [StakedTokenAccount!]! @derivedFrom(field: "account")
+
+    delegators: [StakedTokenAccount!]! @derivedFrom(field: "delegatee")
 }
 
 type StakedTokenAccount @entity {
@@ -297,13 +299,11 @@ type StakedTokenAccount @entity {
 
     balance: StakedTokenBalance!
 
-    delegatee: StakedTokenAccount
+    delegatee: Account
 
     rewardPerTokenPaid: BigInt
 
     rewards: BigInt
-
-    delegators: [StakedTokenAccount!]! @derivedFrom(field: "delegatee")
 }
 
 type QuestManager @entity {
@@ -316,5 +316,5 @@ type QuestManager @entity {
     questMaster: Bytes!
 
     # Account that can sign a user's quest as being completed.
-    questSigner: Bytes!
+    questSigner: Bytes
 }

@@ -41,9 +41,9 @@ export namespace Quest {
     return entity
   }
 
-  export function updateById(numericId: BigInt, stakedTokenAddress: Address): QuestEntity {
-    let entity = getOrCreate(numericId, stakedTokenAddress)
-    entity = update(entity, stakedTokenAddress)
+  export function updateById(numericId: BigInt, questManagerAddress: Address): QuestEntity {
+    let entity = getOrCreate(numericId, questManagerAddress)
+    entity = update(entity, questManagerAddress)
     entity.save()
     return entity
   }

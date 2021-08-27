@@ -82,12 +82,12 @@
     "stakedTokens": [
       {
         "name": "StakedTokenMTA",
-        "address": "0xE3c016FAbBe1bd2B36C8486eDa1C34d6367c0695",
+        "address": "0x24FD285C105B10c5989cab20e3cfb7699F2Ad671",
         "startBlock": 10912510
       },
       {
         "name": "StakedTokenBPT",
-        "address": "0x4A869C278b7f397734F0dAFd4E5EEE1A1543Cb80",
+        "address": "0x5fcd1BD558e8334dC861cA62acA16e7c496A7649",
         "startBlock": 10912934
       }
     ]
