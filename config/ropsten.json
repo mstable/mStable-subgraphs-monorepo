@@ -75,16 +75,20 @@
     }
   ],
   "staking": {
+    "QuestManager": {
+      "address": "0x3F4334c92C4a2B06969ABd0Ec3D24b16fDCa7B92",
+      "startBlock": 10912503
+    },
     "stakedTokens": [
       {
         "name": "StakedTokenMTA",
-        "address": "0xE32436dFfAA95fB2329479E516A6443d753c032F",
-        "startBlock": 10900042
+        "address": "0xE3c016FAbBe1bd2B36C8486eDa1C34d6367c0695",
+        "startBlock": 10912510
       },
       {
         "name": "StakedTokenBPT",
-        "address": "0xb7D172ad2D053ed847642B7C532Bf64791AD8426",
-        "startBlock": 10900042
+        "address": "0x4A869C278b7f397734F0dAFd4E5EEE1A1543Cb80",
+        "startBlock": 10912934
       }
     ]
   }

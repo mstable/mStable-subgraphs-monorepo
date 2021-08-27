@@ -3,10 +3,10 @@ import { integer } from '@mstable/subgraph-utils'
 
 import { Quest as QuestEntity } from '../generated/schema'
 
-import { StakedToken } from './StakedToken'
+import { QuestManager } from './QuestManager'
 
 export namespace Quest {
-  export function getOrCreate(numericId: BigInt, stakedTokenAddress: Address): QuestEntity {
+  export function getOrCreate(numericId: BigInt, questManagerAddress: Address): QuestEntity {
     let id = numericId.toString()
 
     let entity = QuestEntity.load(id)
@@ -14,28 +14,28 @@ export namespace Quest {
       return entity as QuestEntity
     }
 
-    let stakedTokenEntity = StakedToken.getOrCreate(stakedTokenAddress)
+    let questManagerEntity = QuestManager.getOrCreate(questManagerAddress)
 
     entity = new QuestEntity(id)
-    entity.season = stakedTokenEntity.season
-    entity = update(entity as QuestEntity, stakedTokenAddress)
+    entity.season = questManagerEntity.season
+    entity = update(entity as QuestEntity, questManagerAddress)
     entity.save()
 
     return entity as QuestEntity
   }
 
-  export function update(entity: QuestEntity, stakedTokenAddress: Address): QuestEntity {
-    let stakedToken = StakedToken.getContract(stakedTokenAddress)
-    let stakedTokenEntity = StakedToken.getOrCreate(stakedTokenAddress)
+  export function update(entity: QuestEntity, questManagerAddress: Address): QuestEntity {
+    let questManager = QuestManager.getContract(questManagerAddress)
+    let questManagerEntity = QuestManager.getOrCreate(questManagerAddress)
 
-    let questData = stakedToken.getQuest(integer.fromString(entity.id))
+    let questData = questManager.getQuest(integer.fromString(entity.id))
 
     entity.expiry = questData.expiry.toI32()
     entity.multiplier = questData.multiplier
     entity.status = questData.status == 0 ? 'ACTIVE' : 'EXPIRED'
     entity.type = questData.model == 0 ? 'PERMANENT' : 'SEASONAL'
     if (entity.type == 'SEASONAL') {
-      entity.season = stakedTokenEntity.season
+      entity.season = questManagerEntity.season
     }
 
     return entity

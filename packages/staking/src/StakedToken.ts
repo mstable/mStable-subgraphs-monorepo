@@ -1,11 +1,11 @@
 import { Address } from '@graphprotocol/graph-ts'
-import { integer, token } from '@mstable/subgraph-utils'
+import { token } from '@mstable/subgraph-utils'
 
 import { StakedToken as StakedTokenContract } from '../generated/StakedTokenMTA/StakedToken'
 import { StakedToken as Entity } from '../generated/schema'
 
-import { Season } from './Season'
 import { StakingRewards } from './StakingRewards'
+import { QuestManager } from './QuestManager'
 
 export namespace StakedToken {
   export function getContract(addr: Address): StakedTokenContract {
@@ -25,15 +25,13 @@ export namespace StakedToken {
     // Set immutable fields
     entity.COOLDOWN_SECONDS = contract.COOLDOWN_SECONDS()
     entity.UNSTAKE_WINDOW = contract.UNSTAKE_WINDOW()
-    entity.questMaster = contract.questMaster()
 
     // Create sub-entities
     entity.token = token.getOrCreate(addr).id
     let stakingToken = contract.STAKED_TOKEN()
     entity.stakingToken = token.getOrCreate(stakingToken).id
     entity.stakingRewards = StakingRewards.getOrCreate(addr).id
-    let seasonEntity = Season.getOrCreate(integer.ZERO, contract.seasonEpoch())
-    entity.season = seasonEntity.id
+    entity.questManager = QuestManager.getOrCreate(contract.questManager()).id
 
     entity = update(entity as Entity)
     entity.save()
@@ -58,17 +56,6 @@ export namespace StakedToken {
 
     entity.collateralisationRatio = safetyData.value0
     entity.slashingPercentage = safetyData.value1
-
-    // Maintain seasons
-    let seasonEpoch = contract.seasonEpoch()
-    let seasonEntity = Season.getById(entity.season)
-    if (seasonEntity) {
-      if (seasonEntity.startedAt != seasonEpoch.toI32()) {
-        let prevSeasonNumber = integer.fromNumber(seasonEntity.seasonNumber)
-        Season.expire(prevSeasonNumber, seasonEpoch)
-        entity.season = Season.getOrCreate(prevSeasonNumber.plus(integer.ONE), seasonEpoch).id
-      }
-    }
 
     return entity
   }

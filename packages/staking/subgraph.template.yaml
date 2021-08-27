@@ -29,20 +29,58 @@ dataSources:
         - name: HeadlessStakingRewards
           file: ../../abis/HeadlessStakingRewards.json
       eventHandlers:
-        - event: Staked(indexed address,uint256,address)
-          handler: handleStaked
-        - event: Withdraw(indexed address,indexed address,uint256)
-          handler: handleWithdraw
         - event: Cooldown(indexed address,uint256)
           handler: handleCooldown
         - event: CooldownExited(indexed address)
           handler: handleCooldownExited
-        - event: SlashRateChanged(uint256)
-          handler: handleSlashRateChanged
+        - event: DelegateChanged(indexed address,indexed address,indexed address)
+          handler: handleDelegateChanged
+        - event: DelegateVotesChanged(indexed address,uint256,uint256)
+          handler: handleDelegateVotesChanged
         - event: Recollateralised()
           handler: handleRecollateralised
+        - event: RewardAdded(uint256)
+          handler: handleRewardAdded
+        - event: RewardPaid(indexed address,indexed address,uint256)
+          handler: handleRewardPaid
+        - event: SlashRateChanged(uint256)
+          handler: handleSlashRateChanged
+        - event: Staked(indexed address,uint256,address)
+          handler: handleStaked
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
+        - event: Withdraw(indexed address,indexed address,uint256)
+          handler: handleWithdraw
+#        - event: GovernanceHookChanged(indexed address)
+#          handler: handleGovernanceHookChanged
+#        - event: WrapperBlacklisted(address)
+#          handler: handleWrapperBlacklisted
+#        - event: WrapperWhitelisted(address)
+#          handler: handleWrapperWhitelisted
+  {{/stakedTokens}}
+  {{#QuestManager}}
+  - kind: ethereum/contract
+    name: '{{name}}'
+    network: '{{network}}'
+    source:
+      abi: QuestManager
+      address: '{{address}}'
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/QuestManager.ts
+      entities:
+        - StakedToken
+      abis:
+        - name: ERC20
+          file: ../../node_modules/@mstable/protocol/abis/ERC20.json
+        - name: StakedToken
+          file: ../../abis/StakedToken.json
+        - name: QuestManager
+          file: ../../abis/QuestManager.json
+      eventHandlers:
         - event: QuestAdded(address,uint256,uint8,uint16,uint8,uint32)
           handler: handleQuestAdded
         - event: QuestComplete(indexed address,indexed uint256)
@@ -51,5 +89,9 @@ dataSources:
           handler: handleQuestExpired
         - event: QuestSeasonEnded()
           handler: handleQuestSeasonEnded
-  {{/stakedTokens}}
+        - event: QuestMaster(address,address)
+          handler: handleQuestMaster
+        - event: QuestSigner(address,address)
+          handler: handleQuestSigner
+  {{/QuestManager}}
   {{/staking}}

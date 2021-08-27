@@ -1,14 +1,14 @@
-import { address, integer, token } from '@mstable/subgraph-utils'
+import { address, token } from '@mstable/subgraph-utils'
 import { Transfer as ERC20Transfer } from '@mstable/subgraph-utils/generated/Empty/ERC20'
 
 import {
   Cooldown,
   CooldownExited,
-  QuestAdded,
-  QuestComplete,
-  QuestExpired,
-  QuestSeasonEnded,
+  DelegateChanged,
+  DelegateVotesChanged,
   Recollateralised,
+  RewardAdded,
+  RewardPaid,
   SlashRateChanged,
   Staked,
   Transfer,
@@ -17,8 +17,8 @@ import {
 
 import { StakedTokenAccount } from '../StakedTokenAccount'
 import { StakedToken } from '../StakedToken'
-import { Quest } from '../Quest'
-import { CompletedQuest } from '../CompletedQuest'
+import { Account } from '../Account'
+import { StakingRewards } from '../StakingRewards'
 
 export function handleTransfer(event: Transfer): void {
   token.handleTransfer(event as ERC20Transfer)
@@ -26,6 +26,7 @@ export function handleTransfer(event: Transfer): void {
 
 export function handleStaked(event: Staked): void {
   StakedToken.updateByAddress(event.address)
+  Account.update(event.params.user, event.address)
   StakedTokenAccount.update(event.params.user, event.address)
 
   if (event.params.delegatee.notEqual(address.ZERO_ADDRESS)) {
@@ -35,17 +36,31 @@ export function handleStaked(event: Staked): void {
 
 export function handleWithdraw(event: Withdraw): void {
   StakedToken.updateByAddress(event.address)
+  Account.update(event.params.user, event.address)
   StakedTokenAccount.update(event.params.user, event.address)
 }
 
 export function handleCooldown(event: Cooldown): void {
   StakedToken.updateByAddress(event.address)
+  Account.update(event.params.user, event.address)
   StakedTokenAccount.update(event.params.user, event.address)
 }
 
 export function handleCooldownExited(event: CooldownExited): void {
   StakedToken.updateByAddress(event.address)
+  Account.update(event.params.user, event.address)
   StakedTokenAccount.update(event.params.user, event.address)
+}
+export function handleDelegateChanged(event: DelegateChanged): void {
+  StakedToken.updateByAddress(event.address)
+
+  // Could involve duplication, can be optimised:
+  Account.update(event.params.fromDelegate, event.address)
+  Account.update(event.params.toDelegate, event.address)
+  Account.update(event.params.delegator, event.address)
+  StakedTokenAccount.update(event.params.fromDelegate, event.address)
+  StakedTokenAccount.update(event.params.toDelegate, event.address)
+  StakedTokenAccount.update(event.params.delegator, event.address)
 }
 
 export function handleSlashRateChanged(event: SlashRateChanged): void {
@@ -56,19 +71,15 @@ export function handleRecollateralised(event: Recollateralised): void {
   StakedToken.updateByAddress(event.address)
 }
 
-export function handleQuestAdded(event: QuestAdded): void {
-  Quest.getOrCreate(event.params.id, event.address)
+export function handleDelegateVotesChanged(event: DelegateVotesChanged): void {
+  Account.update(event.params.delegate, event.address)
+  StakedTokenAccount.update(event.params.delegate, event.address)
 }
 
-export function handleQuestExpired(event: QuestExpired): void {
-  Quest.updateById(integer.fromNumber(event.params.id), event.address)
+export function handleRewardAdded(event: RewardAdded): void {
+  StakingRewards.update(event.address)
 }
 
-export function handleQuestComplete(event: QuestComplete): void {
-  let accountEntity = StakedTokenAccount.update(event.params.user, event.address)
-  CompletedQuest.complete(accountEntity, event.params.id, event.block.timestamp)
-}
-
-export function handleQuestSeasonEnded(event: QuestSeasonEnded): void {
-  StakedToken.updateByAddress(event.address)
+export function handleRewardPaid(event: RewardPaid): void {
+  StakingRewards.update(event.address)
 }
