@@ -13,6 +13,11 @@
       },
       {
         "internalType": "address",
+        "name": "_questManager",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
         "name": "_stakedToken",
         "type": "address"
       },
@@ -148,106 +153,6 @@
       }
     ],
     "name": "GovernanceHookChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "questMaster",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "enum QuestType",
-        "name": "model",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint16",
-        "name": "multiplier",
-        "type": "uint16"
-      },
-      {
-        "indexed": false,
-        "internalType": "enum QuestStatus",
-        "name": "status",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint32",
-        "name": "expiry",
-        "type": "uint32"
-      }
-    ],
-    "name": "QuestAdded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      }
-    ],
-    "name": "QuestComplete",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint16",
-        "name": "id",
-        "type": "uint16"
-      }
-    ],
-    "name": "QuestExpired",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "oldQuestMaster",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newQuestMaster",
-        "type": "address"
-      }
-    ],
-    "name": "QuestMaster",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [],
-    "name": "QuestSeasonEnded",
     "type": "event"
   },
   {
@@ -476,22 +381,17 @@
   {
     "inputs": [
       {
-        "internalType": "enum QuestType",
-        "name": "_model",
+        "internalType": "address",
+        "name": "_account",
+        "type": "address"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_newMultiplier",
         "type": "uint8"
-      },
-      {
-        "internalType": "uint16",
-        "name": "_multiplier",
-        "type": "uint16"
-      },
-      {
-        "internalType": "uint32",
-        "name": "_expiry",
-        "type": "uint32"
       }
     ],
-    "name": "addQuest",
+    "name": "applyQuestMultiplier",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -509,9 +409,9 @@
       {
         "components": [
           {
-            "internalType": "uint128",
+            "internalType": "uint88",
             "name": "raw",
-            "type": "uint128"
+            "type": "uint88"
           },
           {
             "internalType": "uint32",
@@ -519,24 +419,24 @@
             "type": "uint32"
           },
           {
+            "internalType": "uint8",
+            "name": "timeMultiplier",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "questMultiplier",
+            "type": "uint8"
+          },
+          {
             "internalType": "uint32",
-            "name": "lastAction",
+            "name": "cooldownTimestamp",
             "type": "uint32"
           },
           {
-            "internalType": "uint16",
-            "name": "permMultiplier",
-            "type": "uint16"
-          },
-          {
-            "internalType": "uint16",
-            "name": "seasonMultiplier",
-            "type": "uint16"
-          },
-          {
-            "internalType": "uint16",
-            "name": "timeMultiplier",
-            "type": "uint16"
+            "internalType": "uint88",
+            "name": "cooldownUnits",
+            "type": "uint88"
           }
         ],
         "internalType": "struct Balance",
@@ -670,29 +570,6 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_account",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "_ids",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "bytes[]",
-        "name": "_signatures",
-        "type": "bytes[]"
-      }
-    ],
-    "name": "completeQuests",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
         "name": "_value",
         "type": "uint256"
@@ -796,19 +673,6 @@
   {
     "inputs": [
       {
-        "internalType": "uint16",
-        "name": "_id",
-        "type": "uint16"
-      }
-    ],
-    "name": "expireQuest",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
         "name": "blockNumber",
         "type": "uint256"
@@ -844,47 +708,6 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_id",
-        "type": "uint256"
-      }
-    ],
-    "name": "getQuest",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "enum QuestType",
-            "name": "model",
-            "type": "uint8"
-          },
-          {
-            "internalType": "uint16",
-            "name": "multiplier",
-            "type": "uint16"
-          },
-          {
-            "internalType": "enum QuestStatus",
-            "name": "status",
-            "type": "uint8"
-          },
-          {
-            "internalType": "uint32",
-            "name": "expiry",
-            "type": "uint32"
-          }
-        ],
-        "internalType": "struct Quest",
-        "name": "",
-        "type": "tuple"
       }
     ],
     "stateMutability": "view",
@@ -953,30 +776,6 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_account",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_id",
-        "type": "uint256"
-      }
-    ],
-    "name": "hasCompleted",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
         "name": "_value",
         "type": "uint256"
@@ -1015,11 +814,6 @@
       {
         "internalType": "address",
         "name": "_rewardsDistributorArg",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_questMaster",
         "type": "address"
       }
     ],
@@ -1114,10 +908,10 @@
   },
   {
     "inputs": [],
-    "name": "questMaster",
+    "name": "questManager",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "contract QuestManager",
         "name": "",
         "type": "address"
       }
@@ -1220,19 +1014,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "seasonEpoch",
-    "outputs": [
-      {
-        "internalType": "uint32",
-        "name": "",
-        "type": "uint32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -1241,19 +1022,6 @@
       }
     ],
     "name": "setGovernanceHook",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_newQuestMaster",
-        "type": "address"
-      }
-    ],
-    "name": "setQuestMaster",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1323,43 +1091,12 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "stakersCooldowns",
-    "outputs": [
-      {
-        "internalType": "uint128",
-        "name": "timestamp",
-        "type": "uint128"
-      },
-      {
-        "internalType": "uint128",
-        "name": "units",
-        "type": "uint128"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
         "name": "_units",
         "type": "uint256"
       }
     ],
     "name": "startCooldown",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "startNewQuestSeason",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

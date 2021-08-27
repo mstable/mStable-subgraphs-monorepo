@@ -35,10 +35,10 @@ export namespace StakedTokenBalance {
 
     entity.raw = balanceData.raw
     entity.weightedTimestamp = balanceData.weightedTimestamp.toI32()
-    entity.lastAction = balanceData.lastAction.toI32()
-    entity.permMultiplier = balanceData.permMultiplier
-    entity.seasonMultiplier = balanceData.seasonMultiplier
+    entity.cooldownUnits = balanceData.cooldownUnits.toI32()
+    entity.cooldownTimestamp = balanceData.cooldownTimestamp.toI32()
     entity.timeMultiplier = balanceData.timeMultiplier
+    entity.questMultiplier = balanceData.questMultiplier
     entity.votes = stakedToken.getVotes(account)
 
     return entity

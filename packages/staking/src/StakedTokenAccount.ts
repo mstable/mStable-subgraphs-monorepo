@@ -20,7 +20,7 @@ export namespace StakedTokenAccount {
 
     entity = new Entity(id)
 
-    entity.address = account
+    entity.account = account.toHexString()
     entity.stakedToken = stakedTokenAddress.toHexString()
     entity.rewardPerTokenPaid = integer.ZERO
     entity.rewards = integer.ZERO
@@ -45,11 +45,6 @@ export namespace StakedTokenAccount {
         entity.delegatee = delegatee.toHexString()
       }
     }
-
-    let stakerCooldown = stakedTokenContract.stakersCooldowns(account)
-
-    entity.cooldownTimestamp = stakerCooldown.value0
-    entity.cooldownPercentage = stakerCooldown.value1
 
     return entity
   }

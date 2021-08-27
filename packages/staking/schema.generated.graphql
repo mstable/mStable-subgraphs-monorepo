@@ -132,17 +132,17 @@ type StakedTokenBalance @entity {
     # If they deposit or withdraw, the weightedTimestamp is dragged towards block.timestamp proportionately
     weightedTimestamp: Int!
 
-    # Last timestamp at which the user made a write action to this contract
-    lastAction: Int!
+    # multiplier duplicated from QuestManager
+    questMultiplier: Int!
 
-    # Permanent multiplier applied to an account, awarded for PERMANENT QuestTypes
-    permMultiplier: Int!
-
-    # Multiplier that decays after each "season" (~9 months) by 75%, to avoid multipliers getting out of control
-    seasonMultiplier: Int!
-
-    # Multiplier awarded for staking for a long time
+    # multiplier awarded for staking for a long time
     timeMultiplier: Int!
+
+    # Time at which the relative cooldown began
+    cooldownTimestamp: Int!
+
+    # Units up for cooldown
+    cooldownUnits: Int!
 
     # Current votes balance
     votes: BigInt!
@@ -197,7 +197,7 @@ type Season @entity {
 type CompletedQuest @entity {
     id: ID!
 
-    account: StakedTokenAccount!
+    account: Account!
 
     quest: Quest!
 
@@ -214,14 +214,11 @@ type StakedToken @entity {
     # Core token that is staked and tracked (e.g. MTA)
     stakingToken: Token!
 
-    # Current Season
-    season: Season!
-
     # Staking rewards data
     stakingRewards: StakingRewards!
 
-    # Address that signs user quests have been completed
-    questMaster: Bytes!
+    # Contract that manages user quests
+    questManager: QuestManager!
 
     # Seconds a user must wait after she initiates her cooldown before withdrawal is possible
     COOLDOWN_SECONDS: BigInt!
@@ -269,11 +266,32 @@ type StakingRewards @entity {
     DURATION: Int
 }
 
+type Account @entity {
+    # Address
+    id: ID!
+
+    # Total votes across all StakedTokens
+    totalVotes: BigInt!
+
+    # Last timestamp at which the user made a write action to this contract
+    lastAction: Int!
+
+    # Permanent multiplier applied to an account, awarded for PERMANENT QuestTypes
+    permMultiplier: Int!
+
+    # multiplier that decays after each "season" (~9 months) by 75%, to avoid multipliers getting out of control
+    seasonMultiplier: Int!
+
+    completedQuests: [CompletedQuest!]! @derivedFrom(field: "account")
+
+    stakedTokenAccounts: [StakedTokenAccount!]! @derivedFrom(field: "account")
+}
+
 type StakedTokenAccount @entity {
     # ${address}.${stakedTokenAddress}
     id: ID!
 
-    address: Bytes!
+    account: Account!
 
     stakedToken: StakedToken!
 
@@ -286,12 +304,17 @@ type StakedTokenAccount @entity {
     rewards: BigInt
 
     delegators: [StakedTokenAccount!]! @derivedFrom(field: "delegatee")
+}
 
-    # Time at which the relative cooldown began
-    cooldownTimestamp: BigInt
+type QuestManager @entity {
+    id: ID!
 
-    # Percentage of a users funds up for cooldown where 100% = 1e18
-    cooldownPercentage: BigInt
+    # Current Season
+    season: Season!
 
-    completedQuests: [CompletedQuest!]! @derivedFrom(field: "account")
+    # A whitelisted questMaster who can administer quests including signing user quests are completed.
+    questMaster: Bytes!
+
+    # Account that can sign a user's quest as being completed.
+    questSigner: Bytes!
 }
