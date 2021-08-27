@@ -28,6 +28,8 @@ dataSources:
           file: ../../abis/StakedToken.json
         - name: HeadlessStakingRewards
           file: ../../abis/HeadlessStakingRewards.json
+        - name: QuestManager
+          file: ../../abis/QuestManager.json
       eventHandlers:
         - event: Cooldown(indexed address,uint256)
           handler: handleCooldown

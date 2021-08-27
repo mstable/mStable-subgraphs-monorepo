@@ -9,7 +9,6 @@ import {
   QuestSigner,
 } from '../../generated/QuestManager'
 
-import { StakedTokenAccount } from '../StakedTokenAccount'
 import { Quest } from '../Quest'
 import { CompletedQuest } from '../CompletedQuest'
 import { Account } from '../Account'
@@ -24,8 +23,7 @@ export function handleQuestExpired(event: QuestExpired): void {
 }
 
 export function handleQuestComplete(event: QuestComplete): void {
-  Account.update(event.params.user, event.address)
-  let accountEntity = StakedTokenAccount.update(event.params.user, event.address)
+  let accountEntity = Account.updateQuestBalance(event.params.user, event.address)
   CompletedQuest.complete(accountEntity, event.params.id, event.block.timestamp)
 }
 
