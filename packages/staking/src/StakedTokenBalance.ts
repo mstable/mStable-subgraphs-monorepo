@@ -35,7 +35,7 @@ export namespace StakedTokenBalance {
 
     entity.raw = balanceData.raw
     entity.weightedTimestamp = balanceData.weightedTimestamp.toI32()
-    entity.cooldownUnits = balanceData.cooldownUnits.toI32()
+    entity.cooldownUnits = balanceData.cooldownUnits
     entity.cooldownTimestamp = balanceData.cooldownTimestamp.toI32()
     entity.timeMultiplier = balanceData.timeMultiplier
     entity.questMultiplier = balanceData.questMultiplier

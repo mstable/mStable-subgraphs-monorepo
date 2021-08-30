@@ -27,7 +27,7 @@ type StakedTokenBalance @entity {
     cooldownTimestamp: Int!
 
     # Units up for cooldown
-    cooldownUnits: Int!
+    cooldownUnits: BigInt!
 
     # Current votes balance
     votes: BigInt!
