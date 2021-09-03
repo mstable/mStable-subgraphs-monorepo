@@ -1,4 +1,4 @@
-import { Address, log } from '@graphprotocol/graph-ts'
+import { Address } from '@graphprotocol/graph-ts'
 
 import { getOrCreateStakingReward } from '../../models/StakingReward'
 import { StakingRewardsContractType, StakingRewardType } from '../../enums'
@@ -14,7 +14,7 @@ import {
   Withdrawn,
 } from '../../../generated/templates/StakingRewards/StakingRewards'
 import { StakingRewardsWithPlatformToken } from '../../../generated/templates/StakingRewardsWithPlatformToken/StakingRewardsWithPlatformToken'
-import { decreaseStakingBalance, increaseStakingBalance } from '../../models/StakingBalance'
+import { updateStakingBalance } from '../../models/StakingBalance'
 
 function updateStakingRewards(contractAddress: Address, type: StakingRewardsContractType): void {
   let contract = StakingRewards.bind(contractAddress)
@@ -83,7 +83,7 @@ function updateUserRewards(
 export function handleStakedForType(event: Staked, type: StakingRewardsContractType): void {
   updateStakingRewards(event.address, type)
   updateUserRewards(event.address, type, event.params.user)
-  increaseStakingBalance(event.address, event.params.user, event.params.amount)
+  updateStakingBalance(event.address, event.params.user)
 }
 
 export function handleRewardAddedForType(
@@ -96,7 +96,7 @@ export function handleRewardAddedForType(
 export function handleWithdrawnForType(event: Withdrawn, type: StakingRewardsContractType): void {
   updateStakingRewards(event.address, type)
   updateUserRewards(event.address, type, event.params.user)
-  decreaseStakingBalance(event.address, event.params.user, event.params.amount)
+  updateStakingBalance(event.address, event.params.user)
 }
 
 export function handleRewardPaidForType(event: RewardPaid, type: StakingRewardsContractType): void {
