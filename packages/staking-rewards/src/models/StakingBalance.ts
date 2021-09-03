@@ -1,10 +1,8 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { StakingBalance } from '../../generated/schema'
+import { StakingRewards } from '../../generated/templates/StakingRewards/StakingRewards'
 
-export function getOrCreateStakingBalance(
-  contractAddress: Address,
-  user: Address,
-): StakingBalance {
+export function getOrCreateStakingBalance(contractAddress: Address, user: Address): StakingBalance {
   let id = contractAddress.toHexString() + user.toHexString()
 
   let stakingBalance = StakingBalance.load(id)
@@ -26,22 +24,9 @@ export function getOrCreateStakingBalance(
   }
 }
 
-export function increaseStakingBalance(
-  contractAddress: Address,
-  user: Address,
-  amount: BigInt,
-): void {
+export function updateStakingBalance(contractAddress: Address, user: Address): void {
+  let contract = StakingRewards.bind(contractAddress)
   let stakingBalance = getOrCreateStakingBalance(contractAddress, user)
-  stakingBalance.amount = stakingBalance.amount.plus(amount)
-  stakingBalance.save()
-}
-
-export function decreaseStakingBalance(
-  contractAddress: Address,
-  user: Address,
-  amount: BigInt,
-): void {
-  let stakingBalance = getOrCreateStakingBalance(contractAddress, user)
-  stakingBalance.amount = stakingBalance.amount.minus(amount)
+  stakingBalance.amount = contract.balanceOf(user)
   stakingBalance.save()
 }
