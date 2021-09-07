@@ -63,13 +63,32 @@
         "type": "address"
       },
       {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
+        "indexed": false,
+        "internalType": "uint256[]",
+        "name": "ids",
+        "type": "uint256[]"
       }
     ],
-    "name": "QuestComplete",
+    "name": "QuestCompleteQuests",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "questId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address[]",
+        "name": "accounts",
+        "type": "address[]"
+      }
+    ],
+    "name": "QuestCompleteUsers",
     "type": "event"
   },
   {
@@ -236,6 +255,29 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "_questId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address[]",
+        "name": "_accounts",
+        "type": "address[]"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_signature",
+        "type": "bytes"
+      }
+    ],
+    "name": "completeQuestUsers",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "_account",
         "type": "address"
@@ -246,12 +288,12 @@
         "type": "uint256[]"
       },
       {
-        "internalType": "bytes[]",
-        "name": "_signatures",
-        "type": "bytes[]"
+        "internalType": "bytes",
+        "name": "_signature",
+        "type": "bytes"
       }
     ],
-    "name": "completeQuests",
+    "name": "completeUserQuests",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

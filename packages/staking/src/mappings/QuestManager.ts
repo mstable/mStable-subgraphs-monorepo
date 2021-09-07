@@ -1,12 +1,14 @@
+import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { integer } from '@mstable/subgraph-utils'
 
 import {
   QuestAdded,
-  QuestComplete,
   QuestExpired,
   QuestSeasonEnded,
   QuestMaster,
   QuestSigner,
+  QuestCompleteQuests,
+  QuestCompleteUsers,
 } from '../../generated/QuestManager'
 
 import { Quest } from '../Quest'
@@ -22,9 +24,24 @@ export function handleQuestExpired(event: QuestExpired): void {
   Quest.updateById(integer.fromNumber(event.params.id), event.address)
 }
 
-export function handleQuestComplete(event: QuestComplete): void {
+export function handleQuestCompleteQuests(event: QuestCompleteQuests): void {
+  let ids = event.params.ids
   let accountEntity = Account.updateQuestBalance(event.params.user, event.address)
-  CompletedQuest.complete(accountEntity, event.params.id, event.block.timestamp)
+
+  for (let i = 0; i < ids.length; i++) {
+    let questId = ids[i] as BigInt
+    CompletedQuest.complete(accountEntity, questId, event.block.timestamp)
+  }
+}
+
+export function handleQuestCompleteUsers(event: QuestCompleteUsers): void {
+  let accounts = event.params.accounts
+
+  for (let i = 0; i < accounts.length; i++) {
+    let accountId = accounts[i] as Address
+    let accountEntity = Account.updateQuestBalance(accountId, event.address)
+    CompletedQuest.complete(accountEntity, event.params.questId, event.block.timestamp)
+  }
 }
 
 export function handleQuestSeasonEnded(event: QuestSeasonEnded): void {
