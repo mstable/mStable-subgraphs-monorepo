@@ -85,8 +85,10 @@ dataSources:
       eventHandlers:
         - event: QuestAdded(address,uint256,uint8,uint16,uint8,uint32)
           handler: handleQuestAdded
-        - event: QuestComplete(indexed address,indexed uint256)
-          handler: handleQuestComplete
+        - event: QuestCompleteQuests(indexed address,uint256[])
+          handler: handleQuestCompleteQuests
+        - event: QuestCompleteUsers(indexed uint256,address[])
+          handler: handleQuestCompleteUsers
         - event: QuestExpired(indexed uint16)
           handler: handleQuestExpired
         - event: QuestSeasonEnded()
@@ -95,5 +97,7 @@ dataSources:
           handler: handleQuestMaster
         - event: QuestSigner(address,address)
           handler: handleQuestSigner
+#        - event: StakedTokenAdded(address)
+#          handler: handleStakedTokenAdded
   {{/QuestManager}}
   {{/staking}}
