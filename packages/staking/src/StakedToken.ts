@@ -1,7 +1,7 @@
 import { Address } from '@graphprotocol/graph-ts'
 import { token } from '@mstable/subgraph-utils'
 
-import { StakedTokenMTA as StakedTokenContract } from '../generated/StakedTokenMTA/StakedTokenMTA'
+import { StakedTokenMTA as StakedTokenMTAContract } from '../generated/StakedTokenMTA/StakedTokenMTA'
 import { StakedTokenBPT as StakedTokenBPTContract } from '../generated/StakedTokenBPT/StakedTokenBPT'
 import { StakedToken as Entity } from '../generated/schema'
 
@@ -9,8 +9,8 @@ import { StakingRewards } from './StakingRewards'
 import { QuestManager } from './QuestManager'
 
 export namespace StakedToken {
-  export function getContract(addr: Address): StakedTokenContract {
-    return StakedTokenContract.bind(addr)
+  export function getContract(addr: Address): StakedTokenMTAContract {
+    return StakedTokenMTAContract.bind(addr)
   }
 
   export function getOrCreate(addr: Address): Entity {
@@ -21,7 +21,19 @@ export namespace StakedToken {
     }
 
     entity = new Entity(id)
-    let contract = StakedTokenContract.bind(addr)
+    let contract = StakedTokenMTAContract.bind(addr)
+
+    // Identify this contract
+    let bptContract = StakedTokenBPTContract.bind(addr)
+    let priceCoefficient = bptContract.try_priceCoefficient() // Only exists on StakedTokenBPT
+    if (priceCoefficient.reverted) {
+      entity.isStakedTokenBPT = false
+      entity.isStakedTokenMTA = true
+    } else {
+      entity.isStakedTokenBPT = true
+      entity.isStakedTokenMTA = false
+      entity.priceCoefficient = priceCoefficient.value
+    }
 
     // Set immutable fields
     entity.COOLDOWN_SECONDS = contract.COOLDOWN_SECONDS()
@@ -49,7 +61,7 @@ export namespace StakedToken {
 
   export function update(entity: Entity): Entity {
     let address = Address.fromString(entity.id)
-    let contract = StakedTokenContract.bind(address)
+    let contract = StakedTokenMTAContract.bind(address)
 
     StakingRewards.update(address)
 

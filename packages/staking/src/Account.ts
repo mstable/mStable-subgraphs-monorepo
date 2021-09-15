@@ -3,7 +3,6 @@ import { integer } from '@mstable/subgraph-utils'
 
 import { Account as Entity } from '../generated/schema'
 import { StakedToken } from './StakedToken'
-import { StakedTokenBalance } from './StakedTokenBalance'
 import { QuestManager } from '../generated/QuestManager'
 
 export namespace Account {
@@ -20,7 +19,9 @@ export namespace Account {
     }
 
     entity = new Entity(id)
-    entity.totalVotes = integer.ZERO
+    entity.totalVotesAll = integer.ZERO
+    entity.totalVotesMTA = integer.ZERO
+    entity.totalVotesBPT = integer.ZERO
     entity.lastAction = 0
     entity.permMultiplier = 0
     entity.seasonMultiplier = 0
@@ -45,20 +46,16 @@ export namespace Account {
     let entity = getOrCreate(account)
     let stakedToken = StakedToken.getContract(stakedTokenAddress)
     let stakedTokenEntity = StakedToken.getOrCreate(stakedTokenAddress)
-    let stakedTokenBalance = StakedTokenBalance.getOrCreate(account, stakedTokenAddress)
 
-    let votesPrev = stakedTokenBalance.votes
     let votes = stakedToken.getVotes(account)
 
-    // Assumes stakedTokenBalance has not been updated yet
-    entity.totalVotes = entity.totalVotes.minus(votesPrev).plus(votes)
+    if (stakedTokenEntity.isStakedTokenMTA) {
+      entity.totalVotesMTA = votes
+    } else {
+      entity.totalVotesBPT = votes
+    }
 
-    // let questManagerAddress = Address.fromString(stakedTokenEntity.questManager)
-    // let questManager = QuestManager.bind(questManagerAddress)
-    // let questBalance = questManager.balanceData(account)
-    // entity.lastAction = questBalance.lastAction.toI32()
-    // entity.permMultiplier = questBalance.permMultiplier
-    // entity.seasonMultiplier = questBalance.seasonMultiplier
+    entity.totalVotesAll = entity.totalVotesBPT.plus(entity.totalVotesMTA)
 
     entity.save()
     return entity
