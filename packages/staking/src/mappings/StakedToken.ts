@@ -13,7 +13,12 @@ import {
   Staked,
   Transfer,
   Withdraw,
-} from '../../generated/StakedTokenMTA/StakedToken'
+} from '../../generated/StakedTokenMTA/StakedTokenMTA'
+import {
+  BalClaimed,
+  FeesConverted,
+  PriceCoefficientUpdated,
+} from '../../generated/StakedTokenBPT/StakedTokenBPT'
 
 import { StakedTokenAccount } from '../StakedTokenAccount'
 import { StakedToken } from '../StakedToken'
@@ -82,4 +87,17 @@ export function handleRewardAdded(event: RewardAdded): void {
 
 export function handleRewardPaid(event: RewardPaid): void {
   StakingRewards.update(event.address)
+  StakedTokenAccount.update(event.params.user, event.address)
+}
+
+export function handlePriceCoefficientUpdated(event: PriceCoefficientUpdated): void {
+  StakedToken.updateByAddress(event.address)
+}
+
+export function handleFeesConverted(event: FeesConverted): void {
+  StakedToken.updateByAddress(event.address)
+}
+
+export function handleBalClaimed(event: BalClaimed): void {
+  StakedToken.updateByAddress(event.address)
 }

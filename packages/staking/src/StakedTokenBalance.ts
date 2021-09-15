@@ -17,7 +17,7 @@ export namespace StakedTokenBalance {
     }
 
     entity = new Entity(id)
-    entity.account = account.toHexString()
+    entity.account = account.toHexString() + '.' + stakedTokenAddress.toHexString()
     entity.stakedToken = stakedTokenAddress.toHexString()
     entity = updateEntity(entity as Entity, account, stakedTokenAddress)
     entity.save()

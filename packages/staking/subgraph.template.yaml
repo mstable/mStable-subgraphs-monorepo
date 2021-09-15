@@ -6,12 +6,13 @@ schema:
 
 dataSources:
   {{#staking}}
-  {{#stakedTokens}}
+
+  {{#StakedTokenBPT}}
   - kind: ethereum/contract
-    name: '{{name}}'
+    name: StakedTokenBPT
     network: '{{network}}'
     source:
-      abi: StakedToken
+      abi: StakedTokenBPT
       address: '{{address}}'
       startBlock: {{startBlock}}
     mapping:
@@ -24,8 +25,10 @@ dataSources:
       abis:
         - name: ERC20
           file: ../../node_modules/@mstable/protocol/abis/ERC20.json
-        - name: StakedToken
-          file: ../../abis/StakedToken.json
+        - name: StakedTokenMTA
+          file: ../../abis/StakedTokenMTA.json
+        - name: StakedTokenBPT
+          file: ../../abis/StakedTokenBPT.json
         - name: HeadlessStakingRewards
           file: ../../abis/HeadlessStakingRewards.json
         - name: QuestManager
@@ -53,16 +56,68 @@ dataSources:
           handler: handleTransfer
         - event: Withdraw(indexed address,indexed address,uint256)
           handler: handleWithdraw
-#        - event: GovernanceHookChanged(indexed address)
-#          handler: handleGovernanceHookChanged
-#        - event: WrapperBlacklisted(address)
-#          handler: handleWrapperBlacklisted
-#        - event: WrapperWhitelisted(address)
-#          handler: handleWrapperWhitelisted
-  {{/stakedTokens}}
+        - event: PriceCoefficientUpdated(uint256)
+          handler: handlePriceCoefficientUpdated
+        - event: FeesConverted(uint256,uint256)
+          handler: handleFeesConverted
+        - event: BalClaimed()
+          handler: handleBalClaimed
+  {{/StakedTokenBPT}}
+
+  {{#StakedTokenMTA}}
+  - kind: ethereum/contract
+    name: StakedTokenMTA
+    network: '{{network}}'
+    source:
+      abi: StakedTokenMTA
+      address: '{{address}}'
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/StakedToken.ts
+      entities:
+        - StakedToken
+      abis:
+        - name: ERC20
+          file: ../../node_modules/@mstable/protocol/abis/ERC20.json
+        - name: StakedTokenMTA
+          file: ../../abis/StakedTokenMTA.json
+        - name: StakedTokenBPT
+          file: ../../abis/StakedTokenBPT.json
+        - name: HeadlessStakingRewards
+          file: ../../abis/HeadlessStakingRewards.json
+        - name: QuestManager
+          file: ../../abis/QuestManager.json
+      eventHandlers:
+        - event: Cooldown(indexed address,uint256)
+          handler: handleCooldown
+        - event: CooldownExited(indexed address)
+          handler: handleCooldownExited
+        - event: DelegateChanged(indexed address,indexed address,indexed address)
+          handler: handleDelegateChanged
+        - event: DelegateVotesChanged(indexed address,uint256,uint256)
+          handler: handleDelegateVotesChanged
+        - event: Recollateralised()
+          handler: handleRecollateralised
+        - event: RewardAdded(uint256)
+          handler: handleRewardAdded
+        - event: RewardPaid(indexed address,indexed address,uint256)
+          handler: handleRewardPaid
+        - event: SlashRateChanged(uint256)
+          handler: handleSlashRateChanged
+        - event: Staked(indexed address,uint256,address)
+          handler: handleStaked
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: Withdraw(indexed address,indexed address,uint256)
+          handler: handleWithdraw
+  {{/StakedTokenMTA}}
+
   {{#QuestManager}}
   - kind: ethereum/contract
-    name: '{{name}}'
+    name: QuestManager
     network: '{{network}}'
     source:
       abi: QuestManager
@@ -78,8 +133,10 @@ dataSources:
       abis:
         - name: ERC20
           file: ../../node_modules/@mstable/protocol/abis/ERC20.json
-        - name: StakedToken
-          file: ../../abis/StakedToken.json
+        - name: StakedTokenMTA
+          file: ../../abis/StakedTokenMTA.json
+        - name: StakedTokenBPT
+          file: ../../abis/StakedTokenBPT.json
         - name: QuestManager
           file: ../../abis/QuestManager.json
       eventHandlers:

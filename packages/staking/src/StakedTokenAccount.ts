@@ -40,6 +40,10 @@ export namespace StakedTokenAccount {
     let delegatee = stakedTokenContract.delegates(account)
     StakedTokenBalance.update(account, stakedTokenAddress)
 
+    let userData = stakedTokenContract.userData(account)
+    entity.rewardPerTokenPaid = userData.value0
+    entity.rewards = userData.value1
+
     if (delegatee) {
       if (delegatee.notEqual(account)) {
         entity.delegatee = delegatee.toHexString()
