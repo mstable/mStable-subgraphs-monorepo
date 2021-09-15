@@ -1,7 +1,8 @@
 import { Address } from '@graphprotocol/graph-ts'
 import { token } from '@mstable/subgraph-utils'
 
-import { StakedToken as StakedTokenContract } from '../generated/StakedTokenMTA/StakedToken'
+import { StakedTokenMTA as StakedTokenContract } from '../generated/StakedTokenMTA/StakedTokenMTA'
+import { StakedTokenBPT as StakedTokenBPTContract } from '../generated/StakedTokenBPT/StakedTokenBPT'
 import { StakedToken as Entity } from '../generated/schema'
 
 import { StakingRewards } from './StakingRewards'
@@ -53,6 +54,12 @@ export namespace StakedToken {
     StakingRewards.update(address)
 
     let safetyData = contract.safetyData()
+
+    let stakedTokenBPTContract = StakedTokenBPTContract.bind(address)
+    let priceCoefficient = stakedTokenBPTContract.try_priceCoefficient()
+    if (!priceCoefficient.reverted) {
+      entity.priceCoefficient = priceCoefficient.value
+    }
 
     entity.collateralisationRatio = safetyData.value0
     entity.slashingPercentage = safetyData.value1

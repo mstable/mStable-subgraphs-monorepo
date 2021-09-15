@@ -44,5 +44,19 @@
       "address": "0x06F1711b04011f2f0acD0370B24D9A7e23516255",
       "startBlock": 23517826
     }
-  ]
+  ],
+  "staking": {
+    "QuestManager": {
+      "address": "0x542C39B9A4891eff96e68E95380ab6B112618eB3",
+      "startBlock": 27000000
+    },
+    "StakedTokenMTA": {
+      "address": "0x9157233faFC65B5193c016B04fA847DB49677c3b",
+      "startBlock": 27000000
+    },
+    "StakedTokenBPT": {
+      "address": "0x923c0f00f59b8e465dffa839470c2a557b423ce7",
+      "startBlock": 27000000
+    }
+  }
 }

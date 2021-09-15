@@ -79,17 +79,13 @@
       "address": "0x3e8aa84E846EEb89392E99d44cD51acA668ae7BA",
       "startBlock": 10912503
     },
-    "stakedTokens": [
-      {
-        "name": "StakedTokenMTA",
-        "address": "0xa5583F67311231A2127D2C6f9a15aB112222C080",
-        "startBlock": 10912510
-      },
-      {
-        "name": "StakedTokenBPT",
-        "address": "0x2813Baaf158F53F8251a369c296c7934cb1fbAF0",
-        "startBlock": 10912934
-      }
-    ]
+    "StakedTokenMTA": {
+      "address": "0xc3DCB920C30D4a4222220250DD2E8bA0c5A40d51",
+      "startBlock": 10912510
+    },
+    "StakedTokenBPT": {
+      "address": "0x96a3Ee762022be1EA48Fc35DB46169a6182ba5c8",
+      "startBlock": 10912934
+    }
   }
 }

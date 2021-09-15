@@ -117,6 +117,9 @@ type StakedToken @entity {
     # Slash % where 100% = 1e18
     slashingPercentage: BigInt!
 
+    # For StakedTokenBPT
+    priceCoefficient: BigInt
+
     accounts: [StakedTokenAccount!]! @derivedFrom(field: "stakedToken")
 }
 
