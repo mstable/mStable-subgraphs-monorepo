@@ -235,6 +235,12 @@ type StakedToken @entity {
     # For StakedTokenBPT
     priceCoefficient: BigInt
 
+    # Flag for whether this is StakedTokenBPT
+    isStakedTokenBPT: Boolean!
+
+    # Flag for whether this is StakedTokenMTA
+    isStakedTokenMTA: Boolean!
+
     accounts: [StakedTokenAccount!]! @derivedFrom(field: "stakedToken")
 }
 
@@ -273,8 +279,14 @@ type Account @entity {
     # Address
     id: ID!
 
-    # Total votes across all StakedTokens
-    totalVotes: BigInt!
+    # Total votes for StakedTokenMTA
+    totalVotesMTA: BigInt!
+
+    # Total votes for StakedTokenBPT
+    totalVotesBPT: BigInt!
+
+    # Addition of totalVotesBPT and totalVotesBPT
+    totalVotesAll: BigInt!
 
     # Last timestamp at which the user made a write action to this contract
     lastAction: Int!
