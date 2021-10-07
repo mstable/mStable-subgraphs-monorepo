@@ -47,6 +47,8 @@ export namespace StakedTokenAccount {
     if (delegatee) {
       if (delegatee.notEqual(account)) {
         entity.delegatee = delegatee.toHexString()
+      } else {
+        entity.delegatee = null
       }
     }
 
