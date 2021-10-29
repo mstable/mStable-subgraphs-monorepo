@@ -64,6 +64,13 @@
       "abi": "BoostedSavingsVault"
     },
     {
+      "name": "mBTC/tBTCv2",
+      "address": "0x97E2a2F97A2E9a4cFB462a49Ab7c8D205aBB9ed9",
+      "startBlock": 13496580,
+      "abi": "BoostedDualVault",
+      "isDual": true
+    },
+    {
       "name": "mUSD/bUSD",
       "address": "0xD124B55f70D374F58455c8AEdf308E52Cf2A6207",
       "startBlock": 12146737,
@@ -105,6 +112,11 @@
       "name": "mBTC/tBTC",
       "address": "0xb61A6F928B3f069A68469DDb670F20eEeB4921e0",
       "startBlock": 12146670
+    },
+    {
+      "name": "mBTC/tBTCv2",
+      "address": "0xc3280306b6218031E61752d060b091278d45c329",
+      "startBlock": 13460378
     },
     {
       "name": "mUSD/bUSD",
