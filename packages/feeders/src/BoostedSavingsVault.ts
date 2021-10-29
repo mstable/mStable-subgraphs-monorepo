@@ -48,11 +48,11 @@ export namespace BoostedSavingsVault {
     }
 
     let platformToken = dualVaultContract.try_platformToken()
-    if (!platformToken.reverted) {
+    if (!platformToken.reverted && platformToken.value.notEqual(address.ZERO_ADDRESS)) {
       entity.totalRaw = dualVaultContract.totalRaw()
       entity.platformRewardPerTokenStored = dualVaultContract.platformRewardPerTokenStored()
       entity.platformRewardRate = dualVaultContract.platformRewardRate()
-      entity.platformRewardsToken = token.getOrCreate(dualVaultContract.platformToken()).id
+      entity.platformRewardsToken = token.getOrCreate(platformToken.value).id
     }
 
     entity = update(entity as BoostedSavingsVaultEntity)
