@@ -6,7 +6,7 @@ import { StakedToken } from './StakedToken'
 import { StakedTokenBalance } from './StakedTokenBalance'
 
 export namespace StakedTokenAccount {
-  function getId(account: Address, stakedTokenAddress: Address): string {
+  export function getId(account: Address, stakedTokenAddress: Address): string {
     return account.toHexString() + '.' + stakedTokenAddress.toHexString()
   }
 
