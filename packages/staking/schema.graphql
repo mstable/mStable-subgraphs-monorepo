@@ -31,6 +31,9 @@ type StakedTokenBalance @entity {
 
     # Current votes balance
     votes: BigInt!
+
+    # User price coefficient
+    userPriceCoefficient: BigInt!
 }
 
 # Quests can either give permanent rewards or only for the season
