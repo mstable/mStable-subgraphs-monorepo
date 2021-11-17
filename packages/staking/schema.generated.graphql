@@ -276,6 +276,8 @@ type StakingRewards @entity {
 
     # Length of each staking period in seconds. 7 days = 604,800; 3 months = 7,862,400
     DURATION: Int
+
+    rewardPaidTransactions: [RewardPaidTransaction!]! @derivedFrom(field: "stakingRewards")
 }
 
 type Account @entity {
@@ -335,4 +337,20 @@ type QuestManager @entity {
 
     # Account that can sign a user's quest as being completed.
     questSigner: Bytes
+}
+
+type RewardPaidTransaction implements Transaction @entity {
+    id: ID!
+
+    hash: Bytes!
+
+    sender: Bytes!
+
+    block: Int!
+
+    timestamp: BigInt!
+
+    amount: BigInt!
+
+    stakingRewards: StakingRewards!
 }

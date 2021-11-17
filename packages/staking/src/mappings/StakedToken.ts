@@ -13,7 +13,7 @@ import {
   Staked,
   Transfer,
   Withdraw,
-} from '../../generated/StakedTokenMTA/StakedTokenMTA'
+} from '../../generated/StakedToken'
 import {
   BalClaimed,
   FeesConverted,
@@ -24,6 +24,7 @@ import { StakedTokenAccount } from '../StakedTokenAccount'
 import { StakedToken } from '../StakedToken'
 import { Account } from '../Account'
 import { StakingRewards } from '../StakingRewards'
+import { Transactions } from '../Transactions'
 
 export function handleTransfer(event: Transfer): void {
   token.handleTransfer(event as ERC20Transfer)
@@ -88,6 +89,7 @@ export function handleRewardAdded(event: RewardAdded): void {
 export function handleRewardPaid(event: RewardPaid): void {
   StakingRewards.update(event.address)
   StakedTokenAccount.update(event.params.user, event.address)
+  Transactions.getOrCreateRewardPaid(event)
 }
 
 export function handlePriceCoefficientUpdated(event: PriceCoefficientUpdated): void {
