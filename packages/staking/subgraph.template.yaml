@@ -1,5 +1,5 @@
 specVersion: 0.0.2
-description: mStable Staking Rewards
+description: mStable Staking
 repository: https://github.com/mstable/mstable-subgraphs-monorepo
 schema:
   file: ./schema.generated.graphql

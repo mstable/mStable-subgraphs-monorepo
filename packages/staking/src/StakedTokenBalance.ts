@@ -39,6 +39,7 @@ export namespace StakedTokenBalance {
     entity.cooldownTimestamp = balanceData.cooldownTimestamp.toI32()
     entity.timeMultiplier = balanceData.timeMultiplier
     entity.questMultiplier = balanceData.questMultiplier
+    entity.userPriceCoefficient = stakedToken.userPriceCoeff(account)
     entity.votes = stakedToken.getVotes(account)
 
     return entity
