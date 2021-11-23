@@ -100,6 +100,13 @@
       "startBlock": 12813175,
       "abi": "BoostedDualVault",
       "isDual": true
+    },
+    {
+      "name": "mUSD/RAI",
+      "address": "0xF93e0ddE0F7C48108abbD880DB7697A86169f13b",
+      "startBlock": 13643890,
+      "abi": "BoostedDualVault",
+      "isDual": true
     }
   ],
   "feederPools": [
@@ -132,6 +139,11 @@
       "name": "mUSD/alUSD",
       "address": "0x4eaa01974B6594C0Ee62fFd7FEE56CF11E6af936",
       "startBlock": 12806795
+    },
+    {
+      "name": "mUSD/RAI",
+      "address": "0x36F944B7312EAc89381BD78326Df9C84691D8A5B",
+      "startBlock": 13643595
     }
   ],
   "boostDirector": {
