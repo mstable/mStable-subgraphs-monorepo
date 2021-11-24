@@ -87,5 +87,9 @@
       "address": "0x96a3Ee762022be1EA48Fc35DB46169a6182ba5c8",
       "startBlock": 10912934
     }
+  },
+  "EmissionsController": {
+    "address": "0x96a3Ee762022be1EA48Fc35DB46169a6182ba5c8",
+    "startBlock": 10912934
   }
 }
