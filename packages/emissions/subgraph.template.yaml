@@ -1,0 +1,48 @@
+specVersion: 0.0.2
+description: mStable Emissions Controller
+repository: https://github.com/mstable/mstable-subgraphs-monorepo
+schema:
+  file: ./schema.generated.graphql
+
+dataSources:
+  - kind: ethereum/contract
+    name: EmissionsController
+    network: '{{network}}'
+    source:
+      abi: EmissionsController
+      address: '{{EmissionsController.address}}'
+      startBlock: {{EmissionsController.startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/EmissionsController.ts
+      entities:
+        - EmissionsController
+        - Token
+      abis:
+        - name: EmissionsController
+          file: ../../abis/EmissionsController.json
+        - name: ERC20Detailed
+          file: ../../abis/ERC20Detailed.json
+      eventHandlers:
+        - event: AddedDial(indexed uint256,indexed address)
+          handler: handleAddedDial
+        - event: UpdatedDial(indexed uint256,bool)
+          handler: handleUpdatedDial
+        - event: AddStakingContract(indexed address)
+          handler: handleAddStakingContract
+        - event: PeriodRewards(uint256[])
+          handler: handlePeriodRewards
+        - event: DonatedRewards(indexed uint256,uint256)
+          handler: handleDonatedRewards
+        - event: DistributedReward(indexed uint256,uint256)
+          handler: handleDistributedReward
+        - event: PreferencesChanged(indexed address,(uint8,uint8)[])
+          handler: handlePreferencesChanged
+        - event: VotesCast(address,address,uint256)
+          handler: handleVotesCast
+        - event: SourcesPoked(indexed address)
+          handler: handleSourcesPoked
+
+
