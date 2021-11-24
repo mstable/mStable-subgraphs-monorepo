@@ -1,0 +1,164 @@
+# import Token
+# import Transaction
+# import Metric
+# import Counter
+
+type EmissionsController @entity {
+    """
+    The ID is the address
+    """
+    id: ID!
+
+    address: Bytes!
+
+    """
+    Address of rewards token. i.e. MTA token
+    """
+    rewardToken: Token!
+
+    """
+    List of staking contract addresses used to determine voting power
+    """
+    stakingContracts: [Bytes!]!
+
+    """
+    First weekly Epoch of this contract.
+    """
+    startEpoch: Epoch!
+
+    """
+    The last weekly Epoch to have rewards distributed.
+    """
+    lastEpoch: Epoch!
+
+    """
+    Dials for this Emissions Controller
+    """
+    dials: [Dial!]! @derivedFrom(field: "emissionsController")
+
+    """
+    Voters for this Emissions Controller
+    """
+    voters: [Voter!]! @derivedFrom(field: "emissionsController")
+}
+
+type Epoch @entity {
+    id: ID!
+
+    """
+    UNIX week number
+    """
+    weekNumber: Int!
+
+    """
+    Block number for the start of this epoch
+    """
+    blockNumber: Int!
+
+    """
+    Voters who last voted in this epoch
+    """
+    voters: [Voter!]! @derivedFrom(field: "lastEpoch")
+
+    """
+    Total number of votes cast in this Epoch
+    """
+    totalVotes: BigInt!
+
+    """
+    Total from the top-level emissions for this Epoch
+    """
+    emission: BigInt!
+}
+
+type Dial @entity {
+    """
+    ID: emissionsController.dialId
+    """
+    id: ID!
+
+    """
+    Numeric dial ID (array position on EmissionsController dials)
+    """
+    dialId: Int!
+
+    """
+    Emissions Controller this Dial is part of
+    """
+    emissionsController: EmissionsController!
+
+    """
+    If true, no rewards are distributed to the dial
+    recipient and any votes on this dial are ignored
+    """
+    disabled: Boolean!
+
+    """
+    Cap on distribution % where 1% = 1
+    """
+    cap: Int!
+
+    """
+    Dial rewards that are waiting to be distributed to recipient
+    """
+    balance: BigInt!
+
+    """
+    Account rewards are distributed to
+    """
+    recipient: Bytes!
+
+    """
+    Current Preferences for this Dial
+    """
+    preferences: [Preference!]! @derivedFrom(field: "dial")
+
+    """
+    Current number of votes directed to this Dial
+    """
+    votes: BigInt!
+}
+
+type Voter @entity {
+    """
+    ID: emissionsController.address
+    """
+    id: ID!
+
+    address: Bytes!
+
+    emissionsController: EmissionsController!
+
+    """
+    Latest tally of votes cast by this voter
+    """
+    votesCast: BigInt!
+
+    """
+    Last time balance was looked up across all staking contracts
+    """
+    lastSourcePoke: Int!
+
+    """
+    The last Epoch the Voter set Preferences for
+    """
+    lastEpoch: Epoch
+
+    """
+    Preferences set by this Voter
+    """
+    preferences: [Preference!]! @derivedFrom(field: "voter")
+}
+
+type Preference @entity {
+    id: ID!
+
+    voter: Voter!
+
+    dial: Dial!
+
+    """
+    % weight applied to this dial, where 200 = 100% and 1 = 0.5%
+    """
+    weight: Int!
+}

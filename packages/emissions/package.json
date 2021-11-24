@@ -1,0 +1,35 @@
+{
+  "name": "@mstable/emissions-subgraph",
+  "version": "0.1.0",
+  "license": "MIT",
+  "files": [
+    "./queries.graphql",
+    "./schema.generated.graphql"
+  ],
+  "scripts": {
+    "codegen:schema": "yarn run graphql-merge --template='schema.graphql' --schema='schema.generated.graphql'",
+    "codegen:graph": "yarn run graph codegen",
+    "codegen": "yarn run codegen:schema && yarn run codegen:graph",
+    "build": "yarn graph build",
+    "prepare-codegen": "func() { yarn run --silent mustache \"../../config/$1.json\" subgraph.template.yaml > subgraph.yaml && yarn run codegen; }; func",
+    "prepare:ropsten": "yarn run prepare-codegen ropsten",
+    "prepare:mainnet": "yarn run prepare-codegen mainnet",
+    "deploy:ropsten": "yarn graph deploy mstable/mstable-emissions-ropsten --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
+    "deploy:mainnet": "yarn graph deploy --studio mstable-emissions --debug --access-token ",
+    "lint": "yarn run prettier './src/**/*.{ts,tsx}' --write",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@mstable/subgraph-utils": "0.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.14.3",
+    "@babel/plugin-transform-modules-commonjs": "^7.14.0",
+    "@babel/preset-env": "^7.14.2",
+    "@babel/preset-typescript": "^7.13.0",
+    "@types/jest": "^26.0.23",
+    "babel-jest": "^27.0.1",
+    "jest": "^27.0.1",
+    "ts-jest": "^26.5.6"
+  }
+}
