@@ -1,20 +1,43 @@
-import { Address } from '@graphprotocol/graph-ts'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { integer } from '@mstable/subgraph-utils'
 
-import { EmissionsController as EmissionsControllerContract } from '../../generated/EmissionsController/EmissionsController'
 import { Voter } from '../../generated/schema'
 
 export namespace VoterModel {
-  export function getOrCreate(address: Address): Voter {
-    let id = address.toHexString()
+  export function getId(emissionsControllerAddress: Address, voterAddress: Address): string {
+    return emissionsControllerAddress.toHexString() + '.' + voterAddress.toHexString()
+  }
 
-    let entity = Voter.load(id)
+  export function getEmptyEntity(
+    emissionsControllerAddress: Address,
+    voterAddress: Address,
+  ): Voter {
+    return new Voter(getId(emissionsControllerAddress, voterAddress))
+  }
 
-    if (entity != null) {
-      return entity as Voter
+  export function getOrCreate(emissionsControllerAddress: Address, voterAddress: Address): Voter {
+    let id = getId(emissionsControllerAddress, voterAddress)
+    let voter = Voter.load(id)
+
+    if (voter != null) {
+      return voter as Voter
     }
 
-    entity = new Voter(id)
-    entity.save()
-    return entity as Voter
+    voter = new Voter(id)
+    voter.address = voterAddress
+    voter.emissionsController = emissionsControllerAddress.toHexString()
+    voter.lastSourcePoke = integer.ZERO
+
+    return voter as Voter
+  }
+
+  export function updateSourcesPoked(
+    emissionsControllerAddress: Address,
+    voterAddress: Address,
+    timestamp: BigInt,
+  ): void {
+    let voter = getEmptyEntity(emissionsControllerAddress, voterAddress)
+    voter.lastSourcePoke = timestamp
+    voter.save()
   }
 }

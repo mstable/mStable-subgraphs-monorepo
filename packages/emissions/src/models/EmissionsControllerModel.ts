@@ -2,39 +2,68 @@ import { Address } from '@graphprotocol/graph-ts'
 import { token } from '@mstable/subgraph-utils'
 
 import { EmissionsController as EmissionsControllerContract } from '../../generated/EmissionsController/EmissionsController'
-import { EmissionsController, Epoch } from '../../generated/schema'
+import { EmissionsController } from '../../generated/schema'
 import { EpochModel } from './EpochModel'
 
 export namespace EmissionsControllerModel {
-  export function getOrCreate(address: Address): EmissionsController {
-    let id = address.toHexString()
+  export function getId(emissionsControllerAddress: Address): string {
+    return emissionsControllerAddress.toHexString()
+  }
 
-    let entity = EmissionsController.load(id)
+  export function getEmptyEntity(emissionsControllerAddress: Address) {
+    return new EmissionsController(getId(emissionsControllerAddress))
+  }
 
-    if (entity != null) {
-      return entity as EmissionsController
+  export function getOrCreate(emissionsControllerAddress: Address): EmissionsController {
+    let id = getId(emissionsControllerAddress)
+
+    let emissionsController = EmissionsController.load(id)
+
+    if (emissionsController != null) {
+      return emissionsController as EmissionsController
     }
 
-    let contract = EmissionsControllerContract.bind(address)
+    let contract = EmissionsControllerContract.bind(emissionsControllerAddress)
 
-    entity = new EmissionsController(id)
+    emissionsController = new EmissionsController(id)
 
-    entity.address = address
-    entity.rewardToken = token.getOrCreate(contract.REWARD_TOKEN()).id
+    emissionsController.address = emissionsControllerAddress
+    emissionsController.rewardToken = token.getOrCreate(contract.REWARD_TOKEN()).id
 
     // This will always have at least one item
     let epochs = contract.epochs()
-    entity.startEpoch = EpochModel.getOrCreate(address, epochs[0].startEpoch).id
-    entity.lastEpoch = EpochModel.getOrCreate(address, epochs[0].lastEpoch).id
+    emissionsController.startEpoch = EpochModel.getOrCreate(
+      emissionsControllerAddress,
+      epochs[0].startEpoch,
+    ).id
+    emissionsController.lastEpoch = EpochModel.getOrCreate(
+      emissionsControllerAddress,
+      epochs[0].lastEpoch,
+    ).id
 
-    entity.save()
+    emissionsController.save()
 
-    return entity as EmissionsController
+    return emissionsController as EmissionsController
   }
 
-  export function updateLastEpoch(address: Address, epoch: Epoch): void {
-    let entity = getOrCreate(address)
-    entity.lastEpoch = epoch.id
-    entity.save()
+  export function updateLastEpoch(emissionsControllerAddress: Address): void {
+    let emissionsController = getOrCreate(emissionsControllerAddress)
+
+    let contract = EmissionsControllerContract.bind(emissionsControllerAddress)
+    let epochs = contract.epochs()
+
+    let lastEpoch = EpochModel.getOrCreate(emissionsControllerAddress, epochs.value1)
+
+    emissionsController.lastEpoch = lastEpoch.id
+    emissionsController.save()
+  }
+
+  export function addStakingContract(
+    emissionsControllerAddress: Address,
+    stakingContract: Address,
+  ): void {
+    let emissionsController = getOrCreate(emissionsControllerAddress)
+    emissionsController.stakingContracts.push(stakingContract) // TODO test me
+    emissionsController.save()
   }
 }

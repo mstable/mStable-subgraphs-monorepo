@@ -40,10 +40,23 @@ type EmissionsController @entity {
     Voters for this Emissions Controller
     """
     voters: [Voter!]! @derivedFrom(field: "emissionsController")
+
+    """
+    Epochs for this Emissions Controller
+    """
+    epochs: [Epoch!]! @derivedFrom(field: "emissionsController")
 }
 
 type Epoch @entity {
+    """
+    {emissionsController.id}.{weekNumber}
+    """
     id: ID!
+
+    """
+    EmissionsController this Epoch belongs to
+    """
+    emissionsController: EmissionsController!
 
     """
     UNIX week number
@@ -51,17 +64,12 @@ type Epoch @entity {
     weekNumber: Int!
 
     """
-    Block number for the start of this epoch
-    """
-    blockNumber: Int!
-
-    """
     Voters who last voted in this epoch
     """
     voters: [Voter!]! @derivedFrom(field: "lastEpoch")
 
     """
-    Total number of votes cast in this Epoch
+    Total number of votes cast in this Epoch across all Dials
     """
     totalVotes: BigInt!
 
@@ -69,11 +77,16 @@ type Epoch @entity {
     Total from the top-level emissions for this Epoch
     """
     emission: BigInt!
+
+    """
+    DialVotesForEpoch for this Epoch; see "HistoricVotes" struct
+    """
+    dialVotes: [DialVotesForEpoch!]! @derivedFrom(field: "epoch")
 }
 
 type Dial @entity {
     """
-    ID: emissionsController.dialId
+    ID: {emissionsController.id}.{dialId}
     """
     id: ID!
 
@@ -114,7 +127,23 @@ type Dial @entity {
     preferences: [Preference!]! @derivedFrom(field: "dial")
 
     """
-    Current number of votes directed to this Dial
+    DialVotesForEpoch for this Dial; see "HistoricVotes" struct
+    """
+    dialVotes: [DialVotesForEpoch!] @derivedFrom(field: "dial")
+}
+
+type DialVotesForEpoch @entity {
+    """
+    ID: {dial.id}.{epoch.id}
+    """
+    id: ID!
+
+    dial: Dial!
+
+    epoch: Epoch!
+
+    """
+    Number of votes directed to this Dial for this Epoch
     """
     votes: BigInt!
 }
@@ -142,7 +171,7 @@ type Voter @entity {
     """
     The last Epoch the Voter set Preferences for
     """
-    lastEpoch: Epoch
+    lastEpoch: Epoch # TODO do we need this?
 
     """
     Preferences set by this Voter
@@ -151,6 +180,9 @@ type Voter @entity {
 }
 
 type Preference @entity {
+    """
+    {voter.id}.{dial.id}
+    """
     id: ID!
 
     voter: Voter!
