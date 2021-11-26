@@ -1,23 +1,34 @@
-import { Address } from '@graphprotocol/graph-ts'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { integer } from '@mstable/subgraph-utils'
 
-import { EmissionsController as EmissionsControllerContract } from '../../generated/EmissionsController/EmissionsController'
 import { Epoch } from '../../generated/schema'
 
 export namespace EpochModel {
-  export function getOrCreate(address: Address, weekNumber: number): Epoch {
-    let id = address.toHexString() + '.' + weekNumber.toString()
+  export function getId(emissionsControllerAddress: Address, weekNumber: BigInt): string {
+    return emissionsControllerAddress + '.' + weekNumber.toString()
+  }
 
-    let entity = Epoch.load(id)
+  export function getEmptyEntity(emissionsControllerAddress: Address, weekNumber: BigInt): Epoch {
+    return new Epoch(getId(emissionsControllerAddress, weekNumber))
+  }
 
-    if (entity != null) {
-      return entity as Epoch
+  export function getOrCreate(emissionsControllerAddress: Address, weekNumber: BigInt): Epoch {
+    let id = getId(emissionsControllerAddress, weekNumber)
+
+    let epoch = Epoch.load(id)
+
+    if (epoch != null) {
+      return epoch as Epoch
     }
 
-    entity = new Epoch(id)
-    entity.weekNumber = weekNumber
+    epoch = new Epoch(id)
+    epoch.weekNumber = weekNumber
+    epoch.totalVotes = integer.ZERO
+    epoch.emission = integer.ZERO
+    epoch.emissionsController = emissionsControllerAddress.toHexString()
 
-    entity.save()
+    epoch.save()
 
-    return entity as Epoch
+    return epoch as Epoch
   }
 }

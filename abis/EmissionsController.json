@@ -278,6 +278,37 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "dialId",
+        "type": "uint256"
+      }
+    ],
+    "name": "dialVoteHistory",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint128",
+            "name": "votes",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint32",
+            "name": "epoch",
+            "type": "uint32"
+          }
+        ],
+        "internalType": "struct HistoricVotes[]",
+        "name": "voteHistory",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "",
         "type": "uint256"
       }
