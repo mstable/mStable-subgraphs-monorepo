@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { integer } from '@mstable/subgraph-utils'
 
 import { EmissionsController as EmissionsControllerContract } from '../../generated/EmissionsController/EmissionsController'
@@ -67,16 +67,12 @@ export namespace DialVotesForEpochModel {
     dialId: BigInt,
     weekNumber: BigInt,
   ): void {
-    let contract = EmissionsControllerContract.bind(emissionsControllerAddress)
+    let dvfe = getOrCreate(emissionsControllerAddress, dialId, weekNumber)
 
-    let dvfe = getEmptyEntity(emissionsControllerAddress, dialId, weekNumber)
-    let data = contract.dials(dialId)
-    let dataMap = data.toMap()
-    if (dataMap.isSet('voteHistory')) {
-      let voteHistoryArr = dataMap.get('voteHistory').toArray()
-      let voteHistory = ethereum.Value.fromArray(voteHistoryArr)
-    }
-    dvfe.votes = voteHistory
+    let contract = EmissionsControllerContract.bind(emissionsControllerAddress)
+    let voteHistory = contract.getDialVoteHistory(dialId)
+
+    dvfe.votes = voteHistory[voteHistory.length - 1].votes
     dvfe.save()
   }
 }

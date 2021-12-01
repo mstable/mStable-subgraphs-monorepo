@@ -1,7 +1,11 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 
-import { EmissionsController as EmissionsControllerContract } from '../../generated/EmissionsController/EmissionsController'
+import {
+  EmissionsController as EmissionsControllerContract,
+  PreferencesChangedPreferencesStruct,
+} from '../../generated/EmissionsController/EmissionsController'
 import { Dial } from '../../generated/schema'
+import { DialVotesForEpochModel } from './DialVotesForEpochModel'
 
 export namespace DialModel {
   export function getId(emissionsControllerAddress: Address, dialId: BigInt): string {
@@ -22,9 +26,9 @@ export namespace DialModel {
 
     dial = new Dial(id)
     dial.emissionsController = emissionsControllerAddress.toHexString()
-    dial.dialId = dialId
+    dial.dialId = dialId.toI32()
 
-    dial = updateData(dial)
+    dial = updateData(dial as Dial)
 
     dial.save()
     return dial as Dial
@@ -33,7 +37,7 @@ export namespace DialModel {
   function updateData(dial: Dial): Dial {
     let emissionsControllerAddress = Address.fromString(dial.emissionsController)
     let contract = EmissionsControllerContract.bind(emissionsControllerAddress)
-    let dialData = contract.dials(dial.dialId)
+    let dialData = contract.dials(BigInt.fromI32(dial.dialId))
 
     dial.disabled = dialData.value0
     dial.cap = dialData.value2
@@ -75,9 +79,17 @@ export namespace DialModel {
     }
   }
 
-  export function updateDialVoteHistory(emissionsControllerAddress: Address, dialId: BigInt): void {
+  export function updateDialsForPreferences(
+    emissionsControllerAddress: Address,
+    preferences: Array<PreferencesChangedPreferencesStruct>,
+  ): void {
     let contract = EmissionsControllerContract.bind(emissionsControllerAddress)
-    let voteHistory = contract.dialVoteHistory(dialId)
-    voteHistory[0].values
+    let epochs = contract.epochs()
+    let weekNumber = epochs.value1
+
+    for (let i = 0; i < preferences.length; i++) {
+      let dialId = BigInt.fromI32(preferences[i].dialId)
+      DialVotesForEpochModel.updateVotes(emissionsControllerAddress, dialId, weekNumber)
+    }
   }
 }

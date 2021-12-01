@@ -2,7 +2,7 @@ import { Address } from '@graphprotocol/graph-ts'
 import { token } from '@mstable/subgraph-utils'
 
 import { EmissionsController as EmissionsControllerContract } from '../../generated/EmissionsController/EmissionsController'
-import { EmissionsController } from '../../generated/schema'
+import { EmissionsController, Epoch } from '../../generated/schema'
 import { EpochModel } from './EpochModel'
 
 export namespace EmissionsControllerModel {
@@ -10,7 +10,7 @@ export namespace EmissionsControllerModel {
     return emissionsControllerAddress.toHexString()
   }
 
-  export function getEmptyEntity(emissionsControllerAddress: Address) {
+  export function getEmptyEntity(emissionsControllerAddress: Address): EmissionsController {
     return new EmissionsController(getId(emissionsControllerAddress))
   }
 
@@ -28,17 +28,18 @@ export namespace EmissionsControllerModel {
     emissionsController = new EmissionsController(id)
 
     emissionsController.address = emissionsControllerAddress
+    emissionsController.stakingContracts = []
+
     emissionsController.rewardToken = token.getOrCreate(contract.REWARD_TOKEN()).id
 
-    // This will always have at least one item
     let epochs = contract.epochs()
     emissionsController.startEpoch = EpochModel.getOrCreate(
       emissionsControllerAddress,
-      epochs[0].startEpoch,
+      epochs.value0,
     ).id
     emissionsController.lastEpoch = EpochModel.getOrCreate(
       emissionsControllerAddress,
-      epochs[0].lastEpoch,
+      epochs.value1,
     ).id
 
     emissionsController.save()
@@ -46,7 +47,7 @@ export namespace EmissionsControllerModel {
     return emissionsController as EmissionsController
   }
 
-  export function updateLastEpoch(emissionsControllerAddress: Address): void {
+  export function updateLastEpoch(emissionsControllerAddress: Address): Epoch {
     let emissionsController = getOrCreate(emissionsControllerAddress)
 
     let contract = EmissionsControllerContract.bind(emissionsControllerAddress)
@@ -56,6 +57,8 @@ export namespace EmissionsControllerModel {
 
     emissionsController.lastEpoch = lastEpoch.id
     emissionsController.save()
+
+    return lastEpoch as Epoch
   }
 
   export function addStakingContract(
@@ -63,7 +66,7 @@ export namespace EmissionsControllerModel {
     stakingContract: Address,
   ): void {
     let emissionsController = getOrCreate(emissionsControllerAddress)
-    emissionsController.stakingContracts.push(stakingContract) // TODO test me
+    emissionsController.stakingContracts.push(stakingContract)
     emissionsController.save()
   }
 }

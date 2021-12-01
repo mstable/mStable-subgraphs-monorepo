@@ -1,3 +1,6 @@
+import { BigInt } from '@graphprotocol/graph-ts'
+import { address } from '@mstable/subgraph-utils'
+
 import {
   AddedDial,
   AddStakingContract,
@@ -14,17 +17,17 @@ import { EmissionsControllerModel } from '../models/EmissionsControllerModel'
 import { DialModel } from '../models/DialModel'
 import { PreferenceModel } from '../models/PreferenceModel'
 import { VoterModel } from '../models/VoterModel'
-import { EpochModel } from '../models/EpochModel'
+import { DialVotesForEpochModel } from '../models/DialVotesForEpochModel'
 
 export function handleAddedDial(event: AddedDial): void {
   // Sensible time to create the EmissionsController if it doesn't exist already
   EmissionsControllerModel.getOrCreate(event.address)
 
-  DialModel.getOrCreate(event.address, event.params.id)
+  DialModel.getOrCreate(event.address, event.params.dialId)
 }
 
 export function handleUpdatedDial(event: UpdatedDial): void {
-  DialModel.updateDisabled(event.address, event.params.id, event.params.diabled)
+  DialModel.updateDisabled(event.address, event.params.dialId, event.params.disabled)
 }
 
 export function handleAddStakingContract(event: AddStakingContract): void {
@@ -32,10 +35,16 @@ export function handleAddStakingContract(event: AddStakingContract): void {
 }
 
 export function handlePeriodRewards(event: PeriodRewards): void {
-  EmissionsControllerModel.updateLastEpoch(event.address)
+  let lastEpoch = EmissionsControllerModel.updateLastEpoch(event.address)
   DialModel.addBalances(event.address, event.params.amounts)
 
-  // TODO update voteHistory
+  for (let dialId = 0; dialId < event.params.amounts.length; dialId++) {
+    DialVotesForEpochModel.updateVotes(
+      event.address,
+      BigInt.fromI32(dialId),
+      BigInt.fromI32(lastEpoch.weekNumber),
+    )
+  }
 }
 
 export function handleDonatedRewards(event: DonatedRewards): void {
@@ -49,22 +58,21 @@ export function handleDistributedReward(event: DistributedReward): void {
 export function handlePreferencesChanged(event: PreferencesChanged): void {
   PreferenceModel.updateForVoter(event.address, event.params.voter, event.params.preferences)
   VoterModel.updateSourcesPoked(event.address, event.params.voter, event.block.timestamp)
+  VoterModel.updateLastEpoch(event.address, event.params.voter)
+  DialModel.updateDialsForPreferences(event.address, event.params.preferences)
 }
 
 export function handleVotesCast(event: VotesCast): void {
-  // event.params.from
-  // event.params.to
-  // event.params.amount
-  // TODO
-  // if (event.params.from.notEqual(address.ZERO_ADDRESS)) {
-  //   PreferenceModel.updateForVoter(event.address, event.params.from)
-  // }
-  //
-  // if (event.params.to.notEqual(address.ZERO_ADDRESS)) {
-  //   PreferenceModel.updateForVoter(event.address, event.params.to)
-  // }
+  if (event.params.from.notEqual(address.ZERO_ADDRESS)) {
+    PreferenceModel.removeVotesCast(event.address, event.params.from, event.params.amount)
+  }
+  if (event.params.to.notEqual(address.ZERO_ADDRESS)) {
+    PreferenceModel.incrementVotesCast(event.address, event.params.to, event.params.amount)
+  }
 }
 
 export function handleSourcesPoked(event: SourcesPoked): void {
   VoterModel.updateSourcesPoked(event.address, event.params.voter, event.block.timestamp)
+  VoterModel.updateVotePreferences(event.address, event.params.voter)
+  VoterModel.updateLastEpoch(event.address, event.params.voter)
 }

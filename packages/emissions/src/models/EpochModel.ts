@@ -1,11 +1,12 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { integer } from '@mstable/subgraph-utils'
 
+import { EmissionsController as EmissionsControllerContract } from '../../generated/EmissionsController/EmissionsController'
 import { Epoch } from '../../generated/schema'
 
 export namespace EpochModel {
   export function getId(emissionsControllerAddress: Address, weekNumber: BigInt): string {
-    return emissionsControllerAddress + '.' + weekNumber.toString()
+    return emissionsControllerAddress.toHexString() + '.' + weekNumber.toString()
   }
 
   export function getEmptyEntity(emissionsControllerAddress: Address, weekNumber: BigInt): Epoch {
@@ -22,13 +23,29 @@ export namespace EpochModel {
     }
 
     epoch = new Epoch(id)
-    epoch.weekNumber = weekNumber
-    epoch.totalVotes = integer.ZERO
+    epoch.weekNumber = weekNumber.toI32()
     epoch.emission = integer.ZERO
     epoch.emissionsController = emissionsControllerAddress.toHexString()
 
     epoch.save()
 
+    updateTopLineEmission(emissionsControllerAddress, weekNumber)
+
     return epoch as Epoch
+  }
+
+  export function updateTopLineEmission(
+    emissionsControllerAddress: Address,
+    weekNumber: BigInt,
+  ): void {
+    let contract = EmissionsControllerContract.bind(emissionsControllerAddress)
+    let topLineEmission = contract.try_topLineEmission(weekNumber)
+    if (topLineEmission.reverted) {
+      return
+    }
+
+    let epoch = getEmptyEntity(emissionsControllerAddress, weekNumber)
+    epoch.emission = topLineEmission.value
+    epoch.save()
   }
 }

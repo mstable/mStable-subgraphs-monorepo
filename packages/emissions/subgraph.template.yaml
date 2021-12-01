@@ -23,6 +23,8 @@ dataSources:
       abis:
         - name: EmissionsController
           file: ../../abis/EmissionsController.json
+        - name: ERC20
+          file: ../../abis/ERC20Detailed.json
         - name: ERC20Detailed
           file: ../../abis/ERC20Detailed.json
       eventHandlers:
@@ -40,7 +42,7 @@ dataSources:
           handler: handleDistributedReward
         - event: PreferencesChanged(indexed address,(uint8,uint8)[])
           handler: handlePreferencesChanged
-        - event: VotesCast(address,address,uint256)
+        - event: VotesCast(indexed address,indexed address,uint256)
           handler: handleVotesCast
         - event: SourcesPoked(indexed address)
           handler: handleSourcesPoked
