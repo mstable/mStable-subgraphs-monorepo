@@ -69,11 +69,6 @@ type Epoch @entity {
     voters: [Voter!]! @derivedFrom(field: "lastEpoch")
 
     """
-    Total number of votes cast in this Epoch across all Dials
-    """
-    totalVotes: BigInt!
-
-    """
     Total from the top-level emissions for this Epoch
     """
     emission: BigInt!
@@ -171,7 +166,7 @@ type Voter @entity {
     """
     The last Epoch the Voter set Preferences for
     """
-    lastEpoch: Epoch # TODO do we need this?
+    lastEpoch: Epoch
 
     """
     Preferences set by this Voter

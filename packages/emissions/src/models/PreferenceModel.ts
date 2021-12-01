@@ -1,8 +1,7 @@
-import { Address } from '@graphprotocol/graph-ts'
-import { integer } from '@mstable/subgraph-utils'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
 
 import { Dial, Preference, Voter } from '../../generated/schema'
-import { PreferencesChanged__Params } from '../../generated/EmissionsController/EmissionsController'
+import { PreferencesChangedPreferencesStruct } from '../../generated/EmissionsController/EmissionsController'
 import { DialModel } from './DialModel'
 import { VoterModel } from './VoterModel'
 
@@ -27,7 +26,7 @@ export namespace PreferenceModel {
     preference = new Preference(id)
     preference.voter = voter.id
     preference.dial = dial.id
-    preference.weight = integer.ZERO
+    preference.weight = 0
 
     preference.save()
 
@@ -37,7 +36,7 @@ export namespace PreferenceModel {
   export function updateForVoter(
     emissionsControllerAddress: Address,
     voterAddress: Address,
-    preferences: PreferencesChanged__Params['preferences'],
+    preferences: Array<PreferencesChangedPreferencesStruct>,
   ): void {
     let voter = VoterModel.getOrCreate(emissionsControllerAddress, voterAddress)
 
@@ -45,10 +44,30 @@ export namespace PreferenceModel {
       let dialId = preferences[i].dialId
       let weight = preferences[i].weight
 
-      let dial = DialModel.getEmptyEntity(emissionsControllerAddress, dialId)
+      let dial = DialModel.getEmptyEntity(emissionsControllerAddress, BigInt.fromI32(dialId))
       let preference = getOrCreate(dial, voter)
       preference.weight = weight
       preference.save()
     }
+  }
+
+  export function incrementVotesCast(
+    emissionsControllerAddress: Address,
+    voterAddress: Address,
+    amount: BigInt,
+  ): void {
+    let voter = VoterModel.getOrCreate(emissionsControllerAddress, voterAddress)
+    voter.votesCast = voter.votesCast.plus(amount)
+    voter.save()
+  }
+
+  export function removeVotesCast(
+    emissionsControllerAddress: Address,
+    voterAddress: Address,
+    amount: BigInt,
+  ): void {
+    let voter = VoterModel.getOrCreate(emissionsControllerAddress, voterAddress)
+    voter.votesCast = voter.votesCast.minus(amount)
+    voter.save()
   }
 }
