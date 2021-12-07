@@ -147,6 +147,11 @@ type EmissionsController @entity {
     lastEpoch: Epoch!
 
     """
+    The highest dialId set
+    """
+    highestDialId: Int!
+
+    """
     Dials for this Emissions Controller
     """
     dials: [Dial!]! @derivedFrom(field: "emissionsController")
@@ -187,6 +192,11 @@ type Epoch @entity {
     Total from the top-level emissions for this Epoch
     """
     emission: BigInt!
+
+    """
+    Total votes across all Dials in this Epoch
+    """
+    totalVotes: BigInt!
 
     """
     DialVotesForEpoch for this Epoch; see "HistoricVotes" struct
@@ -281,7 +291,7 @@ type Voter @entity {
     """
     The last Epoch the Voter set Preferences for
     """
-    lastEpoch: Epoch # TODO do we need this?
+    lastEpoch: Epoch
 
     """
     Preferences set by this Voter

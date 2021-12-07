@@ -1,5 +1,5 @@
-import { Address } from '@graphprotocol/graph-ts'
-import { token } from '@mstable/subgraph-utils'
+import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts'
+import { address, token } from '@mstable/subgraph-utils'
 
 import { EmissionsController as EmissionsControllerContract } from '../../generated/EmissionsController/EmissionsController'
 import { EmissionsController, Epoch } from '../../generated/schema'
@@ -28,7 +28,22 @@ export namespace EmissionsControllerModel {
     emissionsController = new EmissionsController(id)
 
     emissionsController.address = emissionsControllerAddress
-    emissionsController.stakingContracts = []
+    emissionsController.highestDialId = 0
+
+    let stakingContracts = [] as Bytes[]
+
+    {
+      let stakingContract0 = contract.stakingContracts(BigInt.fromI32(0))
+      if (!stakingContract0.equals(address.ZERO_ADDRESS)) {
+        stakingContracts.push(stakingContract0)
+      }
+      let stakingContract1 = contract.stakingContracts(BigInt.fromI32(1))
+      if (!stakingContract1.equals(address.ZERO_ADDRESS)) {
+        stakingContracts.push(stakingContract1)
+      }
+    }
+
+    emissionsController.stakingContracts = stakingContracts as Bytes[]
 
     emissionsController.rewardToken = token.getOrCreate(contract.REWARD_TOKEN()).id
 
@@ -45,6 +60,16 @@ export namespace EmissionsControllerModel {
     emissionsController.save()
 
     return emissionsController as EmissionsController
+  }
+
+  export function updateHighestDial(emissionsControllerAddress: Address, dialId: BigInt): void {
+    let emissionsController = getOrCreate(emissionsControllerAddress)
+
+    let dialIdI32 = dialId.toI32()
+    if (emissionsController.highestDialId < dialIdI32) {
+      emissionsController.highestDialId = dialIdI32
+      emissionsController.save()
+    }
   }
 
   export function updateLastEpoch(emissionsControllerAddress: Address): Epoch {
