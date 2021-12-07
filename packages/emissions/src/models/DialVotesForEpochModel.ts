@@ -66,13 +66,16 @@ export namespace DialVotesForEpochModel {
     emissionsControllerAddress: Address,
     dialId: BigInt,
     weekNumber: BigInt,
-  ): void {
+  ): BigInt {
     let dvfe = getOrCreate(emissionsControllerAddress, dialId, weekNumber)
 
     let contract = EmissionsControllerContract.bind(emissionsControllerAddress)
     let voteHistory = contract.getDialVoteHistory(dialId)
 
-    dvfe.votes = voteHistory[voteHistory.length - 1].votes
+    let votes = voteHistory[voteHistory.length - 1].votes
+    dvfe.votes = votes
     dvfe.save()
+
+    return votes
   }
 }

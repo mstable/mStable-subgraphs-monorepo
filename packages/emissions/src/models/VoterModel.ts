@@ -78,5 +78,7 @@ export namespace VoterModel {
       let dialId = BigInt.fromI32(preferencesArr[i].dialId)
       DialVotesForEpochModel.updateVotes(emissionsControllerAddress, dialId, weekNumber)
     }
+
+    EpochModel.updateTotalVotes(emissionsControllerAddress, weekNumber)
   }
 }

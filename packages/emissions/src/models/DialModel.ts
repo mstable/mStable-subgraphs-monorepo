@@ -6,6 +6,7 @@ import {
 } from '../../generated/EmissionsController/EmissionsController'
 import { Dial } from '../../generated/schema'
 import { DialVotesForEpochModel } from './DialVotesForEpochModel'
+import { EpochModel } from './EpochModel'
 
 export namespace DialModel {
   export function getId(emissionsControllerAddress: Address, dialId: BigInt): string {
@@ -28,28 +29,26 @@ export namespace DialModel {
     dial.emissionsController = emissionsControllerAddress.toHexString()
     dial.dialId = dialId.toI32()
 
-    dial = updateData(dial as Dial)
-
-    dial.save()
-    return dial as Dial
-  }
-
-  function updateData(dial: Dial): Dial {
-    let emissionsControllerAddress = Address.fromString(dial.emissionsController)
     let contract = EmissionsControllerContract.bind(emissionsControllerAddress)
-    let dialData = contract.dials(BigInt.fromI32(dial.dialId))
-
+    let dialData = contract.dials(dialId)
     dial.disabled = dialData.value0
     dial.cap = dialData.value2
     dial.balance = dialData.value3
     dial.recipient = dialData.value4
 
-    return dial
+    dial.save()
+    return dial as Dial
   }
 
   export function update(emissionsControllerAddress: Address, dialId: BigInt): void {
+    let contract = EmissionsControllerContract.bind(emissionsControllerAddress)
+    let dialData = contract.dials(dialId)
+
     let dial = getEmptyEntity(emissionsControllerAddress, dialId)
-    dial = updateData(dial)
+    dial.disabled = dialData.value0
+    dial.cap = dialData.value2
+    dial.balance = dialData.value3
+    dial.recipient = dialData.value4
     dial.save()
   }
 
@@ -91,5 +90,7 @@ export namespace DialModel {
       let dialId = BigInt.fromI32(preferences[i].dialId)
       DialVotesForEpochModel.updateVotes(emissionsControllerAddress, dialId, weekNumber)
     }
+
+    EpochModel.updateTotalVotes(emissionsControllerAddress, weekNumber)
   }
 }

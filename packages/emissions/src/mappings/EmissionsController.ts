@@ -18,11 +18,10 @@ import { DialModel } from '../models/DialModel'
 import { PreferenceModel } from '../models/PreferenceModel'
 import { VoterModel } from '../models/VoterModel'
 import { DialVotesForEpochModel } from '../models/DialVotesForEpochModel'
+import { EpochModel } from '../models/EpochModel'
 
 export function handleAddedDial(event: AddedDial): void {
-  // Sensible time to create the EmissionsController if it doesn't exist already
-  EmissionsControllerModel.getOrCreate(event.address)
-
+  EmissionsControllerModel.updateHighestDial(event.address, event.params.dialId)
   DialModel.getOrCreate(event.address, event.params.dialId)
 }
 
@@ -39,11 +38,9 @@ export function handlePeriodRewards(event: PeriodRewards): void {
   DialModel.addBalances(event.address, event.params.amounts)
 
   for (let dialId = 0; dialId < event.params.amounts.length; dialId++) {
-    DialVotesForEpochModel.updateVotes(
-      event.address,
-      BigInt.fromI32(dialId),
-      BigInt.fromI32(lastEpoch.weekNumber),
-    )
+    let dialId_ = BigInt.fromI32(dialId)
+    DialVotesForEpochModel.updateVotes(event.address, dialId_, BigInt.fromI32(lastEpoch.weekNumber))
+    DialModel.update(event.address, dialId_)
   }
 }
 
@@ -69,6 +66,10 @@ export function handleVotesCast(event: VotesCast): void {
   if (event.params.to.notEqual(address.ZERO_ADDRESS)) {
     PreferenceModel.incrementVotesCast(event.address, event.params.to, event.params.amount)
   }
+
+  let emissionsController = EmissionsControllerModel.getOrCreate(event.address)
+  let weekNumber = EpochModel.getWeekNumberFromId(emissionsController.lastEpoch)
+  EpochModel.updateTotalVotes(event.address, weekNumber)
 }
 
 export function handleSourcesPoked(event: SourcesPoked): void {

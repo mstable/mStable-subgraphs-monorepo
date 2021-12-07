@@ -3,10 +3,16 @@ import { integer } from '@mstable/subgraph-utils'
 
 import { EmissionsController as EmissionsControllerContract } from '../../generated/EmissionsController/EmissionsController'
 import { Epoch } from '../../generated/schema'
+import { EmissionsControllerModel } from './EmissionsControllerModel'
 
 export namespace EpochModel {
   export function getId(emissionsControllerAddress: Address, weekNumber: BigInt): string {
     return emissionsControllerAddress.toHexString() + '.' + weekNumber.toString()
+  }
+
+  export function getWeekNumberFromId(id: string): BigInt {
+    let weekNumberStr = id.split('.')[1]
+    return BigInt.fromString(weekNumberStr)
   }
 
   export function getEmptyEntity(emissionsControllerAddress: Address, weekNumber: BigInt): Epoch {
@@ -25,6 +31,7 @@ export namespace EpochModel {
     epoch = new Epoch(id)
     epoch.weekNumber = weekNumber.toI32()
     epoch.emission = integer.ZERO
+    epoch.totalVotes = integer.ZERO
     epoch.emissionsController = emissionsControllerAddress.toHexString()
 
     epoch.save()
@@ -46,6 +53,23 @@ export namespace EpochModel {
 
     let epoch = getEmptyEntity(emissionsControllerAddress, weekNumber)
     epoch.emission = topLineEmission.value
+    epoch.save()
+  }
+
+  export function updateTotalVotes(emissionsControllerAddress: Address, weekNumber: BigInt): void {
+    let emissionsController = EmissionsControllerModel.getOrCreate(emissionsControllerAddress)
+    let contract = EmissionsControllerContract.bind(emissionsControllerAddress)
+
+    let totalVotes = integer.ZERO
+    for (let i = 0; i <= emissionsController.highestDialId; i++) {
+      let dialId = BigInt.fromI32(i)
+      let voteHistory = contract.getDialVoteHistory(dialId)
+      let votes = voteHistory[voteHistory.length - 1].votes
+      totalVotes = totalVotes.plus(votes)
+    }
+
+    let epoch = getEmptyEntity(emissionsControllerAddress, weekNumber)
+    epoch.totalVotes = totalVotes
     epoch.save()
   }
 }
