@@ -286,7 +286,7 @@ type Voter @entity {
     """
     Last time balance was looked up across all staking contracts
     """
-    lastSourcePoke: Int!
+    lastSourcePoke: BigInt!
 
     """
     The last Epoch the Voter set Preferences for
@@ -312,5 +312,5 @@ type Preference @entity {
     """
     % weight applied to this dial, where 200 = 100% and 1 = 0.5%
     """
-    weight: Int!
+    weight: BigInt!
 }

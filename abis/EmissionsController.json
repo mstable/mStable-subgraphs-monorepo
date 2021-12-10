@@ -142,14 +142,14 @@
       {
         "components": [
           {
-            "internalType": "uint8",
+            "internalType": "uint256",
             "name": "dialId",
-            "type": "uint8"
+            "type": "uint256"
           },
           {
-            "internalType": "uint8",
+            "internalType": "uint256",
             "name": "weight",
-            "type": "uint8"
+            "type": "uint256"
           }
         ],
         "indexed": false,
@@ -169,6 +169,12 @@
         "internalType": "address",
         "name": "voter",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newVotesCast",
+        "type": "uint256"
       }
     ],
     "name": "SourcesPoked",
@@ -196,6 +202,12 @@
   {
     "anonymous": false,
     "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "stakingContract",
+        "type": "address"
+      },
       {
         "indexed": true,
         "internalType": "address",
@@ -413,6 +425,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "getDialVotes",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "dialVotes",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -425,14 +450,14 @@
       {
         "components": [
           {
-            "internalType": "uint8",
+            "internalType": "uint256",
             "name": "dialId",
-            "type": "uint8"
+            "type": "uint256"
           },
           {
-            "internalType": "uint8",
+            "internalType": "uint256",
             "name": "weight",
-            "type": "uint8"
+            "type": "uint256"
           }
         ],
         "internalType": "struct Preference[16]",
@@ -544,14 +569,14 @@
       {
         "components": [
           {
-            "internalType": "uint8",
+            "internalType": "uint256",
             "name": "dialId",
-            "type": "uint8"
+            "type": "uint256"
           },
           {
-            "internalType": "uint8",
+            "internalType": "uint256",
             "name": "weight",
-            "type": "uint8"
+            "type": "uint256"
           }
         ],
         "internalType": "struct Preference[]",
@@ -649,6 +674,11 @@
     ],
     "name": "voterPreferences",
     "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "dialWeights",
+        "type": "uint256"
+      },
       {
         "internalType": "uint128",
         "name": "votesCast",

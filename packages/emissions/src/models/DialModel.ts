@@ -87,7 +87,7 @@ export namespace DialModel {
     let weekNumber = epochs.value1
 
     for (let i = 0; i < preferences.length; i++) {
-      let dialId = BigInt.fromI32(preferences[i].dialId)
+      let dialId = preferences[i].dialId
       DialVotesForEpochModel.updateVotes(emissionsControllerAddress, dialId, weekNumber)
     }
 

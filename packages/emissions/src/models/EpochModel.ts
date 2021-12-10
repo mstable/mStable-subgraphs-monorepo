@@ -46,7 +46,7 @@ export namespace EpochModel {
     weekNumber: BigInt,
   ): void {
     let contract = EmissionsControllerContract.bind(emissionsControllerAddress)
-    let topLineEmission = contract.try_topLineEmission(weekNumber)
+    let topLineEmission = contract.try_topLineEmission(weekNumber.plus(BigInt.fromI32(1)))
     if (topLineEmission.reverted) {
       return
     }
@@ -57,15 +57,17 @@ export namespace EpochModel {
   }
 
   export function updateTotalVotes(emissionsControllerAddress: Address, weekNumber: BigInt): void {
-    let emissionsController = EmissionsControllerModel.getOrCreate(emissionsControllerAddress)
     let contract = EmissionsControllerContract.bind(emissionsControllerAddress)
 
     let totalVotes = integer.ZERO
-    for (let i = 0; i <= emissionsController.highestDialId; i++) {
+    for (let i = 0; i <= 16; i++) {
       let dialId = BigInt.fromI32(i)
-      let voteHistory = contract.getDialVoteHistory(dialId)
-      let votes = voteHistory[voteHistory.length - 1].votes
-      totalVotes = totalVotes.plus(votes)
+      let voteHistory = contract.try_getDialVoteHistory(dialId)
+      if (!voteHistory.reverted) {
+        let vh = voteHistory.value
+        let votes = vh[vh.length - 1].votes
+        totalVotes = totalVotes.plus(votes)
+      }
     }
 
     let epoch = getEmptyEntity(emissionsControllerAddress, weekNumber)

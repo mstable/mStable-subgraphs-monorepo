@@ -1,4 +1,5 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address } from '@graphprotocol/graph-ts'
+import { integer } from '@mstable/subgraph-utils'
 
 import { Dial, Preference, Voter } from '../../generated/schema'
 import { PreferencesChangedPreferencesStruct } from '../../generated/EmissionsController/EmissionsController'
@@ -26,14 +27,14 @@ export namespace PreferenceModel {
     preference = new Preference(id)
     preference.voter = voter.id
     preference.dial = dial.id
-    preference.weight = 0
+    preference.weight = integer.ZERO
 
     preference.save()
 
     return preference as Preference
   }
 
-  export function updateForVoter(
+  export function updatePreferences(
     emissionsControllerAddress: Address,
     voterAddress: Address,
     preferences: Array<PreferencesChangedPreferencesStruct>,
@@ -44,30 +45,10 @@ export namespace PreferenceModel {
       let dialId = preferences[i].dialId
       let weight = preferences[i].weight
 
-      let dial = DialModel.getEmptyEntity(emissionsControllerAddress, BigInt.fromI32(dialId))
+      let dial = DialModel.getEmptyEntity(emissionsControllerAddress, dialId)
       let preference = getOrCreate(dial, voter)
       preference.weight = weight
       preference.save()
     }
-  }
-
-  export function incrementVotesCast(
-    emissionsControllerAddress: Address,
-    voterAddress: Address,
-    amount: BigInt,
-  ): void {
-    let voter = VoterModel.getOrCreate(emissionsControllerAddress, voterAddress)
-    voter.votesCast = voter.votesCast.plus(amount)
-    voter.save()
-  }
-
-  export function removeVotesCast(
-    emissionsControllerAddress: Address,
-    voterAddress: Address,
-    amount: BigInt,
-  ): void {
-    let voter = VoterModel.getOrCreate(emissionsControllerAddress, voterAddress)
-    voter.votesCast = voter.votesCast.minus(amount)
-    voter.save()
   }
 }
