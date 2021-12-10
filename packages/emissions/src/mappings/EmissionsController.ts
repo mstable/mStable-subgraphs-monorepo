@@ -23,6 +23,9 @@ import { EpochModel } from '../models/EpochModel'
 export function handleAddedDial(event: AddedDial): void {
   EmissionsControllerModel.updateHighestDial(event.address, event.params.dialId)
   DialModel.getOrCreate(event.address, event.params.dialId)
+  let emissionsController = EmissionsControllerModel.getOrCreate(event.address)
+  let weekNumber = EpochModel.getWeekNumberFromId(emissionsController.lastEpoch)
+  DialVotesForEpochModel.getOrCreate(event.address, event.params.dialId, weekNumber)
 }
 
 export function handleUpdatedDial(event: UpdatedDial): void {
@@ -35,13 +38,16 @@ export function handleAddStakingContract(event: AddStakingContract): void {
 
 export function handlePeriodRewards(event: PeriodRewards): void {
   let lastEpoch = EmissionsControllerModel.updateLastEpoch(event.address)
+  let weekNumber = BigInt.fromI32(lastEpoch.weekNumber)
   DialModel.addBalances(event.address, event.params.amounts)
 
   for (let dialId = 0; dialId < event.params.amounts.length; dialId++) {
     let dialId_ = BigInt.fromI32(dialId)
-    DialVotesForEpochModel.updateVotes(event.address, dialId_, BigInt.fromI32(lastEpoch.weekNumber))
+    DialVotesForEpochModel.updateVotes(event.address, dialId_, weekNumber)
     DialModel.update(event.address, dialId_)
   }
+
+  EpochModel.updateTotalVotes(event.address, weekNumber)
 }
 
 export function handleDonatedRewards(event: DonatedRewards): void {
@@ -53,18 +59,19 @@ export function handleDistributedReward(event: DistributedReward): void {
 }
 
 export function handlePreferencesChanged(event: PreferencesChanged): void {
-  PreferenceModel.updateForVoter(event.address, event.params.voter, event.params.preferences)
   VoterModel.updateSourcesPoked(event.address, event.params.voter, event.block.timestamp)
   VoterModel.updateLastEpoch(event.address, event.params.voter)
+  VoterModel.updateVotesCast(event.address, event.params.voter)
+  PreferenceModel.updatePreferences(event.address, event.params.voter, event.params.preferences)
   DialModel.updateDialsForPreferences(event.address, event.params.preferences)
 }
 
 export function handleVotesCast(event: VotesCast): void {
   if (event.params.from.notEqual(address.ZERO_ADDRESS)) {
-    PreferenceModel.removeVotesCast(event.address, event.params.from, event.params.amount)
+    VoterModel.removeVotesCast(event.address, event.params.from, event.params.amount)
   }
   if (event.params.to.notEqual(address.ZERO_ADDRESS)) {
-    PreferenceModel.incrementVotesCast(event.address, event.params.to, event.params.amount)
+    VoterModel.incrementVotesCast(event.address, event.params.to, event.params.amount)
   }
 
   let emissionsController = EmissionsControllerModel.getOrCreate(event.address)

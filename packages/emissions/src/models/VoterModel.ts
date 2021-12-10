@@ -30,7 +30,7 @@ export namespace VoterModel {
     voter.address = voterAddress
     voter.emissionsController = emissionsControllerAddress.toHexString()
     voter.votesCast = integer.ZERO
-    voter.lastSourcePoke = 0
+    voter.lastSourcePoke = integer.ZERO
 
     return voter as Voter
   }
@@ -41,7 +41,7 @@ export namespace VoterModel {
     timestamp: BigInt,
   ): void {
     let voter = getOrCreate(emissionsControllerAddress, voterAddress)
-    voter.lastSourcePoke = timestamp.toI32()
+    voter.lastSourcePoke = timestamp
     voter.save()
   }
 
@@ -58,6 +58,19 @@ export namespace VoterModel {
     voter.save()
   }
 
+  export function updateVotesCast(
+    emissionsControllerAddress: Address,
+    voterAddress: Address,
+  ): void {
+    let contract = EmissionsControllerContract.bind(emissionsControllerAddress)
+    let preferencesStruct = contract.voterPreferences(voterAddress)
+
+    let voter = getOrCreate(emissionsControllerAddress, voterAddress)
+    voter.votesCast = preferencesStruct.value0
+    voter.lastSourcePoke = preferencesStruct.value1
+    voter.save()
+  }
+
   export function updateVotePreferences(
     emissionsControllerAddress: Address,
     voterAddress: Address,
@@ -71,14 +84,34 @@ export namespace VoterModel {
 
     let voter = getEmptyEntity(emissionsControllerAddress, voterAddress)
     voter.votesCast = preferencesStruct.value0
-    voter.lastSourcePoke = preferencesStruct.value1.toI32()
+    voter.lastSourcePoke = preferencesStruct.value1
     voter.save()
 
     for (let i = 0; i < preferencesArr.length; i++) {
-      let dialId = BigInt.fromI32(preferencesArr[i].dialId)
+      let dialId = preferencesArr[i].dialId
       DialVotesForEpochModel.updateVotes(emissionsControllerAddress, dialId, weekNumber)
     }
 
     EpochModel.updateTotalVotes(emissionsControllerAddress, weekNumber)
+  }
+
+  export function incrementVotesCast(
+    emissionsControllerAddress: Address,
+    voterAddress: Address,
+    amount: BigInt,
+  ): void {
+    let voter = getOrCreate(emissionsControllerAddress, voterAddress)
+    voter.votesCast = voter.votesCast.plus(amount)
+    voter.save()
+  }
+
+  export function removeVotesCast(
+    emissionsControllerAddress: Address,
+    voterAddress: Address,
+    amount: BigInt,
+  ): void {
+    let voter = getOrCreate(emissionsControllerAddress, voterAddress)
+    voter.votesCast = voter.votesCast.minus(amount)
+    voter.save()
   }
 }

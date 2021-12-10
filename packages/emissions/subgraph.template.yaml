@@ -40,11 +40,9 @@ dataSources:
           handler: handleDonatedRewards
         - event: DistributedReward(indexed uint256,uint256)
           handler: handleDistributedReward
-        - event: PreferencesChanged(indexed address,(uint8,uint8)[])
+        - event: PreferencesChanged(indexed address,(uint256,uint256)[])
           handler: handlePreferencesChanged
-        - event: VotesCast(indexed address,indexed address,uint256)
+        - event: VotesCast(address,indexed address,indexed address,uint256)
           handler: handleVotesCast
-        - event: SourcesPoked(indexed address)
+        - event: SourcesPoked(indexed address,uint256)
           handler: handleSourcesPoked
-
-
