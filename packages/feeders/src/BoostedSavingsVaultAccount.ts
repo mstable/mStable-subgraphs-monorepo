@@ -75,7 +75,7 @@ export namespace BoostedSavingsVaultAccount {
     entity.boostedBalance = contract.balanceOf(account)
     entity.lastClaim = lastClaim.toI32()
 
-    if (boostedSavingsVaultEntity.platformRewardsToken) {
+    if (boostedSavingsVaultEntity.isSet('isDualVault') && boostedSavingsVaultEntity.isDualVault) {
       let dualContract = BoostedDualVault.bind(vaultAddr)
       let userData = dualContract.userData(account)
       entity.rewardPerTokenPaid = userData.value0

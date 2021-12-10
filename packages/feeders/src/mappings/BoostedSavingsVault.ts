@@ -25,10 +25,19 @@ import { BoostedSavingsVaultAccount } from '../BoostedSavingsVaultAccount'
 import { FeederPoolAccount } from '../FeederPoolAccount'
 
 export function handleStaked(event: Staked): void {
+  _handleStaked(event, false)
+}
+
+export function handleStakedDual(event: Staked): void {
+  _handleStaked(event, true)
+}
+
+function _handleStaked(event: Staked, isDualVault: boolean): void {
   let boostedSavingsVaultEntity = handleEvent(
     event.address,
     event.block.timestamp,
     event.params.user,
+    isDualVault,
   )
 
   {
@@ -49,7 +58,7 @@ export function handleStaked(event: Staked): void {
 }
 
 export function handleRewardAdded(event: RewardAdded): void {
-  handleEvent(event.address, event.block.timestamp, null)
+  handleEvent(event.address, event.block.timestamp, null, false)
 
   {
     let baseTx = transaction.fromEvent(event)
@@ -69,6 +78,7 @@ export function handleRewardPaid(event: RewardPaid): void {
     event.address,
     event.block.timestamp,
     event.params.user,
+    false,
   )
 
   {
@@ -96,10 +106,19 @@ export function handleRewardPaid(event: RewardPaid): void {
 }
 
 export function handleWithdrawn(event: Withdrawn): void {
+  _handleWithdrawn(event, false)
+}
+
+export function handleWithdrawnDual(event: Withdrawn): void {
+  _handleWithdrawn(event, true)
+}
+
+function _handleWithdrawn(event: Withdrawn, isDualVault: boolean): void {
   let boostedSavingsVaultEntity = handleEvent(
     event.address,
     event.block.timestamp,
     event.params.user,
+    isDualVault,
   )
 
   {
@@ -120,12 +139,20 @@ export function handleWithdrawn(event: Withdrawn): void {
 }
 
 export function handlePoked(event: Poked): void {
+  _handlePoked(event, false)
+}
+
+export function handlePokedDual(event: Poked): void {
+  _handlePoked(event, true)
+}
+
+function _handlePoked(event: Poked, isDualVault: boolean): void {
   // Update the boostedBalance of the poked user
-  handleEvent(event.address, event.block.timestamp, event.params.user)
+  handleEvent(event.address, event.block.timestamp, event.params.user, isDualVault)
 }
 
 export function handleRewardAddedDual(event: RewardAddedDual): void {
-  handleEvent(event.address, event.block.timestamp, null)
+  handleEvent(event.address, event.block.timestamp, null, true)
 
   {
     let baseTx = transaction.fromEvent(event)
@@ -146,6 +173,7 @@ export function handleRewardPaidDual(event: RewardPaidDual): void {
     event.address,
     event.block.timestamp,
     event.params.user,
+    true,
   )
 
   {
@@ -184,8 +212,12 @@ function handleEvent(
   boostedSavingsVaultAddress: Address,
   timestamp: BigInt,
   account: Address | null,
+  isDualVault: boolean,
 ): BoostedSavingsVaultEntity {
-  let boostedSavingsVaultEntity = BoostedSavingsVault.getOrCreate(boostedSavingsVaultAddress)
+  let boostedSavingsVaultEntity = BoostedSavingsVault.getOrCreate(
+    boostedSavingsVaultAddress,
+    isDualVault,
+  )
   boostedSavingsVaultEntity = BoostedSavingsVault.update(boostedSavingsVaultEntity)
   boostedSavingsVaultEntity.save()
 

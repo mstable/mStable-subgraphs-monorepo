@@ -12,7 +12,7 @@ export function handleWhitelisted(event: Whitelisted): void {
   boostDirectorEntity.save()
 
   // This could also be used to create a template
-  let vaultEntity = BoostedSavingsVault.getOrCreate(event.params.vaultAddress)
+  let vaultEntity = BoostedSavingsVault.getOrCreate(event.params.vaultAddress, false)
   vaultEntity.directorVaultId = event.params.vaultId
   vaultEntity.save()
 }

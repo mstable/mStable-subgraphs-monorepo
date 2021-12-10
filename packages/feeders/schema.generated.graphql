@@ -271,6 +271,11 @@ type BoostedSavingsVault @entity {
   id: ID!
 
   """
+  Flag for whether this is a dual savings vault
+  """
+  isDualVault: Boolean
+
+  """
   ID of the vault on the BoostDirector contract
   """
   directorVaultId: Int
