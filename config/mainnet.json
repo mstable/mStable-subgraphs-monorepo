@@ -66,7 +66,7 @@
     {
       "name": "mBTC/tBTCv2",
       "address": "0x97E2a2F97A2E9a4cFB462a49Ab7c8D205aBB9ed9",
-      "startBlock": 13496580,
+      "startBlock": 13496579,
       "abi": "BoostedDualVault",
       "isDual": true
     },
