@@ -10,7 +10,7 @@ import {
 } from '../generated/schema'
 
 export namespace BoostedSavingsVault {
-  export function getOrCreate(addr: Address): BoostedSavingsVaultEntity {
+  export function getOrCreate(addr: Address, isDualVault: boolean): BoostedSavingsVaultEntity {
     let id = addr.toHexString()
 
     let entity = BoostedSavingsVaultEntity.load(id)
@@ -47,6 +47,10 @@ export namespace BoostedSavingsVault {
       entity.feederPool = entity.stakingToken
     }
 
+    if (isDualVault) {
+      entity.isDualVault = isDualVault
+    }
+
     let platformToken = dualVaultContract.try_platformToken()
     if (!platformToken.reverted && platformToken.value.notEqual(address.ZERO_ADDRESS)) {
       entity.totalRaw = dualVaultContract.totalRaw()
@@ -72,7 +76,7 @@ export namespace BoostedSavingsVault {
     entity.rewardPerTokenStored = contract.rewardPerTokenStored()
     entity.totalSupply = contract.totalSupply()
 
-    if (entity.platformRewardsToken) {
+    if (entity.isDualVault) {
       let dualVaultContract = BoostedDualVaultContract.bind(addr)
       entity.totalRaw = dualVaultContract.totalRaw()
       entity.platformRewardRate = dualVaultContract.platformRewardRate()

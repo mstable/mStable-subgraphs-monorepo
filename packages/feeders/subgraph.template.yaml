@@ -146,19 +146,25 @@ dataSources:
         - name: BoostedTokenWrapper
           file: ../../node_modules/@mstable/protocol/abis/BoostedTokenWrapper.json
       eventHandlers:
-        - event: Staked(indexed address,uint256,address)
-          handler: handleStaked
-        - event: Withdrawn(indexed address,uint256)
-          handler: handleWithdrawn
-        - event: Poked(indexed address)
-          handler: handlePoked
         {{#isDual}}
+        - event: Staked(indexed address,uint256,address)
+          handler: handleStakedDual
+        - event: Withdrawn(indexed address,uint256)
+          handler: handleWithdrawnDual
+        - event: Poked(indexed address)
+          handler: handlePokedDual
         - event: RewardAdded(uint256,uint256)
           handler: handleRewardAddedDual
         - event: RewardPaid(indexed address,uint256,uint256)
           handler: handleRewardPaidDual
         {{/isDual}}
         {{^isDual}}
+        - event: Staked(indexed address,uint256,address)
+          handler: handleStaked
+        - event: Withdrawn(indexed address,uint256)
+          handler: handleWithdrawn
+        - event: Poked(indexed address)
+          handler: handlePoked
         - event: RewardAdded(uint256)
           handler: handleRewardAdded
         - event: RewardPaid(indexed address,uint256)
