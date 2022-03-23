@@ -1,4 +1,4 @@
-import { Address } from '@graphprotocol/graph-ts'
+import { Address, BigInt, store } from '@graphprotocol/graph-ts'
 import { integer } from '@mstable/subgraph-utils'
 
 import { Dial, Preference, Voter } from '../../generated/schema'
@@ -41,14 +41,36 @@ export namespace PreferenceModel {
   ): void {
     let voter = VoterModel.getOrCreate(emissionsControllerAddress, voterAddress)
 
-    for (let i = 0; i < preferences.length; i++) {
-      let dialId = preferences[i].dialId
-      let weight = preferences[i].weight
+    // Iterate over all possible dials; we don't know what has been set
+    let limit = BigInt.fromI32(255)
+    for (
+      let dialId = BigInt.fromI32(0);
+      dialId.lt(limit);
+      dialId = dialId.plus(BigInt.fromI32(1))
+    ) {
+      let dial = Dial.load(DialModel.getId(emissionsControllerAddress, dialId))
+      if (dial == null) {
+        // If the dial doesn't exist, we're done iterating
+        break
+      }
 
-      let dial = DialModel.getEmptyEntity(emissionsControllerAddress, dialId)
-      let preference = getOrCreate(dial, voter)
-      preference.weight = weight
-      preference.save()
+      // Find the dial in preferences (if it was set)
+      let found = false
+      for (let i = 0; i < preferences.length; i++) {
+        if (preferences[i].dialId.equals(dialId)) {
+          found = true
+          let weight = preferences[i].weight
+          let preference = getOrCreate(dial as Dial, voter)
+          preference.weight = weight
+          preference.save()
+          break
+        }
+      }
+
+      // Delete any existing Preference for this Dial that wasn't in preferences
+      if (!found) {
+        store.remove('Preference', getId(dial as Dial, voter))
+      }
     }
   }
 }
