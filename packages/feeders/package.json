@@ -12,6 +12,7 @@
     "codegen": "yarn run codegen:schema && yarn run codegen:graph",
     "build": "yarn graph build",
     "prepare-codegen": "func() { yarn run --silent mustache \"../../config/$1.json\" subgraph.template.yaml > subgraph.yaml && yarn run codegen; }; func",
+    "prepare:config": "yarn run prepare:mainnet",
     "prepare:ropsten": "yarn run prepare-codegen ropsten",
     "prepare:mainnet": "yarn run prepare-codegen mainnet",
     "prepare:polygon-mumbai": "yarn run prepare-codegen polygon-mumbai",

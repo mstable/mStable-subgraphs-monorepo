@@ -10,6 +10,7 @@
   "scripts": {
     "codegen": "lerna exec --parallel --scope @mstable/*-subgraph -- yarn run codegen",
     "build": "lerna exec --parallel --scope @mstable/*-subgraph -- yarn run build",
+    "prepare:config": "lerna exec --parallel --scope @mstable/*-subgraph -- yarn run prepare:config",
     "prepare:mainnet": "lerna exec --parallel --scope @mstable/*-subgraph -- yarn run prepare:mainnet",
     "prepare:staging": "lerna exec --parallel --scope @mstable/*-subgraph -- yarn run prepare:staging",
     "prepare:ropsten": "lerna exec --parallel --scope @mstable/protocol-subgraph -- yarn run prepare:ropsten",

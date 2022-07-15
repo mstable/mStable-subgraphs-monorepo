@@ -31,7 +31,7 @@ dataSources:
         - BoostedSavingsVaultWithdrawTransaction
       abis:
         - name: BoostedSavingsVault
-          file: ../../node_modules/@mstable/protocol/build/contracts/savings/BoostedSavingsVault.sol/BoostedSavingsVault.json
+          file: ../../abis/BoostedSavingsVault.json
         - name: ERC20Detailed
           file: ../../abis/ERC20Detailed.json
       eventHandlers:
@@ -60,6 +60,6 @@ templates:
         - BoostedSavingsVault
       abis:
         - name: BoostedSavingsVault
-          file: ../../node_modules/@mstable/protocol/build/contracts/savings/BoostedSavingsVault.sol/BoostedSavingsVault.json
+          file: ../../abis/BoostedSavingsVault.json
         - name: ERC20Detailed
           file: ../../abis/ERC20Detailed.json
