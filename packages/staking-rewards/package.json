@@ -7,6 +7,7 @@
     "codegen:graph": "yarn run graph codegen",
     "codegen": "yarn run codegen:schema && yarn run codegen:graph",
     "build": "yarn graph build",
+    "prepare:config": "yarn run prepare:polygon-mainnet",
     "prepare:polygon-mainnet": "yarn run --silent mustache ../../config/polygon-mainnet.json subgraph.template.yaml > subgraph.yaml",
     "deploy:polygon-mainnet": "yarn graph deploy mStable/mStable-staking-rewards-polygon --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
     "lint": "yarn run prettier './src/**/*.{ts,tsx}' --write"
