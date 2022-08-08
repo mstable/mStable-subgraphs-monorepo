@@ -13,7 +13,8 @@ dataSources:
 
   {{#savingsManagers}}
   - kind: ethereum/contract
-    name: 'SavingsManager.{{address}}'
+  # Remove hard coded address
+    name: 'SavingsManager'
     network: '{{network}}'
     source:
       abi: SavingsManager
@@ -41,8 +42,8 @@ dataSources:
           file: ../../abis/SavingsContractV1.json
         - name: SavingsContractV2
           file: ../../abis/polygon-deploy/savings/SavingsContract.sol/SavingsContract.json
-        - name: ERC20Detailed
-          file: ../../abis/ERC20Detailed.json
+        - name: ERC20
+          file: ../../abis/ERC20.json
         - name: BasketManager
           file: ../../abis/BasketManager.json
         - name: Masset
@@ -90,8 +91,8 @@ dataSources:
           file: ../../abis/polygon-deploy/masset/Masset.sol/Masset.json
         - name: MassetManager
           file: ../../abis/polygon-deploy/masset/MassetManager.sol/MassetManager.json
-        - name: ERC20Detailed
-          file: ../../abis/ERC20Detailed.json
+        - name: ERC20
+          file: ../../abis/ERC20.json
         - name: BasketManager
           file: ../../abis/BasketManager.json
         - name: LegacyMasset
@@ -144,8 +145,8 @@ dataSources:
           file: ../../abis/polygon-deploy/masset/Masset.sol/Masset.json
         - name: MassetManager
           file: ../../abis/polygon-deploy/masset/MassetManager.sol/MassetManager.json
-        - name: ERC20Detailed
-          file: ../../abis/ERC20Detailed.json
+        - name: ERC20
+          file: ../../abis/ERC20.json
         - name: BasketManager
           file: ../../abis/BasketManager.json
         - name: LegacyMasset
@@ -193,8 +194,8 @@ dataSources:
       abis:
         - name: BoostedSavingsVault
           file: ../../abis/polygon-deploy/savings/BoostedSavingsVault.sol/BoostedSavingsVault.json
-        - name: ERC20Detailed
-          file: ../../abis/ERC20Detailed.json
+        - name: ERC20
+          file: ../../abis/ERC20.json
       eventHandlers:
         - event: Staked(indexed address,uint256,address)
           handler: handleStaked
@@ -224,8 +225,8 @@ templates:
           file: ../../abis/SavingsContractV1.json
         - name: SavingsContractV2
           file: ../../abis/polygon-deploy/savings/SavingsContract.sol/SavingsContract.json
-        - name: ERC20Detailed
-          file: ../../abis/ERC20Detailed.json
+        - name: ERC20
+          file: ../../abis/ERC20.json
       eventHandlers:
         - event: AutomaticInterestCollectionSwitched(bool)
           handler: handleAutomaticInterestCollectionSwitched

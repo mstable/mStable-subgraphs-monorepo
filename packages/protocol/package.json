@@ -28,7 +28,7 @@
     "deploy:polygon-mumbai": "yarn graph deploy mstable/mstable-protocol-polygon-mumbai --network mumbai --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
     "deploy:polygon-mainnet": "yarn graph deploy mstable/mstable-protocol-polygon --network matic --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
     "lint": "yarn run prettier './src/**/*.{ts,tsx}' --write",
-    "deploy:mainnet": "yarn graph deploy mstable/mstable-protocol --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token "
+    "deploy:mainnet": "yarn graph deploy --studio cktest-mstable-protocol --debug --access-token "
   },
   "dependencies": {
     "@mstable/subgraph-utils": "0.1.0"

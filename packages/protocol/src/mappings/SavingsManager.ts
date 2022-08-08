@@ -10,7 +10,7 @@ import {
   InterestCollected,
   InterestDistributed,
   StreamsFrozen,
-} from '../../generated/SavingsManager.0x86818a2EACcDC6e1C2d7A301E4Ebb394a3c61b85/SavingsManager'
+} from '../../generated/SavingsManager/SavingsManager'
 import {
   SavingsManager as SavingsManagerEntity,
   SavingsContract as SavingsContractEntity,

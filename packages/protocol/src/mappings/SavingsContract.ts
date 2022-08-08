@@ -7,8 +7,8 @@ import {
   CreditsRedeemed,
   ExchangeRateUpdated,
   SavingsDeposited,
-} from '../../generated/SavingsManager.0x86818a2EACcDC6e1C2d7A301E4Ebb394a3c61b85/SavingsContractV1'
-import { SavingsContractV2 } from '../../generated/SavingsManager.0x86818a2EACcDC6e1C2d7A301E4Ebb394a3c61b85/SavingsContractV2'
+} from '../../generated/SavingsManager/SavingsContractV1'
+import { SavingsContractV2 } from '../../generated/SavingsManager/SavingsContractV2'
 
 import {
   Account as AccountEntity,

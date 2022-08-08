@@ -127,10 +127,10 @@ type Basset @entity {
   """
   id: ID!
 
-#  """
-#  Basket the Basset is contained in
-#  """
-#  basket: Basket! @derivedFrom(field: "bassets")
+  #  """
+  #  Basket the Basset is contained in
+  #  """
+  #  basket: Basket! @derivedFrom(field: "bassets")
 
   """
   Target weight of the Basset (mUSD only)

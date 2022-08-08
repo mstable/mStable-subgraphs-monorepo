@@ -44,13 +44,15 @@ export namespace BoostedSavingsVaultRewardEntry {
     contract: BoostedSavingsVault,
   ): BoostedSavingsVaultRewardEntryEntity {
     let entity = getOrCreate(accountId, index)
-
-    let userReward = contract.userRewards(account, integer.fromNumber(index))
-
-    entity.start = userReward.value0.toI32()
-    entity.finish = userReward.value1.toI32()
-    entity.rate = userReward.value2
-    entity.save()
+    // Reverted for some blocks
+    let userRewardResult = contract.try_userRewards(account, integer.fromNumber(index))
+    if (!userRewardResult.reverted) {
+      let userReward = userRewardResult.value
+      entity.start = userReward.value0.toI32()
+      entity.finish = userReward.value1.toI32()
+      entity.rate = userReward.value2
+      entity.save()
+    }
 
     return entity as BoostedSavingsVaultRewardEntryEntity
   }
