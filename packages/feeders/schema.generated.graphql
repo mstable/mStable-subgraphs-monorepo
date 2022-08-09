@@ -6,117 +6,115 @@
 An ERC20-compatible token
 """
 type Token @entity {
-    id: ID!
+  id: ID!
 
-    """
-    Token address
-    """
-    address: Bytes!
+  """
+  Token address
+  """
+  address: Bytes!
 
-    """
-    Token decimals
-    """
-    decimals: Int!
+  """
+  Token decimals
+  """
+  decimals: Int!
 
-    """
-    Token name
-    """
-    name: String!
+  """
+  Token name
+  """
+  name: String!
 
-    """
-    Token symbol
-    """
-    symbol: String!
+  """
+  Token symbol
+  """
+  symbol: String!
 
-    """
-    Total supply of the token
-    """
-    totalSupply: Metric!
+  """
+  Total supply of the token
+  """
+  totalSupply: Metric!
 
-    """
-    Total quantity of tokens burned
-    """
-    totalBurned: Metric!
+  """
+  Total quantity of tokens burned
+  """
+  totalBurned: Metric!
 
-    """
-    Total quantity of tokens minted
-    """
-    totalMinted: Metric!
+  """
+  Total quantity of tokens minted
+  """
+  totalMinted: Metric!
 
-    """
-    Count of transfer transactions
-    """
-    totalTransfers: Counter!
+  """
+  Count of transfer transactions
+  """
+  totalTransfers: Counter!
 
-    """
-    Count of transfer transactions that minted the token
-    """
-    totalMints: Counter!
+  """
+  Count of transfer transactions that minted the token
+  """
+  totalMints: Counter!
 
-    """
-    Count of transfer transactions that burned the token
-    """
-    totalBurns: Counter!
+  """
+  Count of transfer transactions that burned the token
+  """
+  totalBurns: Counter!
 }
 
 interface Transaction {
-    """
-    Transaction hash + log index
-    """
-    id: ID!
+  """
+  Transaction hash + log index
+  """
+  id: ID!
 
-    """
-    Transaction hash
-    """
-    hash: Bytes!
+  """
+  Transaction hash
+  """
+  hash: Bytes!
 
-    """
-    Block number the transaction is in
-    """
-    block: Int!
+  """
+  Block number the transaction is in
+  """
+  block: Int!
 
-    """
-    Timestamp of the block the transaction is in
-    """
-    timestamp: BigInt!
+  """
+  Timestamp of the block the transaction is in
+  """
+  timestamp: BigInt!
 
-    """
-    Address of the sender of the transaction
-    """
-    sender: Bytes!
+  """
+  Address of the sender of the transaction
+  """
+  sender: Bytes!
 }
 
 type Metric @entity {
-    id: ID!
+  id: ID!
 
-    """
-    Exact value of the metric, i.e. in base units as an integer
-    """
-    exact: BigInt!
+  """
+  Exact value of the metric, i.e. in base units as an integer
+  """
+  exact: BigInt!
 
-    """
-    Decimals used for the exact value (default: 18)
-    """
-    decimals: Int!
+  """
+  Decimals used for the exact value (default: 18)
+  """
+  decimals: Int!
 
-    """
-    Simple value of the metric, i.e. the exact value represented as a decimal
-    """
-    simple: BigDecimal!
+  """
+  Simple value of the metric, i.e. the exact value represented as a decimal
+  """
+  simple: BigDecimal!
 }
 
 type Counter @entity {
-    id: ID!
+  id: ID!
 
-    """
-    Value of the counter; should be positive
-    """
-    value: BigInt!
+  """
+  Value of the counter; should be positive
+  """
+  value: BigInt!
 }
 
 ######### END IMPORTED DEFINITIONS #########
-
-
 
 """
 Basket Asset (e.g. DAI for the mUSD basket)
@@ -364,7 +362,6 @@ type BoostedSavingsVault @entity {
   """
   totalStakingRewards: BigInt!
 
-
   """
   The platform reward per token stored (optional)
   """
@@ -608,7 +605,7 @@ type FeederPool @entity {
 
   mintMultiTransactions: [FPMintMultiTransaction!]! @derivedFrom(field: "feederPool")
   mintSingleTransactions: [FPMintSingleTransaction!]! @derivedFrom(field: "feederPool")
-#  paidFeeTransactions: [FPPaidFeeTransaction!]! @derivedFrom(field: "feederPool")
+  #  paidFeeTransactions: [FPPaidFeeTransaction!]! @derivedFrom(field: "feederPool")
   redeemTransactions: [FPRedeemTransaction!]! @derivedFrom(field: "feederPool")
   swapTransactions: [FPSwapTransaction!]! @derivedFrom(field: "feederPool")
 

@@ -67,7 +67,7 @@ export namespace BoostedSavingsVaultAccount {
     entity.boostedBalance = contract.balanceOf(account)
     entity.rewardPerTokenPaid = userData.value0
     entity.rewards = userData.value1
-    // i32 overflow for some blocks
+    // Hack: i32 overflow for some blocks
     if (userData.value2.gt(maxI32)) {
       entity.lastAction = maxI32.toI32()
     } else {
@@ -85,7 +85,8 @@ export namespace BoostedSavingsVaultAccount {
     }
 
     let index = 0
-    while (entity.rewardCount > 0 && index <= entity.rewardCount - 1) {
+    // Hack: timeout 1200 s, limit index to 100000
+    while (entity.rewardCount > 0 && index <= entity.rewardCount - 1 && index <= 100000) {
       BoostedSavingsVaultRewardEntry.update(entity.id, index, account, contract)
       index++
     }
