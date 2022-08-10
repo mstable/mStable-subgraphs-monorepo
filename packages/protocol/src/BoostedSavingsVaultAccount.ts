@@ -85,11 +85,11 @@ export namespace BoostedSavingsVaultAccount {
     }
 
     let index = 0
-    // Hack: timeout 1200 s, limit index to 100000
-    while (entity.rewardCount > 0 && index <= entity.rewardCount - 1 && index <= 100000) {
-      BoostedSavingsVaultRewardEntry.update(entity.id, index, account, contract)
-      index++
-    }
+    // Hack: timeout 1200 s
+    // while (entity.rewardCount > 0 && index <= entity.rewardCount - 1) {
+    //   BoostedSavingsVaultRewardEntry.update(entity.id, index, account, contract)
+    //   index++
+    // }
 
     return entity as BoostedSavingsVaultAccountEntity
   }
