@@ -1,0 +1,78 @@
+specVersion: 0.0.2
+description: mStable Governance
+repository: https://github.com/mstable/mStable-subgraphs-monorepo
+schema:
+  file: ./schema.generated.graphql
+
+dataSources:
+  - kind: ethereum/contract
+    name: IncentivisedVotingLockup
+    network: '{{network}}'
+    source:
+      abi: IncentivisedVotingLockup
+      address: '{{IncentivisedVotingLockup.address}}'
+      startBlock: {{IncentivisedVotingLockup.startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/IncentivisedVotingLockup.ts
+      entities:
+        - UserLockup
+        - IncentivisedVotingLockup
+        - RewardsDistributor
+        - StakingReward
+        - StakingBalance
+        - Token
+        - Transaction
+      abis:
+        - name: IncentivisedVotingLockup
+          file: ../../node_modules/@mstable/protocol/build/contracts/IncentivisedVotingLockup.json
+        - name: IERC20WithCheckpointing
+          file: ../../node_modules/@mstable/protocol/build/contracts/IERC20WithCheckpointing.json
+        - name: ERC20Detailed
+          file: ../../node_modules/@mstable/protocol/build/contracts/ERC20Detailed.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,uint256,indexed uint8,uint256)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,uint256)
+          handler: handleWithdraw
+        - event: Ejected(indexed address,address,uint256)
+          handler: handleEjected
+        - event: Expired()
+          handler: handleExpired
+        - event: RewardAdded(uint256)
+          handler: handleRewardAdded
+        - event: RewardPaid(indexed address,uint256)
+          handler: handleRewardPaid
+
+  - kind: ethereum/contract
+    name: RewardsDistributor
+    network: '{{network}}'
+    source:
+      abi: RewardsDistributor
+      address: '{{RewardsDistributor.address}}'
+      startBlock: {{RewardsDistributor.startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/RewardsDistributor.ts
+      entities:
+        - RewardsDistributor
+        - Token
+        - IncentivisedVotingLockup
+      abis:
+        - name: RewardsDistributor
+          file: ../../node_modules/@mstable/protocol/build/contracts/RewardsDistributor.json
+        - name: ERC20Detailed
+          file: ../../node_modules/@mstable/protocol/build/contracts/ERC20Detailed.json
+        - name: IncentivisedVotingLockup
+          file: ../../node_modules/@mstable/protocol/build/contracts/IncentivisedVotingLockup.json
+      eventHandlers:
+        - event: RemovedFundManager(indexed address)
+          handler: handleRemovedFundManager
+        - event: Whitelisted(indexed address)
+          handler: handleWhitelisted
+        - event: DistributedReward(address,address,address,uint256)
+          handler: handleDistributedReward
