@@ -1,6 +1,6 @@
 import { transaction } from '@mstable/subgraph-utils'
 
-import { RewardPaid } from '../generated/StakedToken'
+import { RewardPaid } from '../generated/StakedTokenMTA/StakedTokenMTA'
 import { RewardPaidTransaction } from '../generated/schema'
 
 export namespace Transactions {

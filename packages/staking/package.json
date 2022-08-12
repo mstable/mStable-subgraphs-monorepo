@@ -14,7 +14,7 @@
     "prepare:kovan": "yarn run prepare-codegen kovan",
     "deploy:ropsten": "yarn graph deploy mstable/mstable-staking-ropsten --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
     "deploy:kovan": "yarn graph deploy mstable/mstable-staking-kovan --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
-    "deploy:mainnet": "yarn graph deploy mstable/mstable-staking --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
+    "deploy:mainnet": "yarn graph deploy --studio mstable-staking --debug --access-token ",
     "lint": "yarn run prettier './src/**/*.{ts,tsx}' --write"
   },
   "dependencies": {

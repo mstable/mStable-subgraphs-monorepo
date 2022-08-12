@@ -2,7 +2,7 @@ import { Address, Bytes } from '@graphprotocol/graph-ts'
 import { integer } from '@mstable/subgraph-utils'
 
 import { QuestManager as Entity } from '../generated/schema'
-import { QuestManager as Contract } from '../generated/QuestManager'
+import { QuestManager as Contract } from '../generated/QuestManager/QuestManager'
 
 import { Season } from './Season'
 

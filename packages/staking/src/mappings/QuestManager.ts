@@ -9,7 +9,7 @@ import {
   QuestSigner,
   QuestCompleteQuests,
   QuestCompleteUsers,
-} from '../../generated/QuestManager'
+} from '../../generated/QuestManager/QuestManager'
 
 import { Quest } from '../Quest'
 import { CompletedQuest } from '../CompletedQuest'
