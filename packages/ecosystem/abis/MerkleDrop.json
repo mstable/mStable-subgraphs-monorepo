@@ -1,0 +1,376 @@
+[
+  {
+    "anonymous": false,
+    "name": "Claimed",
+    "type": "event",
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "week",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "balance",
+        "type": "uint256"
+      }
+    ]
+  },
+  {
+    "anonymous": false,
+    "name": "RemovedFunder",
+    "type": "event",
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }
+    ]
+  },
+  {
+    "anonymous": false,
+    "name": "TrancheAdded",
+    "type": "event",
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "tranche",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "merkleRoot",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "totalAmount",
+        "type": "uint256"
+      }
+    ]
+  },
+  {
+    "anonymous": false,
+    "name": "TrancheExpired",
+    "type": "event",
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "tranche",
+        "type": "uint256"
+      }
+    ]
+  },
+  {
+    "anonymous": false,
+    "name": "Whitelisted",
+    "type": "event",
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }
+    ]
+  },
+  {
+    "constant": true,
+    "name": "claimed",
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "constant": true,
+    "name": "merkleRoots",
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ]
+  },
+  {
+    "constant": true,
+    "name": "nexus",
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function",
+    "inputs": [],
+    "outputs": [
+      {
+        "internalType": "contract INexus",
+        "name": "",
+        "type": "address"
+      }
+    ]
+  },
+  {
+    "constant": true,
+    "name": "token",
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function",
+    "inputs": [],
+    "outputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "",
+        "type": "address"
+      }
+    ]
+  },
+  {
+    "constant": true,
+    "name": "whitelist",
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "constant": false,
+    "name": "initialize",
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_nexus",
+        "type": "address"
+      },
+      {
+        "internalType": "address[]",
+        "name": "_funders",
+        "type": "address[]"
+      },
+      {
+        "internalType": "contract IERC20",
+        "name": "_token",
+        "type": "address"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "constant": false,
+    "name": "seedNewAllocations",
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "_merkleRoot",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_totalAllocation",
+        "type": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "trancheId",
+        "type": "uint256"
+      }
+    ]
+  },
+  {
+    "constant": false,
+    "name": "expireTranche",
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_trancheId",
+        "type": "uint256"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "constant": false,
+    "name": "addFunder",
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "constant": false,
+    "name": "removeFunder",
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "constant": false,
+    "name": "claimWeek",
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_liquidityProvider",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tranche",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_balance",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes32[]",
+        "name": "_merkleProof",
+        "type": "bytes32[]"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "constant": false,
+    "name": "claimWeeks",
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_liquidityProvider",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_tranches",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_balances",
+        "type": "uint256[]"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "constant": true,
+    "name": "verifyClaim",
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_liquidityProvider",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tranche",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_balance",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes32[]",
+        "name": "_merkleProof",
+        "type": "bytes32[]"
+      }
+    ],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "valid",
+        "type": "bool"
+      }
+    ]
+  }
+]

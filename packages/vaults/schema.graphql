@@ -93,7 +93,7 @@ type BoostedSavingsVaultAccount @entity {
   # {BoostedSavingsVault address}.{account}
   id: ID!
 
-  account: Bytes!
+  account: String!
 
   boostedSavingsVault: BoostedSavingsVault!
 

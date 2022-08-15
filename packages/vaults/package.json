@@ -18,7 +18,7 @@
     "prepare:mainnet": "yarn run prepare-codegen mainnet",
     "deploy:ropsten": "yarn graph deploy mStable/mStable-vaults-ropsten --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
     "deploy:staging": "yarn graph deploy mStable/mStable-vaults-staging --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
-    "deploy:mainnet": "yarn graph deploy mStable/mStable-vaults --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
+    "deploy:mainnet": "yarn graph deploy --studio mstable-vaults --debug --access-token ",
     "lint": "yarn run prettier './src/**/*.{ts,tsx}' --write"
   },
   "dependencies": {

@@ -34,6 +34,8 @@ dataSources:
           file: ../../abis/BoostedSavingsVault.json
         - name: ERC20Detailed
           file: ../../abis/ERC20Detailed.json
+        - name: ERC20
+          file: ../../abis/ERC20Detailed.json
       eventHandlers:
         - event: Staked(indexed address,uint256,address)
           handler: handleStaked
@@ -62,4 +64,6 @@ templates:
         - name: BoostedSavingsVault
           file: ../../abis/BoostedSavingsVault.json
         - name: ERC20Detailed
+          file: ../../abis/ERC20Detailed.json
+        - name: ERC20
           file: ../../abis/ERC20Detailed.json

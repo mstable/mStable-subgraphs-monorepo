@@ -1,4 +1,4 @@
-import { Address } from '@graphprotocol/graph-ts'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { integer, metrics } from '@mstable/subgraph-utils'
 
 import { BoostedSavingsVault as BoostedSavingsVaultContract } from '../generated/templates/BoostedSavingsVault/BoostedSavingsVault'
@@ -9,6 +9,8 @@ import {
 } from '../generated/schema'
 
 import { BoostedSavingsVaultRewardEntry } from './BoostedSavingsVaultRewardEntry'
+
+let maxI32 = BigInt.fromI32(2147483647)
 
 export namespace BoostedSavingsVaultAccount {
   export function getId(
@@ -46,6 +48,7 @@ export namespace BoostedSavingsVaultAccount {
 
     let id = getId(boostedSavingsVaultEntity, account)
     entity = new BoostedSavingsVaultAccountEntity(id)
+    entity.account = account.toHexString()
     entity.rawBalance = integer.ZERO
     entity.boostedBalance = integer.ZERO
     entity.boostedSavingsVault = boostedSavingsVaultEntity.id
@@ -64,7 +67,7 @@ export namespace BoostedSavingsVaultAccount {
     boostedSavingsVaultEntity: BoostedSavingsVaultEntity,
     contract: BoostedSavingsVaultContract,
   ): BoostedSavingsVaultAccountEntity {
-    let account = entity.account
+    let account = Address.fromString(entity.account)
 
     let userData = contract.userData(account)
     let lastClaim = contract.userClaim(account)
@@ -73,16 +76,29 @@ export namespace BoostedSavingsVaultAccount {
     entity.boostedBalance = contract.balanceOf(account)
     entity.rewardPerTokenPaid = userData.value0
     entity.rewards = userData.value1
-    entity.lastAction = userData.value2.toI32()
-    entity.lastClaim = lastClaim.toI32()
-    entity.rewardCount = userData.value3.toI32()
-
-    let index = 0
-    while (entity.rewardCount > 0 && index <= entity.rewardCount - 1) {
-      BoostedSavingsVaultRewardEntry.update(entity.id, index, account, contract)
-      index++
+    // Hack: i32 overflow for some blocks
+    if (userData.value2.gt(maxI32)) {
+      entity.lastAction = maxI32.toI32()
+    } else {
+      entity.lastAction = userData.value2.toI32()
+    }
+    if (lastClaim.gt(maxI32)) {
+      entity.lastClaim = maxI32.toI32()
+    } else {
+      entity.lastClaim = lastClaim.toI32()
+    }
+    if (userData.value3.gt(maxI32)) {
+      entity.rewardCount = maxI32.toI32()
+    } else {
+      entity.rewardCount = userData.value3.toI32()
     }
 
+    let index = 0
+    // Hack: timeout 1200 s
+    // while (entity.rewardCount > 0 && index <= entity.rewardCount - 1) {
+    //   BoostedSavingsVaultRewardEntry.update(entity.id, index, account, contract)
+    //   index++
+    // }
     return entity as BoostedSavingsVaultAccountEntity
   }
 }

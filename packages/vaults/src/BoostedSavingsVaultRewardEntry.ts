@@ -1,7 +1,7 @@
 import { Address } from '@graphprotocol/graph-ts'
 import { integer } from '@mstable/subgraph-utils'
 
-import { BoostedSavingsVault } from '../generated/templates/FeederPool/BoostedSavingsVault'
+import { BoostedSavingsVault } from '../generated/templates/BoostedSavingsVault/BoostedSavingsVault'
 
 import { BoostedSavingsVaultRewardEntry as BoostedSavingsVaultRewardEntryEntity } from '../generated/schema'
 

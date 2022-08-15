@@ -118,242 +118,263 @@ type Counter @entity {
 
 
 
+type MerkleDrop @entity {
+  id: ID!
+  token: Token!
+  claims: [MerkleDropClaim!]!
+  tranches: [MerkleDropTranche!]!
+  funders: [Bytes!]!
+}
+
+type MerkleDropClaim @entity {
+  id: ID!
+  account: Bytes!
+  merkleDrop: MerkleDrop!
+  tranche: MerkleDropTranche!
+  balance: BigInt!
+}
+
+type MerkleDropTranche @entity {
+  id: ID!
+  merkleDrop: MerkleDrop!
+  expired: Boolean!
+  trancheNumber: Int!
+  merkleRoot: Bytes!
+  totalAmount: BigInt!
+  claims: [MerkleDropClaim!]!
+}
+
 enum StakingRewardsContractType {
-    STAKING_REWARDS
-    STAKING_REWARDS_WITH_PLATFORM_TOKEN
+  STAKING_REWARDS
+  STAKING_REWARDS_WITH_PLATFORM_TOKEN
 }
 
 enum StakingRewardType {
-    REWARD
-    PLATFORM_REWARD
+  REWARD
+  PLATFORM_REWARD
 }
 
 type RewardsDistributor @entity {
-    """
-    ID of the rewards distributor contract
-    """
-    id: ID!
+  """
+  ID of the rewards distributor contract
+  """
+  id: ID!
 
-    """
-    Whitelisted fund managers
-    """
-    fundManagers: [Bytes!]!
+  """
+  Whitelisted fund managers
+  """
+  fundManagers: [Bytes!]!
 }
 
 type StakingReward @entity {
-    # contract + account
-    id: ID!
+  # contract + account
+  id: ID!
 
-    """
-    Reward amount
-    """
-    amount: BigInt!
-
-    """
-    The reward amount per token paid
-    """
-    amountPerTokenPaid: BigInt!
-
-    """
-    The staking rewards contract this reward is kept on
-    """
-    stakingRewardsContract: StakingRewardsContract!
-
-    """
-    The account the reward belongs to
-    """
-    account: Bytes!
-
-    """
-    The type of staking reward, e.g. "REWARD" or "PLATFORM_REWARD"
   """
-    type: StakingRewardType!
+  Reward amount
+  """
+  amount: BigInt!
+
+  """
+  The reward amount per token paid
+  """
+  amountPerTokenPaid: BigInt!
+
+  """
+  The staking rewards contract this reward is kept on
+  """
+  stakingRewardsContract: StakingRewardsContract!
+
+  """
+  The account the reward belongs to
+  """
+  account: Bytes!
+
+  """
+  The type of staking reward, e.g. "REWARD" or "PLATFORM_REWARD"
+  """
+  type: StakingRewardType!
 }
 
 type StakingRewardsContract @entity {
-    """
-    ID of the staking rewards contract
-    """
-    id: ID!
+  """
+  ID of the staking rewards contract
+  """
+  id: ID!
 
-    """
-    The type of staking rewards contract, e.g. `STAKING_REWARDS` or `STAKING_REWARDS_WITH_PLATFORM_TOKEN`
-    """
-    type: StakingRewardsContractType!
+  """
+  The type of staking rewards contract, e.g. `STAKING_REWARDS` or `STAKING_REWARDS_WITH_PLATFORM_TOKEN`
+  """
+  type: StakingRewardsContractType!
 
-    """
-    Duration
-    """
-    duration: Int!
+  """
+  Duration
+  """
+  duration: Int!
 
-    """
-    Period finish
-    """
-    periodFinish: Int!
+  """
+  Period finish
+  """
+  periodFinish: Int!
 
-    """
-    Last update time
-    """
-    lastUpdateTime: Int!
+  """
+  Last update time
+  """
+  lastUpdateTime: Int!
 
-    """
-    Staking token
-    """
-    stakingToken: Token!
+  """
+  Staking token
+  """
+  stakingToken: Token!
 
-    """
-    Reward per token stored
-    """
-    rewardPerTokenStored: BigInt!
+  """
+  Reward per token stored
+  """
+  rewardPerTokenStored: BigInt!
 
-    """
-    Reward rate
-    """
-    rewardRate: BigInt!
+  """
+  Reward rate
+  """
+  rewardRate: BigInt!
 
-    """
-    Rewards token
-    """
-    rewardsToken: Token!
+  """
+  Rewards token
+  """
+  rewardsToken: Token!
 
-    """
-    Rewards distributor
-    """
-    rewardsDistributor: RewardsDistributor!
+  """
+  Rewards distributor
+  """
+  rewardsDistributor: RewardsDistributor!
 
-    """
-    Total supply
-    """
-    totalSupply: BigInt!
+  """
+  Total supply
+  """
+  totalSupply: BigInt!
 
-    """
-    Total staking rewards
-    """
-    totalStakingRewards: BigInt!
+  """
+  Total staking rewards
+  """
+  totalStakingRewards: BigInt!
 
-    """
-    Accessor for staking balances kept on this contract
-    """
-    stakingBalances: [StakingBalance!]!
+  """
+  Accessor for staking balances kept on this contract
+  """
+  stakingBalances: [StakingBalance!]! @derivedFrom(field: "stakingRewardsContract")
+
+  """
+  Accessor for staking rewards kept on this contract
+  """
+  stakingRewards: [StakingReward!]! @derivedFrom(field: "stakingRewardsContract")
+
+  """
+  Accessor for claim reward transactions sent to this contract
+  """
+  claimRewardTransactions: [StakingRewardsContractClaimRewardTransaction!]!
     @derivedFrom(field: "stakingRewardsContract")
 
-    """
-    Accessor for staking rewards kept on this contract
-    """
-    stakingRewards: [StakingReward!]!
+  """
+  Accessor for stake transactions sent to this contract
+  """
+  stakeTransactions: [StakingRewardsContractStakeTransaction!]!
     @derivedFrom(field: "stakingRewardsContract")
 
-    """
-    Accessor for claim reward transactions sent to this contract
-    """
-    claimRewardTransactions: [StakingRewardsContractClaimRewardTransaction!]!
+  """
+  Accessor for withdraw transactions sent to this contract
+  """
+  withdrawTransactions: [StakingRewardsContractWithdrawTransaction!]!
     @derivedFrom(field: "stakingRewardsContract")
 
-    """
-    Accessor for stake transactions sent to this contract
-    """
-    stakeTransactions: [StakingRewardsContractStakeTransaction!]!
-    @derivedFrom(field: "stakingRewardsContract")
+  #######################################################
+  # For type `STAKING_REWARDS_WITH_PLATFORM_TOKEN` only #
 
-    """
-    Accessor for withdraw transactions sent to this contract
-    """
-    withdrawTransactions: [StakingRewardsContractWithdrawTransaction!]!
-    @derivedFrom(field: "stakingRewardsContract")
+  """
+  Platform token
+  """
+  platformToken: Token
 
-    #######################################################
-    # For type `STAKING_REWARDS_WITH_PLATFORM_TOKEN` only #
+  """
+  Platform reward rate
+  """
+  platformRewardRate: BigInt
 
-    """
-    Platform token
-    """
-    platformToken: Token
+  """
+  Platform reward per token stored
+  """
+  platformRewardPerTokenStored: BigInt
 
-    """
-    Platform reward rate
-    """
-    platformRewardRate: BigInt
+  """
+  Total platform rewards
+  """
+  totalPlatformRewards: BigInt
 
-    """
-    Platform reward per token stored
-    """
-    platformRewardPerTokenStored: BigInt
-
-    """
-    Total platform rewards
-    """
-    totalPlatformRewards: BigInt
-
-    #######################################################
+  #######################################################
 }
 
 type StakingBalance @entity {
-    # stakingRewardsContract + account
-    id: ID!
+  # stakingRewardsContract + account
+  id: ID!
 
-    """
-    Account this staking balance belongs to
-    """
-    account: Bytes!
+  """
+  Account this staking balance belongs to
+  """
+  account: Bytes!
 
-    """
-    Staking rewards contract this staking balance is kept on
-    """
-    stakingRewardsContract: StakingRewardsContract!
+  """
+  Staking rewards contract this staking balance is kept on
+  """
+  stakingRewardsContract: StakingRewardsContract!
 
-    """
-    Staking balance amount
-    """
-    amount: BigInt!
+  """
+  Staking balance amount
+  """
+  amount: BigInt!
 }
 
 type StakingRewardsContractClaimRewardTransaction implements Transaction @entity {
-    id: ID!
+  id: ID!
 
-    hash: Bytes!
+  hash: Bytes!
 
+  sender: Bytes!
 
-    sender: Bytes!
+  block: Int!
 
-    block: Int!
+  timestamp: BigInt!
 
-    timestamp: BigInt!
+  stakingRewardsContract: StakingRewardsContract!
 
-    stakingRewardsContract: StakingRewardsContract!
-
-    amount: BigInt!
+  amount: BigInt!
 }
 
 type StakingRewardsContractStakeTransaction implements Transaction @entity {
-    id: ID!
+  id: ID!
 
-    hash: Bytes!
+  hash: Bytes!
 
+  sender: Bytes!
 
-    sender: Bytes!
+  block: Int!
 
-    block: Int!
+  timestamp: BigInt!
 
-    timestamp: BigInt!
+  stakingRewardsContract: StakingRewardsContract!
 
-    stakingRewardsContract: StakingRewardsContract!
-
-    amount: BigInt!
+  amount: BigInt!
 }
 
 type StakingRewardsContractWithdrawTransaction implements Transaction @entity {
-    id: ID!
+  id: ID!
 
-    hash: Bytes!
+  hash: Bytes!
 
+  sender: Bytes!
 
-    sender: Bytes!
+  block: Int!
 
-    block: Int!
+  timestamp: BigInt!
 
-    timestamp: BigInt!
+  stakingRewardsContract: StakingRewardsContract!
 
-    stakingRewardsContract: StakingRewardsContract!
-
-    amount: BigInt!
+  amount: BigInt!
 }
