@@ -618,11 +618,11 @@ type BoostedSavingsVaultAccount @entity {
 
   rewards: BigInt!
 
-  lastAction: Int!
+  lastAction: BigInt!
 
-  lastClaim: Int!
+  lastClaim: BigInt!
 
-  rewardCount: Int!
+  rewardCount: BigInt!
 
   rewardEntries: [BoostedSavingsVaultRewardEntry!]! @derivedFrom(field: "account")
 

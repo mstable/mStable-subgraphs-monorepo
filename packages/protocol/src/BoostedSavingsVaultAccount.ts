@@ -1,4 +1,4 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { integer } from '@mstable/subgraph-utils'
 
 import { BoostedSavingsVault as BoostedSavingsVaultContract } from '../generated/BoostedSavingsVault_imUSD/BoostedSavingsVault'
@@ -46,9 +46,9 @@ export namespace BoostedSavingsVaultAccount {
     entity.boostedSavingsVault = boostedSavingsVaultEntity.id
     entity.rewardPerTokenPaid = integer.ZERO
     entity.rewards = integer.ZERO
-    entity.lastAction = 0
-    entity.lastClaim = 0
-    entity.rewardCount = 0
+    entity.lastAction = integer.ZERO
+    entity.lastClaim = integer.ZERO
+    entity.rewardCount = integer.ZERO
 
     return entity as BoostedSavingsVaultAccountEntity
   }
@@ -67,29 +67,20 @@ export namespace BoostedSavingsVaultAccount {
     entity.boostedBalance = contract.balanceOf(account)
     entity.rewardPerTokenPaid = userData.value0
     entity.rewards = userData.value1
-    // Hack: i32 overflow for some blocks
-    if (userData.value2.gt(maxI32)) {
-      entity.lastAction = maxI32.toI32()
-    } else {
-      entity.lastAction = userData.value2.toI32()
-    }
-    if (lastClaim.gt(maxI32)) {
-      entity.lastClaim = maxI32.toI32()
-    } else {
-      entity.lastClaim = lastClaim.toI32()
-    }
-    if (userData.value3.gt(maxI32)) {
-      entity.rewardCount = maxI32.toI32()
-    } else {
-      entity.rewardCount = userData.value3.toI32()
-    }
+    entity.lastAction = userData.value2
+    entity.lastClaim = lastClaim
+    entity.rewardCount = userData.value3
 
-    let index = 0
-    // Hack: timeout 1200 s
-    // while (entity.rewardCount > 0 && index <= entity.rewardCount - 1) {
-    //   BoostedSavingsVaultRewardEntry.update(entity.id, index, account, contract)
-    //   index++
-    // }
+    let index = BigInt.fromString(entity.rewardCount.toString())
+    while (
+      entity.rewardCount.gt(BigInt.fromString('0')) &&
+      entity.rewardCount.gt(index) &&
+      // Hack: prevent timeout
+      index.lt(BigInt.fromString('1000'))
+    ) {
+      BoostedSavingsVaultRewardEntry.update(entity.id, index.toI32(), account, contract)
+      index = index.plus(BigInt.fromString('1'))
+    }
 
     return entity as BoostedSavingsVaultAccountEntity
   }
