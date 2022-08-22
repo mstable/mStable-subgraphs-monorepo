@@ -4,11 +4,6 @@ repository: https://github.com/mstable/mstable-subgraphs-monorepo
 schema:
   file: ./schema.generated.graphql
 
-graft:
-  base: QmW2UdGWQ6zip2HABCRCEikWLNBY2ANXGEDZmkThGJFhGH
-  block: 12818573
-#  block: 12042724
-
 dataSources:
 
   {{#savingsManagers}}

@@ -71,7 +71,7 @@ export namespace BoostedSavingsVaultAccount {
     entity.lastClaim = lastClaim
     entity.rewardCount = userData.value3
 
-    let index = BigInt.fromString(entity.rewardCount.toString())
+    let index = BigInt.fromString('0')
     while (
       entity.rewardCount.gt(BigInt.fromString('0')) &&
       entity.rewardCount.gt(index) &&
