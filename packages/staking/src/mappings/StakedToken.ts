@@ -13,7 +13,7 @@ import {
   Staked,
   Transfer,
   Withdraw,
-} from '../../generated/StakedToken'
+} from '../../generated/StakedTokenMTA/StakedTokenMTA'
 import {
   BalClaimed,
   FeesConverted,

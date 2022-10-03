@@ -5,3 +5,4 @@ packages/*/generated/
 packages/*/subgraph.yaml
 packages/*/yarn-error.log
 yarn-error.log
+**/.DS_Store

@@ -16,7 +16,7 @@
     "prepare:ropsten": "yarn run prepare-codegen ropsten",
     "prepare:mainnet": "yarn run prepare-codegen mainnet",
     "deploy:ropsten": "yarn graph deploy mstable/mstable-emissions-ropsten --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
-    "deploy:mainnet": "yarn graph deploy mstable/mstable-dials --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
+    "deploy:mainnet": "yarn graph deploy --studio mstable-emissions --debug --access-token ",
     "deploy:staging": "yarn graph deploy mstable/mstable-dials-staging --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token ",
     "lint": "yarn run prettier './src/**/*.{ts,tsx}' --write",
     "test": "jest"

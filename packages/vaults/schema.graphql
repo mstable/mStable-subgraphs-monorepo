@@ -93,7 +93,7 @@ type BoostedSavingsVaultAccount @entity {
   # {BoostedSavingsVault address}.{account}
   id: ID!
 
-  account: Bytes!
+  account: String!
 
   boostedSavingsVault: BoostedSavingsVault!
 
@@ -105,11 +105,11 @@ type BoostedSavingsVaultAccount @entity {
 
   rewards: BigInt!
 
-  lastAction: Int!
+  lastAction: BigInt!
 
-  lastClaim: Int!
+  lastClaim: BigInt!
 
-  rewardCount: Int!
+  rewardCount: BigInt!
 
   cumulativeClaimed: Metric!
 

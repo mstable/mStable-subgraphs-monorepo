@@ -140,13 +140,13 @@ function handleEvent(
     )
     accountEntity.save()
 
-    let poolAddress = Address.fromString(boostedSavingsVaultEntity.feederPool)
-    FeederPoolAccount.updateVault(
-      poolAddress,
-      boostedSavingsVaultAddress,
-      account as Address,
-      timestamp,
-    )
+    // let poolAddress = Address.fromString(boostedSavingsVaultEntity.feederPool)
+    // FeederPoolAccount.updateVault(
+    //   poolAddress,
+    //   boostedSavingsVaultAddress,
+    //   account as Address,
+    //   timestamp,
+    // )
   }
 
   return boostedSavingsVaultEntity

@@ -30,7 +30,7 @@ dataSources:
       eventHandlers:
         - event: AddedDial(indexed uint256,indexed address)
           handler: handleAddedDial
-        - event: UpdatedDial(indexed uint256,bool)
+        - event: UpdatedDial(indexed uint256,bool,bool)
           handler: handleUpdatedDial
         - event: AddStakingContract(indexed address)
           handler: handleAddStakingContract

@@ -25,7 +25,6 @@ export function getOrCreateMasset(address: Address): MassetEntity {
     massetEntity.redemptionFeeRate = massetData.value.value1
     massetEntity.cacheSize = massetData.value.value2
     massetEntity.surplus = massetData.value.value3
-
     let ampData = massetData.value.value5
     let ampDataEntity = new AmpDataEntity(id)
     ampDataEntity.currentA = ampData.initialA
@@ -34,18 +33,18 @@ export function getOrCreateMasset(address: Address): MassetEntity {
     ampDataEntity.rampEndTime = ampData.rampEndTime
     ampDataEntity.save()
     massetEntity.ampData = ampDataEntity.id
-
     let weightLimits = massetData.value.value6
     massetEntity.hardMin = weightLimits.min
     massetEntity.hardMax = weightLimits.max
+  } else {
+    massetEntity.feeRate = integer.ZERO
+    massetEntity.redemptionFeeRate = integer.ZERO
   }
 
   massetEntity.basket = id
   massetEntity.token = token.getOrCreate(address).id
 
   updateBasket(address)
-
-  massetEntity.redemptionFeeRate = massetEntity.redemptionFeeRate || integer.ZERO
 
   massetEntity.totalSupply = metrics.getOrCreate(address, 'token.totalSupply').id
   massetEntity.cumulativeMinted = metrics.getOrCreate(address, 'cumulativeMinted').id

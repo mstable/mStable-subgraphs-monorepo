@@ -1,6 +1,6 @@
 import { Address } from '@graphprotocol/graph-ts'
 import { transaction, counters, metrics, integer, token } from '@mstable/subgraph-utils'
-import { Transfer as ERC20Transfer } from '@mstable/subgraph-utils/generated/Empty/ERC20Detailed'
+import { Transfer as ERC20Transfer } from '@mstable/subgraph-utils/generated/Empty/ERC20'
 
 import {
   AmpData as AmpDataEntity,

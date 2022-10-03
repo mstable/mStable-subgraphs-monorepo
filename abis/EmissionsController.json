@@ -194,6 +194,12 @@
         "internalType": "bool",
         "name": "disabled",
         "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "notify",
+        "type": "bool"
       }
     ],
     "name": "UpdatedDial",

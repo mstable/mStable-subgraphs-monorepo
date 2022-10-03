@@ -5,40 +5,40 @@ schema:
   file: ./schema.generated.graphql
 
 dataSources:
-  - kind: ethereum/contract
-    name: RewardsDistributor
-    network: '{{network}}'
-    source:
-      abi: RewardsDistributor
-      address: '{{RewardsDistributor.address}}'
-      startBlock: {{RewardsDistributor.startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/mappings/RewardsDistributor.ts
-      entities:
-        - RewardsDistributor
-        - StakingRewards
-        - StakingRewardsWithPlatformToken
-      abis:
-        - name: RewardsDistributor
-          file: ../../node_modules/@mstable/protocol/build/contracts/RewardsDistributor.json
-        - name: StakingRewards
-          file: ../../node_modules/@mstable/protocol/build/contracts/StakingRewards.json
-        - name: StakingRewardsWithPlatformToken
-          file: ../../node_modules/@mstable/protocol/build/contracts/StakingRewardsWithPlatformToken.json
-        - name: BoostedSavingsVault
-          file: ./abis/BoostedSavingsVault.json
-        - name: ERC20Detailed
-          file: ../../node_modules/@mstable/protocol/build/contracts/ERC20Detailed.json
-      eventHandlers:
-        - event: RemovedFundManager(indexed address)
-          handler: handleRemovedFundManager
-        - event: Whitelisted(indexed address)
-          handler: handleWhitelisted
-        - event: DistributedReward(address,address,address,uint256)
-          handler: handleDistributedReward
+  # - kind: ethereum/contract
+  #   name: RewardsDistributor
+  #   network: '{{network}}'
+  #   source:
+  #     abi: RewardsDistributor
+  #     address: '{{RewardsDistributor.address}}'
+  #     startBlock: {{RewardsDistributor.startBlock}}
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.4
+  #     language: wasm/assemblyscript
+  #     file: ./src/mappings/RewardsDistributor.ts
+  #     entities:
+  #       - RewardsDistributor
+  #       - StakingRewards
+  #       - StakingRewardsWithPlatformToken
+  #     abis:
+  #       - name: RewardsDistributor
+  #         file: ../../node_modules/@mstable/protocol/abis/RewardsDistributor.json
+  #       - name: StakingRewards
+  #         file: ../../node_modules/@mstable/protocol/abis/StakingRewards.json
+  #       - name: StakingRewardsWithPlatformToken
+  #         file: ../../node_modules/@mstable/protocol/abis/StakingRewardsWithPlatformToken.json
+  #       - name: BoostedSavingsVault
+  #         file: ../../node_modules/@mstable/protocol/abis/BoostedSavingsVault.json
+  #       - name: ERC20Detailed
+  #         file: ../../node_modules/@mstable/protocol/abis/ERC20.json
+  #     eventHandlers:
+  #       - event: RemovedFundManager(indexed address)
+  #         handler: handleRemovedFundManager
+  #       - event: Whitelisted(indexed address)
+  #         handler: handleWhitelisted
+  #       - event: DistributedReward(address,address,address,uint256)
+  #         handler: handleDistributedReward
 
   # This could also be a template, if there were an event to listen to
   # to create the contracts
@@ -60,7 +60,7 @@ dataSources:
         - MerkleDropTranche
       abis:
         - name: MerkleDrop
-          file: ./abis/MerkleDrop.json
+          file: ../../abis/MerkleDrop.json
       eventHandlers:
         - event: Claimed(address,uint256,uint256)
           handler: handleClaimed
@@ -88,9 +88,9 @@ templates:
         - StakingRewardsContract
       abis:
         - name: StakingRewards
-          file: ../../node_modules/@mstable/protocol/build/contracts/StakingRewards.json
+          file: ../../node_modules/@mstable/protocol/abis/StakingRewards.json
         - name: StakingRewardsWithPlatformToken
-          file: ../../node_modules/@mstable/protocol/build/contracts/StakingRewardsWithPlatformToken.json
+          file: ../../node_modules/@mstable/protocol/abis/StakingRewardsWithPlatformToken.json
       eventHandlers:
         - event: RewardAdded(uint256)
           handler: handleRewardAdded
@@ -115,9 +115,9 @@ templates:
         - StakingRewardsContract
       abis:
         - name: StakingRewards
-          file: ../../node_modules/@mstable/protocol/build/contracts/StakingRewards.json
+          file: ../../node_modules/@mstable/protocol/abis/StakingRewards.json
         - name: StakingRewardsWithPlatformToken
-          file: ../../node_modules/@mstable/protocol/build/contracts/StakingRewardsWithPlatformToken.json
+          file: ../../node_modules/@mstable/protocol/abis/StakingRewardsWithPlatformToken.json
       eventHandlers:
         - event: RewardAdded(uint256,uint256)
           handler: handleRewardAdded

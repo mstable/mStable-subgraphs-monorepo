@@ -364,7 +364,6 @@ type BoostedSavingsVault @entity {
   """
   totalStakingRewards: BigInt!
 
-
   """
   The platform reward per token stored (optional)
   """
@@ -608,7 +607,7 @@ type FeederPool @entity {
 
   mintMultiTransactions: [FPMintMultiTransaction!]! @derivedFrom(field: "feederPool")
   mintSingleTransactions: [FPMintSingleTransaction!]! @derivedFrom(field: "feederPool")
-#  paidFeeTransactions: [FPPaidFeeTransaction!]! @derivedFrom(field: "feederPool")
+  #  paidFeeTransactions: [FPPaidFeeTransaction!]! @derivedFrom(field: "feederPool")
   redeemTransactions: [FPRedeemTransaction!]! @derivedFrom(field: "feederPool")
   swapTransactions: [FPSwapTransaction!]! @derivedFrom(field: "feederPool")
 

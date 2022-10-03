@@ -3,7 +3,7 @@ import { integer } from '@mstable/subgraph-utils'
 
 import { Account as Entity } from '../generated/schema'
 import { StakedToken } from './StakedToken'
-import { QuestManager } from '../generated/QuestManager'
+import { QuestManager } from '../generated/QuestManager/QuestManager'
 
 export namespace Account {
   function getId(account: Address): string {

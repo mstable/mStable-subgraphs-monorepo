@@ -47,9 +47,9 @@ export namespace BoostedSavingsVault {
       entity.feederPool = entity.stakingToken
     }
 
-    if (isDualVault) {
-      entity.isDualVault = isDualVault
-    }
+    // if (isDualVault) {
+    entity.isDualVault = isDualVault
+    // }
 
     let platformToken = dualVaultContract.try_platformToken()
     if (!platformToken.reverted && platformToken.value.notEqual(address.ZERO_ADDRESS)) {

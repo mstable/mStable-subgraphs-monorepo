@@ -25,6 +25,8 @@ function getOrCreateMerkleDrop(address: Address): MerkleDrop {
 
   merkleDrop.token = contract.token().toHexString()
   merkleDrop.funders = []
+  merkleDrop.claims = []
+  merkleDrop.tranches = []
 
   merkleDrop.save()
 
@@ -83,6 +85,7 @@ function createMerkleDropTranche(
   tranche.trancheNumber = trancheNumber.toI32()
   tranche.totalAmount = totalAmount
   tranche.expired = false
+  tranche.claims = []
 
   tranche.save()
 

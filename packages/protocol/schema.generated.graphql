@@ -127,10 +127,10 @@ type Basset @entity {
   """
   id: ID!
 
-#  """
-#  Basket the Basset is contained in
-#  """
-#  basket: Basket! @derivedFrom(field: "bassets")
+  #  """
+  #  Basket the Basset is contained in
+  #  """
+  #  basket: Basket! @derivedFrom(field: "bassets")
 
   """
   Target weight of the Basset (mUSD only)
@@ -733,11 +733,11 @@ type BoostedSavingsVaultAccount @entity {
 
   rewards: BigInt!
 
-  lastAction: Int!
+  lastAction: BigInt!
 
-  lastClaim: Int!
+  lastClaim: BigInt!
 
-  rewardCount: Int!
+  rewardCount: BigInt!
 
   rewardEntries: [BoostedSavingsVaultRewardEntry!]! @derivedFrom(field: "account")
 

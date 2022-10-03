@@ -10,7 +10,7 @@ import {
   InterestCollected,
   InterestDistributed,
   StreamsFrozen,
-} from '../../generated/SavingsManager.0x86818a2EACcDC6e1C2d7A301E4Ebb394a3c61b85/SavingsManager'
+} from '../../generated/SavingsManager/SavingsManager'
 import {
   SavingsManager as SavingsManagerEntity,
   SavingsContract as SavingsContractEntity,
@@ -88,7 +88,10 @@ export function handleSavingsRateChanged(event: SavingsRateChanged): void {
 }
 
 export function handleStreamsFrozen(event: StreamsFrozen): void {
-  let savingsManagerEntity = new SavingsManagerEntity(event.address.toHexString())
+  let address = event.address
+  let savingsManagerEntity = new SavingsManagerEntity(address.toHexString())
+  savingsManagerEntity.address = address
+  savingsManagerEntity.savingsRate = metrics.getOrCreate(address, 'savingsRate').id
   savingsManagerEntity.streamsFrozen = true
   savingsManagerEntity.save()
 }
